@@ -28,6 +28,7 @@ Inizializzazione del progetto:
 
 Struttura del progetto:
 -Organizza il progetto in cartelle per modularità:
+
 ft_trascendence/
 ├── backend/
 │   ├── routes/          # Rotte API
@@ -56,9 +57,9 @@ Blockchain:
 -Scrivi smart contract in Solidity per gestire i punteggi dei tornei.
 
 AI e dashboard:
-Implementa un modulo per l'AI (es. con TensorFlow.js o un'API esterna).
-Crea endpoint per fornire statistiche utente e di gioco.
+-Implementa un modulo per l'AI che introduca un avversario virtuale nel gioco.
+-Crea endpoint per fornire statistiche utente e di gioco.
 
 Collaborazione con il frontend:
-Esponi API RESTful o GraphQL per il frontend.
-Documenta le API con Swagger.
+-Esponi API RESTful o GraphQL per il frontend.
+-Documenta le API con Swagger.
