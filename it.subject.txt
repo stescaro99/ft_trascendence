@@ -104,7 +104,7 @@ IV.1 Panoramica
 • Web (Samus)
 
 ◦ Modulo major: Utilizzare un framework per costruire il backend.                            ❤️‍🩹
-◦ Modulo minor: Utilizzare un framework o un toolkit per costruire il frontend.              ❤️‍🩹  
+◦ Modulo minor: Utilizzare un framework o un toolkit per costruire il frontend.              ❤️‍🩹    (ulisse-andrea)
 ◦ Modulo minor: Utilizzare un database per il backend.                                       ❤️‍🩹
 ◦ Modulo major: Memorizzare il punteggio di un torneo sulla Blockchain.                      ❤️‍🩹
 
