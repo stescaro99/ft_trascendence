@@ -34,7 +34,7 @@ ft_trascendence/
 │   ├── routes/          # Rotte API
 │   ├── controllers/     # Logica per le rotte API
 │   ├── services/        # Interazioni con blockchain e database
-│   │   ├── blockchain/  # Interazioni con Avalanche e smart contract
+│   │   └── blockchain/  # Interazioni con Avalanche e smart contract
 │   ├── plugins/         # Plugin Fastify
 │   ├── models/          # Modelli per il database
 │   ├── utils/           # Funzioni di utilità
