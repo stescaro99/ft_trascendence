@@ -21,6 +21,7 @@
 ## Piano dettagliato
 
 ### Configurazione del server
+
 1. **Configura un server Fastify**:
    ~~- Inizializza un progetto Node.js e installa Fastify.~~
    - Configura il server per caricare rotte modulari e utilizzare plugin per funzionalità come autenticazione e gestione utenti.
