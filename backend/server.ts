@@ -1,7 +1,8 @@
-// questi sarebbero tipo import 
-const Fastify = require('fastify');
-const path = require('path');
-const fs = require('fs');
+import Fastify from 'fastify';
+import path from 'path';
+import fs from 'fs';
+import sequelize from './db';
+
 
 const server = Fastify({ logger: true });
 
@@ -14,9 +15,18 @@ fs.readdirSync(routes_path).forEach((file) => {
     }
 });
 
-// avvia il server sulla porta 2807
+// route di test
+server.get('/', async (request, reply) => {
+    return { hello: 'world' };
+});
+
+// funzione che avvia il server sulla porta 2807
 const start = async () => {
     try {
+        await sequelize.authenticate(); // autenticazione al database
+        console.log('Database connection has been established successfully.');
+        await sequelize.sync(); // crea database e tabelle, se necessario
+        console.log('Database synchronized successfully.');
         await server.listen({ port: 2807, host: '0.0.0.0' });
         console.log('Server is running on http://localhost:2807');
     } catch (err) {
