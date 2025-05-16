@@ -16,25 +16,35 @@ const fastify_1 = __importDefault(require("fastify"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const db_1 = __importDefault(require("./db"));
+const swagger_1 = __importDefault(require("@fastify/swagger"));
+const swagger_ui_1 = __importDefault(require("@fastify/swagger-ui"));
 const server = (0, fastify_1.default)({ logger: true });
-// aggiungo le rotte al server
-const routes_path = path_1.default.join(__dirname, 'routes');
-fs_1.default.readdirSync(routes_path).forEach((file) => {
-    if (file.endsWith('.js')) {
-        const route = require(path_1.default.join(routes_path, file));
-        server.register(route, { prefix: '/api' }); // aggiunge il prefisso /api a tutte le rotte nel server
-    }
-});
-// route di test
-server.get('/', (request, reply) => __awaiter(void 0, void 0, void 0, function* () {
-    return { hello: 'world' };
-}));
 // funzione che avvia il server sulla porta 2807
 const start = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield db_1.default.authenticate(); // autenticazione al database
+        yield server.register(swagger_1.default, {
+            openapi: {
+                info: {
+                    title: 'API ft_trascendence',
+                    description: 'Documentazione API Pong',
+                    version: '1.0.0'
+                }
+            },
+        });
+        yield server.register(swagger_ui_1.default, {
+            routePrefix: '/swagger'
+        });
+        const routes_path = path_1.default.join(__dirname, 'routes');
+        fs_1.default.readdirSync(routes_path).forEach((file) => {
+            if (file.endsWith('.js')) {
+                const route = require(path_1.default.join(routes_path, file));
+                server.register(route, { prefix: '/api' }); // aggiunge il prefisso /api a tutte le rotte nel server
+                console.log('Carico route:', file);
+            }
+        });
+        yield db_1.default.authenticate();
         console.log('Database connection has been established successfully.');
-        yield db_1.default.sync(); // crea database e tabelle, se necessario
+        yield db_1.default.sync();
         console.log('Database synchronized successfully.');
         yield server.listen({ port: 2807, host: '0.0.0.0' });
         console.log('Server is running on http://localhost:2807');
