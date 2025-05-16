@@ -15,11 +15,6 @@ fs.readdirSync(routes_path).forEach((file) => {
     }
 });
 
-// route di test
-server.get('/', async (request, reply) => {
-    return { hello: 'world' };
-});
-
 // funzione che avvia il server sulla porta 2807
 const start = async () => {
     try {
