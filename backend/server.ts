@@ -3,10 +3,15 @@ const Fastify = require('fastify');
 const path = require('path');
 const fs = require('fs');
 
-// Sostituire '/' con le nostre routes
 const server = Fastify({ logger: true });
-server.get('/', async (request, reply) => {
-    return { message: 'Server is running!' };
+
+// aggiungo le rotte al server
+const routes_path = path.join(__dirname, 'routes');
+fs.readdirSync(routes_path).forEach((file) => {
+    if (file.endsWith('.js')) {
+        const route = require(path.join(routes_path, file));
+        server.register(route, { prefix: '/api' }); // aggiunge il prefisso /api a tutte le rotte nel server
+    }
 });
 
 // avvia il server sulla porta 2807
