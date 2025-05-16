@@ -1,0 +1,13 @@
+200 OK                // Richiesta eseguita con successo
+201 Created           // Risorsa creata con successo (es: POST)
+204 No Content        // Richiesta eseguita, nessun contenuto restituito
+
+400 Bad Request       // Richiesta non valida (dati mancanti o errati)
+401 Unauthorized      // Non autorizzato (token mancante o non valido)
+403 Forbidden         // Accesso negato (permessi insufficienti)
+404 Not Found         // Risorsa non trovata
+409 Conflict          // Conflitto (es: risorsa già esistente)
+
+500 Internal Server Error // Errore generico del server
+502 Bad Gateway           // Errore gateway/proxy
+503 Service Unavailable   // Servizio non disponibile
