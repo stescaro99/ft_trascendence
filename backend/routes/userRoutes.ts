@@ -1,5 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { addUser, deleteUser, getUser, updateUser } from "../controllers/userController";
+import { userSchema } from "../schemas/userSchema";
 
 export default async function (server: FastifyInstance) {
     server.post('/add_user', {
@@ -21,7 +22,7 @@ export default async function (server: FastifyInstance) {
                     type: 'object',
                     properties: {
                         message: { type: 'string' },
-                        user: { type: 'object' }
+                        user: userSchema
                     }
                 }
             },
@@ -69,7 +70,7 @@ export default async function (server: FastifyInstance) {
                 200: {
                     type: 'object',
                     properties: {
-                        user: { type: 'object' }
+                        user: userSchema
                     }
                 },
                 404: {
@@ -102,7 +103,7 @@ export default async function (server: FastifyInstance) {
                     type: 'object',
                     properties: {
                         message: { type: 'string' },
-                        user: { type: 'object' }
+                        user: userSchema
                     }
                 },
                 404: {
