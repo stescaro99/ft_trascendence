@@ -24,25 +24,25 @@
 
 1. **Configura un server Fastify**:
    ~~- Inizializza un progetto Node.js e installa Fastify.~~
-   - Configura il server per caricare rotte modulari e utilizzare plugin per funzionalità come autenticazione e gestione utenti.
+   ~~- Configura il server per caricare rotte modulari e utilizzare plugin per funzionalità come autenticazione e gestione utenti.~~
 
 2. **Organizza la struttura del progetto**:
-   - Crea una struttura modulare con cartelle per rotte, controller, servizi, modelli, plugin e utilità.
-   - Assicurati che ogni componente abbia una responsabilità chiara.
+   ~~- Crea una struttura modulare con cartelle per rotte, controller, servizi, modelli, plugin e utilità.~~
+   ~~- Assicurati che ogni componente abbia una responsabilità chiara.~~
 
 ---
 
 ### Database
 1. **Configura SQLite**:
-   - Utilizza SQLite come database locale.
-   - Configura un file di connessione per interagire con il database.
+   ~~- Utilizza SQLite come database locale.~~
+   ~~- Configura un file di connessione per interagire con il database.~~
 
 2. **Configura un ORM/ODM (es. Sequelize)**:
-   - Installa e configura Sequelize per gestire il database in modo più semplice.
+   ~~- Installa e configura Sequelize per gestire il database in modo più semplice.~~
    - Definisci i modelli per utenti, tornei e statistiche.
 
 3. **Crea i modelli**:
-   - **Utenti**: Nome, email, password hashata, avatar, stato online.
+   ~~- **Utenti**: Nome, email, password hashata, avatar, stato online.~~
    - **Tornei**: Nome torneo, partecipanti, stato, vincitore.
    - **Statistiche**: Partite giocate, vittorie, sconfitte, punteggi.
 
@@ -55,7 +55,6 @@
 
 2. **Protezione delle rotte**:
    - Proteggi le rotte sensibili con middleware di autenticazione.
-   - Implementa la gestione delle sessioni e il logout.
 
 ---
 
@@ -87,7 +86,6 @@
 ### Collaborazione con il frontend
 1. **Esponi API RESTful o GraphQL**:
    - Progetta endpoint per tutte le funzionalità (es. autenticazione, gestione tornei, statistiche).
-   - Assicurati che le API siano ben documentate e seguano le best practice.
 
 2. **Documenta le API con Swagger**:
    - Usa un plugin per generare automaticamente la documentazione delle API.

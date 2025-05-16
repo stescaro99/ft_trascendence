@@ -10,22 +10,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = default_1;
-const userController_1 = require("../controllers/userController");
-const userSchema_1 = require("../schemas/userSchema");
+const gameController_1 = require("../controllers/gameController");
+const gameSchema_1 = require("../schemas/gameSchema");
 function default_1(server) {
     return __awaiter(this, void 0, void 0, function* () {
-        server.post('/add_user', {
+        server.post('/add_game', {
             schema: {
                 body: {
                     type: 'object',
-                    required: ['name', 'surname', 'nickname', 'email', 'password'],
+                    required: ['player1_nickname', 'player2_nickname', 'date'],
                     properties: {
-                        name: { type: 'string' },
-                        surname: { type: 'string' },
-                        nickname: { type: 'string' },
-                        email: { type: 'string' },
-                        password: { type: 'string' },
-                        image_url: { type: 'string' }
+                        player1_nickname: { type: 'string' },
+                        player2_nickname: { type: 'string' },
+                        player3_nickname: { type: 'string' },
+                        player4_nickname: { type: 'string' },
+                        date: { type: 'string', format: 'date-time' }
                     }
                 },
                 response: {
@@ -33,20 +32,69 @@ function default_1(server) {
                         type: 'object',
                         properties: {
                             message: { type: 'string' },
-                            user: userSchema_1.userSchema
+                            game: gameSchema_1.gameSchema
                         }
                     }
                 },
-                tags: ['User']
+                tags: ['Game']
             }
-        }, userController_1.addUser);
-        server.delete('/delete_user', {
+        }, gameController_1.addGame);
+        server.get('/get_game', {
+            schema: {
+                querystring: {
+                    type: 'object',
+                    required: ['game_id'],
+                    properties: {
+                        game_id: { type: 'integer' }
+                    }
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            game: gameSchema_1.gameSchema
+                        }
+                    },
+                    404: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' }
+                        }
+                    },
+                },
+                tags: ['Game']
+            }
+        }, gameController_1.getGame);
+        server.put('/update_game', {
             schema: {
                 body: {
                     type: 'object',
-                    required: ['nickname'],
+                    required: ['game_id', 'field', 'new_value'],
                     properties: {
-                        nickname: { type: 'string' }
+                        game_id: { type: 'integer' },
+                        field: { type: 'string' },
+                        new_value: { type: 'string' }
+                    }
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            message: { type: 'string' },
+                            game: gameSchema_1.gameSchema
+                        }
+                    }
+                },
+                tags: ['Game']
+            }
+        }, gameController_1.updateGame);
+        server.delete('/delete_game', {
+            schema: {
+                querystring: {
+                    type: 'object',
+                    required: ['game_id'],
+                    properties: {
+                        game_id: { type: 'integer' }
                     }
                 },
                 response: {
@@ -61,68 +109,10 @@ function default_1(server) {
                         properties: {
                             error: { type: 'string' }
                         }
-                    }
-                },
-                tags: ['User']
-            }
-        }, userController_1.deleteUser);
-        server.get('/get_user', {
-            schema: {
-                querystring: {
-                    type: 'object',
-                    required: ['nickname'],
-                    properties: {
-                        nickname: { type: 'string' }
-                    }
-                },
-                response: {
-                    200: {
-                        type: 'object',
-                        properties: {
-                            user: userSchema_1.userSchema
-                        }
                     },
-                    404: {
-                        type: 'object',
-                        properties: {
-                            error: { type: 'string' }
-                        }
-                    }
                 },
-                tags: ['User']
+                tags: ['Game']
             }
-        }, userController_1.getUser);
-        server.put('/update_user', {
-            schema: {
-                body: {
-                    type: 'object',
-                    required: ['nickname'],
-                    properties: {
-                        nickname: { type: 'string' },
-                        name: { type: 'string' },
-                        surname: { type: 'string' },
-                        email: { type: 'string' },
-                        password: { type: 'string' },
-                        image_url: { type: 'string' }
-                    }
-                },
-                response: {
-                    200: {
-                        type: 'object',
-                        properties: {
-                            message: { type: 'string' },
-                            user: userSchema_1.userSchema
-                        }
-                    },
-                    404: {
-                        type: 'object',
-                        properties: {
-                            error: { type: 'string' }
-                        }
-                    }
-                },
-                tags: ['User']
-            }
-        }, userController_1.updateUser);
+        }, gameController_1.deleteGame);
     });
 }

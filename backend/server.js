@@ -38,8 +38,7 @@ const start = () => __awaiter(void 0, void 0, void 0, function* () {
         fs_1.default.readdirSync(routes_path).forEach((file) => {
             if (file.endsWith('.js')) {
                 const route = require(path_1.default.join(routes_path, file));
-                server.register(route, { prefix: '/api' }); // aggiunge il prefisso /api a tutte le rotte nel server
-                console.log('Carico route:', file);
+                server.register(route, { prefix: '/api' });
             }
         });
         yield db_1.default.authenticate();
