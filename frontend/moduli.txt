@@ -1,0 +1,27 @@
+• Web (Samus)
+◦ Modulo major: Utilizzare un framework per costruire il backend.                            ❤️‍🩹
+◦ Modulo minor: Utilizzare un framework o un toolkit per costruire il frontend.              ❤️‍🩹    (ulisse-andrea)
+◦ Modulo minor: Utilizzare un database per il backend.                                       ❤️‍🩹
+◦ Modulo major: Memorizzare il punteggio di un torneo sulla Blockchain.                      ❤️‍🩹
+
+• Gestione Utenti (backend+fontend) (samus + uli, francesco)
+◦ Modulo major: Gestione standard degli utenti, autenticazione, utenti attraverso i tornei.  ❤️‍🩹
+◦ Modulo major: Implementare un'autenticazione remota.                                       ❤️‍🩹
+
+• Gameplay ed esperienza utente (Andrea)
+◦ Modulo major: Giocatori remoti.                                                            ❤️‍🩹 forse MIO
+◦ Modulo major: Multiplayer (più di 2 giocatori nello stesso gioco).                         ❤️‍🩹 forse MIO✅
+◦ Modulo major: Aggiungere un altro gioco con cronologia utente e matchmaking.               ❤️‍🩹 MIO
+◦ Modulo minor: Opzioni di personalizzazione del gioco.                                      ❤️‍🩹 MIO 
+◦ Modulo major: Chat in tempo reale.                                                         ❤️‍🩹 forse MIO
+
+• AI-Algo  (Samus)
+◦ Modulo major: Introdurre un avversario AI.                                                 ❤️‍🩹
+◦ Modulo minor: Dashboard per statistiche utente e di gioco.                                 ❤️‍🩹
+
+• Grafica (uli - andrea)
+◦ Modulo major: Utilizzare tecniche avanzate 3D.                                            ❤️‍🩹 forse
+
+• Accessibilità (francesco)
+◦ Modulo minor: Supporto per più lingue.                                                    ❤️‍🩹
+◦ Modulo minor: Supporto su tutti i dispositivi.                                            ❤️‍🩹
