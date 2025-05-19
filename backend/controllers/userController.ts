@@ -1,5 +1,7 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import User from '../models/user';
+import Stats from '../models/stats';
+import sequelize from '../db';
 
 export async function addUser(request: FastifyRequest, reply: FastifyReply) {
     const { name, surname, nickname, email, password, image_url } = request.body as { 
@@ -11,6 +13,14 @@ export async function addUser(request: FastifyRequest, reply: FastifyReply) {
         image_url?: string;
     };
     try {
+        const stats_pong = await Stats.create({
+            stat_index: 0,
+            nickname: nickname,
+        });
+        const stats_game2 = await Stats.create({
+            stat_index: 1,
+            nickname: nickname,
+        });
         const user = await User.create({
             name,
             surname,
@@ -18,6 +28,9 @@ export async function addUser(request: FastifyRequest, reply: FastifyReply) {
             email,
             password,
             image_url,
+            stats: [stats_pong, stats_game2],
+        }, {
+            include: [{ model: Stats, as: 'stats' }],
         });
         reply.code(201).send({ message: 'User added!', user });
     } catch (error) {
@@ -28,6 +41,7 @@ export async function addUser(request: FastifyRequest, reply: FastifyReply) {
 export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {
     const { nickname } = request.body as { nickname: string };
     try {
+        await Stats.destroy({ where: { nickname: nickname } });
         const user = await User.destroy({ where: { nickname: nickname } });
         if (user) {
             reply.code(200).send({ message: 'User deleted!' });
@@ -42,7 +56,10 @@ export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {
 export async function getUser(request: FastifyRequest, reply: FastifyReply) {
     const { nickname } = request.query as { nickname: string };
     try {
-        const user = await User.findOne({ where: { nickname: nickname } });
+        const user = await User.findOne({ 
+            where: { nickname: nickname },
+            include: [{ model: Stats, as: 'stats' }],
+        });
         if (user) {
             reply.code(200).send(user);
         } else {

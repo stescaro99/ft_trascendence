@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../db';
+import Stats from './stats';
 
 class User extends Model {
     public id!: number;
@@ -9,6 +10,7 @@ class User extends Model {
     public email!: string;
     public password!: string;
     public image_url?: string;
+    public stats?: Stats[];
 }
 
 User.init(
@@ -51,5 +53,16 @@ User.init(
         tableName: 'users',
     }
 );
+
+User.hasMany(Stats, {
+    foreignKey: 'nickname',
+    sourceKey: 'nickname',
+    as: 'stats',
+});
+Stats.belongsTo(User, {
+    foreignKey: 'nickname',
+    targetKey: 'nickname',
+    as: 'user',
+});
 
 export default User;

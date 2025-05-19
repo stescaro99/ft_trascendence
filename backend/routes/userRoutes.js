@@ -77,10 +77,7 @@ function default_1(server) {
                 },
                 response: {
                     200: {
-                        type: 'object',
-                        properties: {
-                            user: userSchema_1.userSchema
-                        }
+                        user: userSchema_1.userSchema
                     },
                     404: {
                         type: 'object',

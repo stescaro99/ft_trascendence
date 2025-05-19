@@ -68,10 +68,7 @@ export default async function (server: FastifyInstance) {
             },
             response: {
                 200: {
-                    type: 'object',
-                    properties: {
                         user: userSchema
-                    }
                 },
                 404: {
                     type: 'object',
