@@ -10,10 +10,10 @@ const preview2 = document.getElementById("preview2") as HTMLDivElement;
 let paddleColor1 = "#ffffff";
 let paddleColor2 = "#ffffff";
 
-// 🎨 Colori disponibili
+// Colori disponibili
 const colori = ["#ff0000", "#00ff00", "#ffff00", "#800080", "#007bff", "#ffffff"];
 
-// 🧩 Genera i bottoni per le palette
+// Generazione dei bottoni per la selezione dei colori
 const paletteContainers = document.querySelectorAll(".palette");
 
 paletteContainers.forEach((palette) => {
@@ -59,6 +59,7 @@ const leftPaddle = {
   y: canvas.height / 2 - paddleHeight / 2,
   dy: 0,
   speed: 6,
+  height: paddleHeight,
 };
 
 const rightPaddle = {
@@ -66,6 +67,7 @@ const rightPaddle = {
   y: canvas.height / 2 - paddleHeight / 2,
   dy: 0,
   speed: 6,
+  height: paddleHeight,
 };
 
 const ball = {
@@ -74,6 +76,14 @@ const ball = {
   radius: 10,
   dx: 5,
   dy: 5,
+};
+
+const powerUp = {
+  x: Math.random() * (canvas.width - 20) + 10,
+  y: Math.random() * (canvas.height - 20) + 10,
+  width : 20,
+  height : 20,
+  active : true,
 };
 
 // === Eventi tastiera ===
@@ -91,6 +101,13 @@ document.addEventListener("keyup", (e) => {
 });
 
 // === Disegno ===
+
+function drawPowerUp() {
+  if (powerUp.active) {
+    ctx.fillStyle = "orange";
+    ctx.fillRect(powerUp.x, powerUp.y, powerUp.width, powerUp.height);
+  }
+}
 
 function drawRect(x: number, y: number, w: number, h: number, color: string) {
   ctx.fillStyle = color;
@@ -120,6 +137,31 @@ function update() {
     ball.y += ball.dy;
   }
 
+  // Collisione con il power-up
+  if (
+    powerUp.active &&
+    ball.x + ball.radius > powerUp.x &&
+    ball.x - ball.radius < powerUp.x + powerUp.width &&
+    ball.y + ball.radius > powerUp.y &&
+    ball.y - ball.radius < powerUp.y + powerUp.height
+  )
+  {
+    if (ball.dx < 0)
+      rightPaddle.height = 150;
+    else
+      leftPaddle.height = 150;
+
+    powerUp.active = false;
+
+    setTimeout(() => {
+        leftPaddle.height = paddleHeight;
+        rightPaddle.height = paddleHeight;
+        setTimeout(() => {
+          powerUp.active = true;
+        }
+        , 5000);
+      }, 10000);
+  }
   // Collisione top/bottom
   if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
     ball.dy *= -1;
@@ -147,10 +189,11 @@ function update() {
   leftPaddle.y += leftPaddle.dy;
   rightPaddle.y += rightPaddle.dy;
 
-  if (leftPaddle.y + paddleHeight  >= canvas.height || leftPaddle.y <= 0)
+  // Check movimento paddle
+  if (leftPaddle.y + leftPaddle.height  >= canvas.height || leftPaddle.y <= 0)
     leftPaddle.y -= leftPaddle.dy;
 
-  if (rightPaddle.y + paddleHeight >= canvas.height || rightPaddle.y <= 0)
+  if (rightPaddle.y + rightPaddle.height >= canvas.height || rightPaddle.y <= 0)
     rightPaddle.y -= rightPaddle.dy;
 
   // Punto per player destro
@@ -176,10 +219,11 @@ function resetBall() {
 
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawRect(leftPaddle.x, leftPaddle.y, paddleWidth, paddleHeight, paddleColor1);
-  drawRect(rightPaddle.x, rightPaddle.y, paddleWidth, paddleHeight, paddleColor2);
+  drawRect(leftPaddle.x, leftPaddle.y, paddleWidth, leftPaddle.height, paddleColor1);
+  drawRect(rightPaddle.x, rightPaddle.y, paddleWidth, rightPaddle.height, paddleColor2);
   drawBall();
   drawScore();
+  drawPowerUp();
 }
 
 // === Game loop ===

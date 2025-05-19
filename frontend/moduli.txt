@@ -11,8 +11,8 @@
 • Gameplay ed esperienza utente (Andrea)
 ◦ Modulo major: Giocatori remoti.                                                            ❤️‍🩹 forse MIO
 ◦ Modulo major: Multiplayer (più di 2 giocatori nello stesso gioco).                         ❤️‍🩹 forse MIO✅
-◦ Modulo major: Aggiungere un altro gioco con cronologia utente e matchmaking.               ❤️‍🩹 MIO
-◦ Modulo minor: Opzioni di personalizzazione del gioco.                                      ❤️‍🩹 MIO 
+◦ Modulo major: Aggiungere un altro gioco con cronologia utente e matchmaking.               ❤️‍🩹 MIO 
+◦ Modulo minor: Opzioni di personalizzazione del gioco.                                      ❤️‍🩹 MIO ✅
 ◦ Modulo major: Chat in tempo reale.                                                         ❤️‍🩹 forse MIO
 
 • AI-Algo  (Samus)
