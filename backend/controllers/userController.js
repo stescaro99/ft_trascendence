@@ -17,10 +17,19 @@ exports.deleteUser = deleteUser;
 exports.getUser = getUser;
 exports.updateUser = updateUser;
 const user_1 = __importDefault(require("../models/user"));
+const stats_1 = __importDefault(require("../models/stats"));
 function addUser(request, reply) {
     return __awaiter(this, void 0, void 0, function* () {
         const { name, surname, nickname, email, password, image_url } = request.body;
         try {
+            const stats_pong = yield stats_1.default.create({
+                stat_index: 0,
+                nickname: nickname,
+            });
+            const stats_game2 = yield stats_1.default.create({
+                stat_index: 1,
+                nickname: nickname,
+            });
             const user = yield user_1.default.create({
                 name,
                 surname,
@@ -28,6 +37,9 @@ function addUser(request, reply) {
                 email,
                 password,
                 image_url,
+                stats: [stats_pong, stats_game2],
+            }, {
+                include: [{ model: stats_1.default, as: 'stats' }],
             });
             reply.code(201).send({ message: 'User added!', user });
         }
@@ -40,6 +52,7 @@ function deleteUser(request, reply) {
     return __awaiter(this, void 0, void 0, function* () {
         const { nickname } = request.body;
         try {
+            yield stats_1.default.destroy({ where: { nickname: nickname } });
             const user = yield user_1.default.destroy({ where: { nickname: nickname } });
             if (user) {
                 reply.code(200).send({ message: 'User deleted!' });
@@ -57,7 +70,10 @@ function getUser(request, reply) {
     return __awaiter(this, void 0, void 0, function* () {
         const { nickname } = request.query;
         try {
-            const user = yield user_1.default.findOne({ where: { nickname: nickname } });
+            const user = yield user_1.default.findOne({
+                where: { nickname: nickname },
+                include: [{ model: stats_1.default, as: 'stats' }],
+            });
             if (user) {
                 reply.code(200).send(user);
             }

@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../db';
+import { Stats } from 'fs';
 
 class Game extends Model {
     public game_id!: number;

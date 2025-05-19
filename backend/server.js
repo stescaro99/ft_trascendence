@@ -19,6 +19,10 @@ const db_1 = __importDefault(require("./db"));
 const swagger_1 = __importDefault(require("@fastify/swagger"));
 const swagger_ui_1 = __importDefault(require("@fastify/swagger-ui"));
 const server = (0, fastify_1.default)({ logger: true });
+(() => __awaiter(void 0, void 0, void 0, function* () {
+    yield db_1.default.sync({ alter: true });
+    console.log('Database synchronized successfully.');
+}))();
 // funzione che avvia il server sulla porta 2807
 const start = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -43,7 +47,7 @@ const start = () => __awaiter(void 0, void 0, void 0, function* () {
         });
         yield db_1.default.authenticate();
         console.log('Database connection has been established successfully.');
-        yield db_1.default.sync();
+        //await sequelize.sync();
         console.log('Database synchronized successfully.');
         yield server.listen({ port: 2807, host: '0.0.0.0' });
         console.log('Server is running on http://localhost:2807');
