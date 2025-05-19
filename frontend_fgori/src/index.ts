@@ -1,4 +1,4 @@
-import aboutPage from './routes/about.js';
+import autentificationPage from './routes/identification/identification';
 
 console.log("Script caricato");
 
@@ -8,8 +8,9 @@ const routes: Record<string, () => string> = {
   '/': () => `
     <h1>Home</h1>
     <p>Benvenuto nella pagina principale.</p>
+    <p>ciccia</p>
   `,
-  '/about': aboutPage,
+  '/about': autentificationPage,
 };
 
 function router() {
