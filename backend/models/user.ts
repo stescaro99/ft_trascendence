@@ -10,6 +10,7 @@ class User extends Model {
     public email!: string;
     public password!: string;
     public image_url?: string;
+    public setStats!: (stats: Stats[] | number[]) => Promise<void>;
     public stats?: Stats[];
 }
 

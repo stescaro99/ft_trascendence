@@ -4,23 +4,15 @@ import Stats from '../models/stats';
 import sequelize from '../db';
 
 export async function addUser(request: FastifyRequest, reply: FastifyReply) {
-    const { name, surname, nickname, email, password, image_url } = request.body as { 
-        name: string; 
-        surname: string; 
-        nickname: string; 
-        email: string; 
-        password: string; 
+    const { name, surname, nickname, email, password, image_url } = request.body as {
+        name: string;
+        surname: string;
+        nickname: string;
+        email: string;
+        password: string;
         image_url?: string;
     };
     try {
-        const stats_pong = await Stats.create({
-            stat_index: 0,
-            nickname: nickname,
-        });
-        const stats_game2 = await Stats.create({
-            stat_index: 1,
-            nickname: nickname,
-        });
         const user = await User.create({
             name,
             surname,
@@ -28,10 +20,15 @@ export async function addUser(request: FastifyRequest, reply: FastifyReply) {
             email,
             password,
             image_url,
-            stats: [stats_pong, stats_game2],
-        }, {
-            include: [{ model: Stats, as: 'stats' }],
         });
+
+        const stats_pong = await Stats.create({ nickname: nickname });
+        const stats_game2 = await Stats.create({ nickname: nickname });
+
+        await user.setStats([stats_pong, stats_game2]);
+
+        await user.reload({ include: [{ model: Stats, as: 'stats' }] });
+
         reply.code(201).send({ message: 'User added!', user });
     } catch (error) {
         reply.code(500).send({ error: 'Failed to add user', details: error });
@@ -56,7 +53,7 @@ export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {
 export async function getUser(request: FastifyRequest, reply: FastifyReply) {
     const { nickname } = request.query as { nickname: string };
     try {
-        const user = await User.findOne({ 
+        const user = await User.findOne({
             where: { nickname: nickname },
             include: [{ model: Stats, as: 'stats' }],
         });
@@ -72,7 +69,7 @@ export async function getUser(request: FastifyRequest, reply: FastifyReply) {
 
 export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
     const { field } = request.query as { field: string };
-    const { new_value} = request.body as { new_value: string;};
+    const { new_value } = request.body as { new_value: string; };
     const { nickname } = request.body as { nickname: string };
     try {
         const user = await User.findOne({ where: { nickname: nickname } });

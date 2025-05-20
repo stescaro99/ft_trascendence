@@ -23,11 +23,11 @@ Stats.init(
             type: DataTypes.INTEGER,
             allowNull: false,
             primaryKey: true,
+            autoIncrement: true,
         },
         nickname:{
             type: DataTypes.STRING,
             allowNull: false,
-            primaryKey: true,
         },
         number_of_games: {
             type: DataTypes.INTEGER,
@@ -82,15 +82,15 @@ Stats.init(
     }
 );
 
-// Stats.hasMany(Game, {
-//     foreignKey: 'nickname',
-//     sourceKey: 'nickname',
-//     as: 'games',
-// });
-// Game.belongsTo(Stats, {
-//     foreignKey: 'nickname',
-//     targetKey: 'nickname',
-//     as: 'stats',
-// });
+Stats.hasMany(Game, {
+    foreignKey: 'stat_index',
+    sourceKey: 'stat_index',
+    as: 'games',
+});
+Game.belongsTo(Stats, {
+    foreignKey: 'stat_index',
+    targetKey: 'stat_index',
+    as: 'stats',
+});
 
 export default Stats;

@@ -14,11 +14,11 @@ Stats.init({
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
+        autoIncrement: true,
     },
     nickname: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
-        primaryKey: true,
     },
     number_of_games: {
         type: sequelize_1.DataTypes.INTEGER,
@@ -71,13 +71,13 @@ Stats.init({
     tableName: 'stats',
 });
 Stats.hasMany(game_1.default, {
-    foreignKey: 'nickname',
-    sourceKey: 'nickname',
+    foreignKey: 'stat_index',
+    sourceKey: 'stat_index',
     as: 'games',
 });
 game_1.default.belongsTo(Stats, {
-    foreignKey: 'nickname',
-    targetKey: 'nickname',
+    foreignKey: 'stat_index',
+    targetKey: 'stat_index',
     as: 'stats',
 });
 exports.default = Stats;
