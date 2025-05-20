@@ -22,14 +22,6 @@ function addUser(request, reply) {
     return __awaiter(this, void 0, void 0, function* () {
         const { name, surname, nickname, email, password, image_url } = request.body;
         try {
-            const stats_pong = yield stats_1.default.create({
-                stat_index: 0,
-                nickname: nickname,
-            });
-            const stats_game2 = yield stats_1.default.create({
-                stat_index: 1,
-                nickname: nickname,
-            });
             const user = yield user_1.default.create({
                 name,
                 surname,
@@ -37,10 +29,11 @@ function addUser(request, reply) {
                 email,
                 password,
                 image_url,
-                stats: [stats_pong, stats_game2],
-            }, {
-                include: [{ model: stats_1.default, as: 'stats' }],
             });
+            const stats_pong = yield stats_1.default.create({ nickname: nickname });
+            const stats_game2 = yield stats_1.default.create({ nickname: nickname });
+            yield user.setStats([stats_pong, stats_game2]);
+            yield user.reload({ include: [{ model: stats_1.default, as: 'stats' }] });
             reply.code(201).send({ message: 'User added!', user });
         }
         catch (error) {
