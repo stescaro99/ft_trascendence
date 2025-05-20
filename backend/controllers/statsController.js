@@ -14,11 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateStats = updateStats;
 const user_1 = __importDefault(require("../models/user"));
+const game_1 = __importDefault(require("../models/game"));
 const stats_1 = __importDefault(require("../models/stats"));
 const db_1 = __importDefault(require("../db"));
 function updateStats(request, reply) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { nickname, game, result, index } = request.body;
+        const { nickname, game_id, result, index } = request.body;
         const transaction = yield db_1.default.transaction();
         try {
             const user = yield user_1.default.findOne({
@@ -35,7 +36,12 @@ function updateStats(request, reply) {
                 yield transaction.rollback();
                 return reply.code(404).send({ message: 'Stats not found for given index' });
             }
-            yield userStat.$add('games', game.game_id, { transaction });
+            const game = yield game_1.default.findOne({ where: { game_id } });
+            if (!game) {
+                yield transaction.rollback();
+                return reply.code(404).send({ message: 'Game not found' });
+            }
+            yield userStat.addGame(game, { transaction });
             userStat.number_of_games = (userStat.number_of_games || 0) + 1;
             switch (result) {
                 case 0:
@@ -69,6 +75,7 @@ function updateStats(request, reply) {
             userStat.percentage_draws = (userStat.number_of_draws || 0) / userStat.number_of_games;
             yield userStat.save();
             yield user.save();
+            yield transaction.commit();
             reply.code(200).send({ message: 'Stats updated!', stats: userStat });
         }
         catch (error) {

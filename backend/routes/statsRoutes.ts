@@ -8,10 +8,10 @@ export default async function (server: FastifyInstance) {
         schema: {
             body: {
                 type: 'object',
-                required: ['nickname', 'game', 'result', 'index'],
+                required: ['nickname', 'game_id', 'result', 'index'],
                 properties: {
                     nickname: { type: 'string' },
-                    game: gameSchema,
+                    game_id: { type: 'integer' },
                     result: { type : 'integer' },
                     index: { type : 'integer' }
                 },
