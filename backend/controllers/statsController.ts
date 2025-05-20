@@ -5,9 +5,9 @@ import Stats from '../models/stats';
 import sequelize from '../db';
 
 export async function updateStats(request: FastifyRequest, reply: FastifyReply) {
-    const { nickname, game, result, index } = request.body as { 
+    const { nickname, game_id, result, index } = request.body as { 
         nickname: string; 
-        game: Game;
+        game_id: number;
         result: number;
         index: number;
     };
@@ -29,7 +29,12 @@ export async function updateStats(request: FastifyRequest, reply: FastifyReply) 
             await transaction.rollback();
             return reply.code(404).send({ message: 'Stats not found for given index' });
         }
-        await (userStat as any).$add('games', game.game_id, { transaction });
+        const game = await Game.findOne({ where: { game_id } });
+        if (!game) {
+            await transaction.rollback();
+            return reply.code(404).send({ message: 'Game not found' });
+        }
+        await userStat.addGame(game, { transaction });
         userStat.number_of_games = (userStat.number_of_games || 0) + 1;
         switch (result) {
             case 0:
@@ -61,6 +66,7 @@ export async function updateStats(request: FastifyRequest, reply: FastifyReply) 
         userStat.percentage_draws = (userStat.number_of_draws || 0) / userStat.number_of_games;
         await userStat.save();
         await user.save();
+        await transaction.commit();
         reply.code(200).send({ message: 'Stats updated!', stats: userStat });
     } catch (error) {
         console.error('Error updating stats:', error);

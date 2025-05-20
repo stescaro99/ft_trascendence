@@ -75,9 +75,10 @@ Stats.hasMany(game_1.default, {
     sourceKey: 'stat_index',
     as: 'games',
 });
-game_1.default.belongsTo(Stats, {
+game_1.default.belongsToMany(Stats, {
+    through: 'game_stats',
     foreignKey: 'stat_index',
-    targetKey: 'stat_index',
+    otherKey: 'game_id',
     as: 'stats',
 });
 exports.default = Stats;

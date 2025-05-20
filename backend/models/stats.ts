@@ -5,6 +5,7 @@ import Game from './game';
 class Stats extends Model {
     public stat_index!: number;
     public nickname!: string;
+    public addGame!: (game: Game, options?: any) => Promise<void>;
     public games?: Game[];
     public number_of_games?: number;
     public number_of_wins?: number;
@@ -87,9 +88,10 @@ Stats.hasMany(Game, {
     sourceKey: 'stat_index',
     as: 'games',
 });
-Game.belongsTo(Stats, {
+Game.belongsToMany(Stats, {
+    through: 'game_stats',
     foreignKey: 'stat_index',
-    targetKey: 'stat_index',
+    otherKey: 'game_id',
     as: 'stats',
 });
 
