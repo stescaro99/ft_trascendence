@@ -7,7 +7,7 @@ export default async function (server: FastifyInstance) {
         schema: {
             body: {
                 type: 'object',
-                required: ['player1_nickname', 'player2_nickname', 'date'],
+                required: ['player1_nickname', 'player2_nickname'],
                 properties: {
                     player1_nickname: { type: 'string' },
                     player2_nickname: { type: 'string' },
