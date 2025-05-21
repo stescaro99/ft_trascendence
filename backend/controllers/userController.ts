@@ -68,9 +68,9 @@ export async function getUser(request: FastifyRequest, reply: FastifyReply) {
 }
 
 export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
+    const { nickname } = request.body as { nickname: string };
     const { field } = request.query as { field: string };
     const { new_value } = request.body as { new_value: string; };
-    const { nickname } = request.body as { nickname: string };
     try {
         const user = await User.findOne({ where: { nickname: nickname } });
         if (user) {
@@ -89,6 +89,9 @@ export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
                     break;
                 case 'password':
                     user.password = new_value;
+                    break;
+                case 'language':
+                    user.language = new_value;
                     break;
                 case 'image_url':
                     user.image_url = new_value;

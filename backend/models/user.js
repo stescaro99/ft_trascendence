@@ -36,6 +36,11 @@ User.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
     },
+    language: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true,
+        defaultValue: 'English',
+    },
     image_url: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,

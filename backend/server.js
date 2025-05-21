@@ -51,6 +51,7 @@ const start = () => __awaiter(void 0, void 0, void 0, function* () {
         console.log('Database synchronized successfully.');
         yield server.listen({ port: 2807, host: '0.0.0.0' });
         console.log('Server is running on http://localhost:2807');
+        console.log('Swagger UI is available at http://localhost:2807/swagger');
     }
     catch (err) {
         server.log.error(err);

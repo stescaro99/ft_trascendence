@@ -81,9 +81,9 @@ function getUser(request, reply) {
 }
 function updateUser(request, reply) {
     return __awaiter(this, void 0, void 0, function* () {
+        const { nickname } = request.body;
         const { field } = request.query;
         const { new_value } = request.body;
-        const { nickname } = request.body;
         try {
             const user = yield user_1.default.findOne({ where: { nickname: nickname } });
             if (user) {
@@ -102,6 +102,9 @@ function updateUser(request, reply) {
                         break;
                     case 'password':
                         user.password = new_value;
+                        break;
+                    case 'language':
+                        user.language = new_value;
                         break;
                     case 'image_url':
                         user.image_url = new_value;

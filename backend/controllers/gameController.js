@@ -54,9 +54,10 @@ function getGame(request, reply) {
 }
 function updateGame(request, reply) {
     return __awaiter(this, void 0, void 0, function* () {
+        const { game_id } = request.body;
         const { field } = request.body;
         const { new_value } = request.body;
-        const { game_id } = request.body;
+        console.log('game_id:', game_id);
         try {
             const game = yield game_1.default.findOne({ where: { game_id: game_id } });
             if (!game) {

@@ -50,10 +50,7 @@ function default_1(server) {
                 },
                 response: {
                     200: {
-                        type: 'object',
-                        properties: {
-                            game: gameSchema_1.gameSchema
-                        }
+                        game: gameSchema_1.gameSchema
                     },
                     404: {
                         type: 'object',

@@ -38,9 +38,10 @@ export async function getGame(request: FastifyRequest, reply: FastifyReply) {
 }
 
 export async function updateGame(request: FastifyRequest, reply: FastifyReply) {
+    const { game_id } = request.body as { game_id: number };
     const { field } = request.body as { field: string };
     const { new_value } = request.body as { new_value: string };
-    const { game_id } = request.body as { game_id: number };
+    console.log('game_id:', game_id);
     try {
         const game = await Game.findOne({ where: { game_id: game_id } });
         if (!game) {
