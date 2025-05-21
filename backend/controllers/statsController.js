@@ -16,32 +16,27 @@ exports.updateStats = updateStats;
 const user_1 = __importDefault(require("../models/user"));
 const game_1 = __importDefault(require("../models/game"));
 const stats_1 = __importDefault(require("../models/stats"));
-const db_1 = __importDefault(require("../db"));
 function updateStats(request, reply) {
     return __awaiter(this, void 0, void 0, function* () {
         const { nickname, game_id, result, index } = request.body;
-        const transaction = yield db_1.default.transaction();
         try {
             const user = yield user_1.default.findOne({
                 where: { nickname },
                 include: [{ model: stats_1.default, as: 'stats' }]
             });
             if (!user) {
-                yield transaction.rollback();
                 return reply.code(404).send({ message: 'User not found' });
             }
             const statsArray = user.stats;
             const userStat = statsArray[index];
             if (!userStat) {
-                yield transaction.rollback();
                 return reply.code(404).send({ message: 'Stats not found for given index' });
             }
             const game = yield game_1.default.findOne({ where: { game_id } });
             if (!game) {
-                yield transaction.rollback();
                 return reply.code(404).send({ message: 'Game not found' });
             }
-            yield userStat.addGame(game, { transaction });
+            yield userStat.addGame(game);
             userStat.number_of_games = (userStat.number_of_games || 0) + 1;
             switch (result) {
                 case 0:
@@ -54,7 +49,6 @@ function updateStats(request, reply) {
                     userStat.number_of_wins = (userStat.number_of_wins || 0) + 1;
                     break;
                 default:
-                    yield transaction.rollback();
                     return reply.code(400).send({ message: 'Invalid result value' });
             }
             if (game.player1_nickname === nickname) {
@@ -74,8 +68,6 @@ function updateStats(request, reply) {
             userStat.percentage_losses = (userStat.number_of_losses || 0) / userStat.number_of_games;
             userStat.percentage_draws = (userStat.number_of_draws || 0) / userStat.number_of_games;
             yield userStat.save();
-            yield user.save();
-            yield transaction.commit();
             reply.code(200).send({ message: 'Stats updated!', stats: userStat });
         }
         catch (error) {

@@ -14,6 +14,7 @@ export default async function (server: FastifyInstance) {
                     nickname: { type: 'string' },
                     email: { type: 'string' },
                     password: { type: 'string' },
+                    language: { type: 'string' },
                     image_url: { type: 'string' }
                 }
             },
@@ -85,14 +86,11 @@ export default async function (server: FastifyInstance) {
         schema: {
             body: {
                 type: 'object',
-                required: ['nickname'],
+                required: ['nickname', 'field', 'new_value'],
                 properties: {
                     nickname: { type: 'string' },
-                    name: { type: 'string' },
-                    surname: { type: 'string' },
-                    email: { type: 'string' },
-                    password: { type: 'string' },
-                    image_url: { type: 'string' }
+                    field: { type: 'string' },
+                    new_value: { type: 'string' }
                 }
             },
             response: {

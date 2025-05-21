@@ -40,10 +40,7 @@ export default async function (server: FastifyInstance) {
             },
             response: {
                 200: {
-                    type: 'object',
-                    properties: {
-                        game: gameSchema
-                    }
+                    game: gameSchema
                 },
                 404: {
                     type: 'object',

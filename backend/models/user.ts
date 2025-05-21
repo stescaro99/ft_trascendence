@@ -9,6 +9,7 @@ class User extends Model {
     public nickname!: string;
     public email!: string;
     public password!: string;
+    public language?: string;
     public image_url?: string;
     public setStats!: (stats: Stats[] | number[]) => Promise<void>;
     public stats?: Stats[];
@@ -42,6 +43,11 @@ User.init(
         password: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        language: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            defaultValue: 'English',
         },
         image_url: {
             type: DataTypes.STRING,
