@@ -45,6 +45,11 @@ Stats.init({
         allowNull: true,
         defaultValue: 0,
     },
+    number_of_tournaments_won: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0,
+    },
     average_score: {
         type: sequelize_1.DataTypes.FLOAT,
         allowNull: true,

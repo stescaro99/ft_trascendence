@@ -48,6 +48,10 @@ function updateStats(request, reply) {
                 case 2:
                     userStat.number_of_wins = (userStat.number_of_wins || 0) + 1;
                     break;
+                case 3:
+                    userStat.number_of_tournaments_won = (userStat.number_of_tournaments_won || 0) + 1;
+                    userStat.number_of_wins = (userStat.number_of_wins || 0) + 1;
+                    break;
                 default:
                     return reply.code(400).send({ message: 'Invalid result value' });
             }
