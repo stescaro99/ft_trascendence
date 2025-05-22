@@ -2,6 +2,7 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import User from '../models/user';
 import Stats from '../models/stats';
 import sequelize from '../db';
+import bcrypt from 'bcrypt';
 
 export async function addUser(request: FastifyRequest, reply: FastifyReply) {
     const { name, surname, nickname, email, password, image_url } = request.body as {
@@ -13,12 +14,13 @@ export async function addUser(request: FastifyRequest, reply: FastifyReply) {
         image_url?: string;
     };
     try {
+        const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create({
             name,
             surname,
             nickname,
             email,
-            password,
+            password: hashedPassword,
             image_url,
         });
 
@@ -88,7 +90,7 @@ export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
                     user.email = new_value;
                     break;
                 case 'password':
-                    user.password = new_value;
+                    user.password = await bcrypt.hash(new_value, 10);
                     break;
                 case 'language':
                     user.language = new_value;

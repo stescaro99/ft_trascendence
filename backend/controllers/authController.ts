@@ -1,6 +1,7 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import User from '../models/user';
-import sequelize from '../db';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 export async function isAvailable(request: FastifyRequest, reply: FastifyReply) {
     const { field, value } = request.query as {
@@ -45,9 +46,12 @@ export async function login(request: FastifyRequest, reply: FastifyReply) {
     };
 
     try {
-        const user = await User.findOne({ where: { nickname: nickname, password: password } });
-        if (user) {
-            reply.code(200).send({ message: 'Login successful', user });
+        const user = await User.findOne({ where: { nickname: nickname}});
+        if (user && await bcrypt.compare(password, user.password)) {
+            const payload = { id: user.id, nickname: user.nickname };
+            const key = process.env.JWT_SECRET || 'default_key';
+            const token = jwt.sign(payload, key, { expiresIn: '1h' }); 
+            reply.code(200).send({ message: 'Login successful',token, user });
         }
         else {
             reply.code(401).send({ error: 'Invalid credentials' });
