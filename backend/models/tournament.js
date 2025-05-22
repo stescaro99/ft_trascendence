@@ -50,3 +50,4 @@ game_1.default.belongsTo(Tournament, {
     targetKey: 'tournament_id',
     as: 'tournament',
 });
+exports.default = Tournament;

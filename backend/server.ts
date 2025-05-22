@@ -56,6 +56,7 @@ const start = async (sequelize: any) => {
     await import('./models/game');
     await import('./models/stats');
     await import('./models/user');
+    await import('./models/tournament');
     // ...altri modelli se servono
 
     await sequelize.sync({ force: !dbExists, alter: dbExists });
