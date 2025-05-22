@@ -51,10 +51,10 @@
 ### Autenticazione
 1. **Sistema di registrazione/login**:
    ~~- Implementa un sistema di registrazione che salva le credenziali degli utenti in modo sicuro.~~
-   - Implementa un sistema di login che verifica le credenziali e genera un token di sessione.
+   ~~- Implementa un sistema di login che verifica le credenziali e genera un token di sessione.~~
 
 2. **Protezione delle rotte**:
-   - Proteggi le rotte sensibili con middleware di autenticazione.
+   - Proteggi le rotte sensibili con middleware di autenticazione.   ????????????????????
 
 ---
 

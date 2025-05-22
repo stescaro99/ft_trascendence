@@ -1,6 +1,9 @@
 import Fastify from 'fastify';
 import path from 'path';
 import fs from 'fs';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const dbDir = path.join(__dirname, 'db');
 const dbPath = path.join(dbDir, 'database.db');

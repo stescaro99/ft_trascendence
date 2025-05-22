@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { isAvailable, login } from "../controllers/authController";
 import { userSchema } from "../schemas/userSchema";
+import jwt from 'jsonwebtoken';
 
 export default async function (server: FastifyInstance) {
     server.get('/available_field', {
@@ -60,7 +61,6 @@ export default async function (server: FastifyInstance) {
             tags: ['User']
         }
     }, login);
-
-    server.
 }
+
 
