@@ -4,6 +4,13 @@
     <meta charset="UTF-8"/>
     <title>Pong Locale</title>
     <style>
+      @font-face {
+        font-family: 'Bit5x3';
+        src: url('/fonts/bit5x3.woff2') format('woff2'),
+             url('/fonts/bit5x3.woff') format('woff'),
+             url('/fonts/bit5x3.ttf') format('truetype');
+        font-display: block;
+      }
       body {
         margin: 0;
         background-color: black;
@@ -29,6 +36,7 @@
         <!-- Colonna 1: Giocatore 1 -->
         <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
           <h2>GIOCATORE 1</h2>
+          <p style="font-family: 'Bit5x3'; font-size: 32px;">0123456789</p>
           <p>SELEZIONA COLORE</p>
           <div class="palette" data-player="1"></div>
           <div id="preview1" class="paddle-preview"></div>
