@@ -39,18 +39,18 @@
 
 2. **Configura un ORM/ODM (es. Sequelize)**:
    ~~- Installa e configura Sequelize per gestire il database in modo più semplice.~~
-   - Definisci i modelli per utenti, tornei e statistiche.
+   ~~- Definisci i modelli per utenti, tornei e statistiche.~~
 
 3. **Crea i modelli**:
    ~~- **Utenti**: Nome, email, password hashata, avatar, stato online.~~
-   - **Tornei**: Nome torneo, partecipanti, stato, vincitore.
-   - **Statistiche**: Partite giocate, vittorie, sconfitte, punteggi.
+   ~~- **Tornei**: Nome torneo, partecipanti, stato, vincitore.~~
+   ~~- **Statistiche**: Partite giocate, vittorie, sconfitte, punteggi.~~
 
 ---
 
 ### Autenticazione
 1. **Sistema di registrazione/login**:
-   - Implementa un sistema di registrazione che salva le credenziali degli utenti in modo sicuro.
+   ~~- Implementa un sistema di registrazione che salva le credenziali degli utenti in modo sicuro.~~
    - Implementa un sistema di login che verifica le credenziali e genera un token di sessione.
 
 2. **Protezione delle rotte**:
