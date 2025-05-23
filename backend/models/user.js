@@ -45,6 +45,10 @@ User.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,
     },
+    tfa_code: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true,
+    },
 }, {
     sequelize: db_1.default,
     modelName: 'User',

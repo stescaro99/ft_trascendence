@@ -6,17 +6,18 @@
 
 ### Moduli "Web"
 
-- Modulo major: Utilizzare un framework per costruire il backend.  
-- Modulo minor: Utilizzare un database per il backend.
-- Modulo major: Memorizzare il punteggio di un torneo sulla Blockchain.  
+- Modulo major: Utilizzare un framework per costruire il backend.  ✅
+- Modulo minor: Utilizzare un database per il backend. ✅
+- Modulo major: Memorizzare il punteggio di un torneo sulla Blockchain.  (?????????????)
 
 
 ### Moduli in collaborazione con frontend
-- Modulo major: Gestione standard degli utenti, autenticazione, utenti attraverso i tornei.
-- Modulo major: Implementare un'autenticazione remota.
+- Modulo major: Gestione standard degli utenti, autenticazione, utenti attraverso i tornei. ✅
+- Modulo major: Implementare un'autenticazione remota. (????)
 
-- Modulo major: Introdurre un avversario AI.
-- Modulo minor: Dashboard per statistiche utente e di gioco.
+- Modulo major: Introdurre un avversario AI. (da fare)
+
+- Modulo major: 2fa (in corso)
 
 ## Piano dettagliato
 
@@ -54,11 +55,11 @@
    ~~- Implementa un sistema di login che verifica le credenziali e genera un token di sessione.~~
 
 2. **Protezione delle rotte**:
-   - Proteggi le rotte sensibili con middleware di autenticazione.   ????????????????????
+   ~~- Proteggi le rotte sensibili con middleware di autenticazione.  ~~
 
 ---
 
-### Blockchain
+### Blockchain  ??????????????????????????????///
 1. **Utilizza la blockchain Avalanche**:
    - Configura un ambiente di sviluppo per Avalanche.
    - Crea un account e ottieni credenziali per interagire con la blockchain.
@@ -85,11 +86,11 @@
 
 ### Collaborazione con il frontend
 1. **Esponi API RESTful o GraphQL**:
-   - Progetta endpoint per tutte le funzionalità (es. autenticazione, gestione tornei, statistiche).
+   ~~- Progetta endpoint per tutte le funzionalità (es. autenticazione, gestione tornei, statistiche).~~
 
 2. **Documenta le API con Swagger**:
-   - Usa un plugin per generare automaticamente la documentazione delle API.
-   - Includi dettagli su ogni endpoint (es. parametri, risposte, codici di errore).
+  ~~ - Usa un plugin per generare automaticamente la documentazione delle API. ~~
+  ~~ - Includi dettagli su ogni endpoint (es. parametri, risposte, codici di errore).~~
 
 ---
 
