@@ -35,11 +35,10 @@ export default async function (server: FastifyInstance) {
         schema: {
             body: {
                 type: 'object',
-                required: ['nickname', 'password', 'token2FA'],
+                required: ['nickname', 'password'],
                 properties: {
                     nickname: { type: 'string' },
                     password: { type: 'string' },
-                    token2FA: { type: 'string' }
                 }
             },
             response: {
@@ -49,7 +48,6 @@ export default async function (server: FastifyInstance) {
                         message: { type: 'string' },
                         user: userSchema,
                         token: { type: 'string' },
-                        qr_code: { type: 'string' },
                     }
                 },
                 401: {
@@ -63,9 +61,9 @@ export default async function (server: FastifyInstance) {
         }
     }, login);
 
-    server.get('/2fa/generate', {
+    server.post('/generate', {
         schema: {
-            querystring: {
+            body: {
                 type: 'object',
                 required: ['nickname'],
                 properties: {
@@ -77,7 +75,7 @@ export default async function (server: FastifyInstance) {
                     type: 'object',
                     properties: {
                         message: { type: 'string' },
-                        secret: { type: 'string' }
+                        qrCode: { type: 'string' }
                     }
                 },
                 404: {
@@ -87,25 +85,33 @@ export default async function (server: FastifyInstance) {
                     }
                 }
             },
-            tags: ['User']
+            tags: ['TwoFactor']
         }
     }, generate2FA);
 
-    server.post('/2fa/verify', {
+    server.post('/verify', {
         schema: {
             body: {
                 type: 'object',
-                required: ['nickname', 'token'],
+                required: ['nickname', 'token2FA'],
                 properties: {
                     nickname: { type: 'string' },
-                    token: { type: 'string' }  
+                    token2FA: { type: 'string' }  
                 }
             },
             response: {
                 200: {
                     type: 'object',
                     properties: {
-                        message: { type: 'string' }
+                        message: { type: 'string' },
+                        token: { type: 'string' },
+                        user: userSchema,
+                    }
+                },
+                401: {
+                    type: 'object',
+                    properties: {
+                        error: { type: 'string' }
                     }
                 },
                 404: {
@@ -115,7 +121,7 @@ export default async function (server: FastifyInstance) {
                     }
                 },
             },
-            tags: ['User']
+            tags: ['TwoFactor']
         }
     }, verify2FA);
 }
