@@ -154,5 +154,5 @@ function resetAfterPoint(x: number, game: GameState)
 
 function randomizePowerUp(game: GameState) {
   game.powerUp.x = Math.random() * (game.canvas.width - 200) + 10;
-  game.powerUp.y = Math.random() * (game.canvas.height - 200 + 10);
+  game.powerUp.y = Math.random() * (game.canvas.height - 200) + 10;
 }

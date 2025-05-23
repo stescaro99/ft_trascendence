@@ -1,6 +1,6 @@
 import { GameState } from "./types"; 
 import { update } from "./gameUpdate";
-import { drawBall, drawRect, drawScore, drawPowerUp } from "./draw";
+import { drawBall, drawRect, drawScore, drawPowerUp, drawField } from "./draw";
 
 const canvas = document.getElementById("pong") as HTMLCanvasElement;
 
@@ -85,7 +85,7 @@ function render()
   drawBall(ctx, game.ball);
   drawScore(ctx, canvas, game.scoreLeft, game.scoreRight);
   drawPowerUp(ctx, game.powerUp);
-  // drawField(ctx, canvas);
+  drawField(ctx, canvas);
 }
 
 // === Game loop ===
@@ -148,6 +148,6 @@ startBtn.addEventListener("click", () => {
 
   document.fonts.ready.then(() => {
     ctx.font = "28px 'Bit5x3'";
-    gameLoop();
+    startCountdown();
   });
 });
