@@ -106,20 +106,20 @@ IV.1 Panoramica
 ◦ Modulo major: Utilizzare un framework per costruire il backend.                            ❤️‍🩹
 ◦ Modulo minor: Utilizzare un framework o un toolkit per costruire il frontend.              ❤️‍🩹  
 ◦ Modulo minor: Utilizzare un database per il backend.                                       ❤️‍🩹  
-◦ Modulo major: Memorizzare il punteggio di un torneo sulla Blockchain.                      ❤️‍🩹
+◦ Modulo major: Memorizzare il punteggio di un torneo sulla Blockchain.                      ❤️‍🩹 forse
 
-TOT 3
+TOT 2 + 1
 
 • Gestione Utenti (backend+fontend) (samus + uli, francesco)
 
 ◦ Modulo major: Gestione standard degli utenti, autenticazione, utenti attraverso i tornei.  ❤️‍🩹
-◦ Modulo major: Implementare un'autenticazione remota.                                       ❤️‍🩹
+◦ Modulo major: Implementare un'autenticazione remota.                                       ❤️‍🩹 forse
 
-TOT 5
+TOT 3 + 2
 
 • Gameplay ed esperienza utente (Andrea)
 ◦ Modulo major: Giocatori remoti.                                                            ❤️‍🩹 forse
-◦ Modulo major: Multiplayer (più di 2 giocatori nello stesso gioco).                         ❤️‍🩹 forse
+◦ Modulo major: Multiplayer (più di 2 giocatori nello stesso gioco).                         ❤️‍🩹 
 ◦ Modulo major: Aggiungere un altro gioco con cronologia utente e matchmaking.               ❤️‍🩹
 ◦ Modulo minor: Opzioni di personalizzazione del gioco.                                      ❤️‍🩹
 ◦ Modulo major: Chat in tempo reale.                                                         ❤️‍🩹 forse
@@ -137,7 +137,7 @@ TOT 10 (2 forse)
 
 ◦ Modulo major: Implementare WAF/ModSecurity con una configurazione rinforzata e HashiCorp Vault per la gestione dei segreti.
 ◦ Modulo minor: Opzioni di conformità GDPR con anonimizzazione dei dati, gestione locale dei dati e cancellazione dell'account.
-◦ Modulo major: Implementare l'autenticazione a due fattori (2FA) e JWT.
+◦ Modulo major: Implementare l'autenticazione a due fattori (2FA) e JWT.                     ❤️‍🩹
 
 • Devops
 
@@ -147,19 +147,21 @@ TOT 10 (2 forse)
 
 • Grafica (uli - andrea)
 
-◦ Modulo major: Utilizzare tecniche avanzate 3D.                                            ❤️‍🩹 forse
+◦ Modulo major: Utilizzare tecniche avanzate 3D.                                           
 
 TOT 11 (3 forse)
 
 • Accessibilità (francesco)
 
 ◦ Modulo minor: Supporto su tutti i dispositivi.                                            ❤️‍🩹
-◦ Modulo minor: Espansione della compatibilità con i browser.
+◦ Modulo minor: Espansione della compatibilità con i browser.                               ❤️‍🩹       
 ◦ Modulo minor: Supporto per più lingue.                                                    ❤️‍🩹
 ◦ Modulo minor: Aggiunta di funzionalità di accessibilità per utenti ipovedenti.
 ◦ Modulo minor: Integrazione del rendering lato server (SSR).
 
-TOT 12
+TOT 12.5
+
+possiamo perdere 3pt forse per 125%
 
 • Pong lato server
 

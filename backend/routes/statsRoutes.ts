@@ -2,9 +2,11 @@ import { FastifyInstance } from "fastify";
 import { updateStats } from "../controllers/statsController";
 import { statsSchema } from "../schemas/statsSchema";
 import { gameSchema } from "../schemas/gameSchema";
+import { verifyJWT } from "../utils/jwt";
 
 export default async function (server: FastifyInstance) {
     server.put('/update_stats', {
+        preHandler: verifyJWT,
         schema: {
             body: {
                 type: 'object',

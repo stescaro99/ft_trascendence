@@ -18,23 +18,28 @@ exports.getUser = getUser;
 exports.updateUser = updateUser;
 const user_1 = __importDefault(require("../models/user"));
 const stats_1 = __importDefault(require("../models/stats"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const jwt_1 = require("../utils/jwt");
 function addUser(request, reply) {
     return __awaiter(this, void 0, void 0, function* () {
         const { name, surname, nickname, email, password, image_url } = request.body;
         try {
+            const hashedPassword = yield bcrypt_1.default.hash(password, 10);
             const user = yield user_1.default.create({
                 name,
                 surname,
                 nickname,
                 email,
-                password,
+                password: hashedPassword,
                 image_url,
             });
             const stats_pong = yield stats_1.default.create({ nickname: nickname });
             const stats_game2 = yield stats_1.default.create({ nickname: nickname });
             yield user.setStats([stats_pong, stats_game2]);
             yield user.reload({ include: [{ model: stats_1.default, as: 'stats' }] });
-            reply.code(201).send({ message: 'User added!', user });
+            const payload = { id: user.id, nickname: user.nickname };
+            const token = (0, jwt_1.createJWT)(payload, '3h');
+            reply.code(201).send({ message: 'User added!', user, token });
         }
         catch (error) {
             reply.code(500).send({ error: 'Failed to add user', details: error });
@@ -81,9 +86,7 @@ function getUser(request, reply) {
 }
 function updateUser(request, reply) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { nickname } = request.body;
-        const { field } = request.query;
-        const { new_value } = request.body;
+        const { nickname, field, new_value } = request.body;
         try {
             const user = yield user_1.default.findOne({ where: { nickname: nickname } });
             if (user) {
@@ -101,7 +104,7 @@ function updateUser(request, reply) {
                         user.email = new_value;
                         break;
                     case 'password':
-                        user.password = new_value;
+                        user.password = yield bcrypt_1.default.hash(new_value, 10);
                         break;
                     case 'language':
                         user.language = new_value;
