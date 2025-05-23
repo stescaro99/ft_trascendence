@@ -13,6 +13,7 @@ class User extends Model {
     public image_url?: string;
     public setStats!: (stats: Stats[] | number[]) => Promise<void>;
     public stats?: Stats[];
+    public tfa_code?: string;
 }
 
 User.init(
@@ -50,6 +51,10 @@ User.init(
             defaultValue: 'English',
         },
         image_url: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        tfa_code: {
             type: DataTypes.STRING,
             allowNull: true,
         },
