@@ -19,7 +19,6 @@ exports.updateUser = updateUser;
 const user_1 = __importDefault(require("../models/user"));
 const stats_1 = __importDefault(require("../models/stats"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const jwt_1 = require("../utils/jwt");
 function addUser(request, reply) {
     return __awaiter(this, void 0, void 0, function* () {
         const { name, surname, nickname, email, password, image_url } = request.body;
@@ -37,9 +36,7 @@ function addUser(request, reply) {
             const stats_game2 = yield stats_1.default.create({ nickname: nickname });
             yield user.setStats([stats_pong, stats_game2]);
             yield user.reload({ include: [{ model: stats_1.default, as: 'stats' }] });
-            const payload = { id: user.id, nickname: user.nickname };
-            const token = (0, jwt_1.createJWT)(payload, '3h');
-            reply.code(201).send({ message: 'User added!', user, token });
+            reply.code(201).send({ message: 'User added!', user });
         }
         catch (error) {
             reply.code(500).send({ error: 'Failed to add user', details: error });

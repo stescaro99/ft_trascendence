@@ -45,11 +45,10 @@ function default_1(server) {
             schema: {
                 body: {
                     type: 'object',
-                    required: ['nickname', 'password', 'token2FA'],
+                    required: ['nickname', 'password'],
                     properties: {
                         nickname: { type: 'string' },
                         password: { type: 'string' },
-                        token2FA: { type: 'string' }
                     }
                 },
                 response: {
@@ -59,8 +58,6 @@ function default_1(server) {
                             message: { type: 'string' },
                             user: userSchema_1.userSchema,
                             token: { type: 'string' },
-                            qr_code: { type: 'string' },
-                            secret: { type: 'string' }
                         }
                     },
                     401: {
@@ -73,9 +70,9 @@ function default_1(server) {
                 tags: ['User']
             }
         }, authController_1.login);
-        server.get('/2fa/generate', {
+        server.post('generate', {
             schema: {
-                querystring: {
+                body: {
                     type: 'object',
                     required: ['nickname'],
                     properties: {
@@ -87,7 +84,7 @@ function default_1(server) {
                         type: 'object',
                         properties: {
                             message: { type: 'string' },
-                            secret: { type: 'string' }
+                            qrCode: { type: 'string' }
                         }
                     },
                     404: {
@@ -97,24 +94,32 @@ function default_1(server) {
                         }
                     }
                 },
-                tags: ['User']
+                tags: ['TwoFactor']
             }
         }, authController_1.generate2FA);
-        server.post('/2fa/verify', {
+        server.post('verify', {
             schema: {
                 body: {
                     type: 'object',
-                    required: ['nickname', 'token'],
+                    required: ['nickname', 'token2FA'],
                     properties: {
                         nickname: { type: 'string' },
-                        token: { type: 'string' }
+                        token2FA: { type: 'string' }
                     }
                 },
                 response: {
                     200: {
                         type: 'object',
                         properties: {
-                            message: { type: 'string' }
+                            message: { type: 'string' },
+                            token: { type: 'string' },
+                            user: userSchema_1.userSchema,
+                        }
+                    },
+                    401: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' }
                         }
                     },
                     404: {
@@ -124,7 +129,7 @@ function default_1(server) {
                         }
                     },
                 },
-                tags: ['User']
+                tags: ['TwoFactor']
             }
         }, authController_1.verify2FA);
     });

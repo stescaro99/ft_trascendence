@@ -3,7 +3,6 @@ import User from '../models/user';
 import Stats from '../models/stats';
 import sequelize from '../db';
 import bcrypt from 'bcrypt';
-import { createJWT } from '../utils/jwt';
 
 export async function addUser(request: FastifyRequest, reply: FastifyReply) {
     const { name, surname, nickname, email, password, image_url } = request.body as {
@@ -31,10 +30,7 @@ export async function addUser(request: FastifyRequest, reply: FastifyReply) {
         await user.setStats([stats_pong, stats_game2]);
         await user.reload({ include: [{ model: Stats, as: 'stats' }] });
 
-        const payload = { id: user.id, nickname: user.nickname };
-        const token = createJWT(payload, '3h');
-
-        reply.code(201).send({ message: 'User added!', user, token });
+        reply.code(201).send({ message: 'User added!', user});
     } catch (error) {
         reply.code(500).send({ error: 'Failed to add user', details: error });
     }
