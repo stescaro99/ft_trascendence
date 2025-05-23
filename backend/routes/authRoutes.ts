@@ -61,7 +61,7 @@ export default async function (server: FastifyInstance) {
         }
     }, login);
 
-    server.post('/generate', {
+    server.post('/generate_2FA', {
         schema: {
             body: {
                 type: 'object',
@@ -89,7 +89,7 @@ export default async function (server: FastifyInstance) {
         }
     }, generate2FA);
 
-    server.post('/verify', {
+    server.post('/verify_2FA', {
         schema: {
             body: {
                 type: 'object',
