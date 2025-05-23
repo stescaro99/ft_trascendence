@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { addUser, deleteUser, getUser, updateUser } from "../controllers/userController";
 import { userSchema } from "../schemas/userSchema";
+import { verifyJWT } from "../utils/jwt";
 
 export default async function (server: FastifyInstance) {
     server.post('/add_user', {
@@ -23,7 +24,8 @@ export default async function (server: FastifyInstance) {
                     type: 'object',
                     properties: {
                         message: { type: 'string' },
-                        user: userSchema
+                        user: userSchema,
+                        token: { type: 'string' }
                     }
                 }
             },
@@ -32,6 +34,7 @@ export default async function (server: FastifyInstance) {
     }, addUser);
 
     server.delete('/delete_user', {
+        preHandler: verifyJWT,
         schema: {
             body: {
                 type: 'object',
@@ -59,6 +62,7 @@ export default async function (server: FastifyInstance) {
     }, deleteUser);
 
     server.get('/get_user', {
+        preHandler: verifyJWT,
         schema: {
             querystring: {
                 type: 'object',
@@ -83,6 +87,7 @@ export default async function (server: FastifyInstance) {
     }, getUser);
 
     server.put('/update_user', {
+        preHandler: verifyJWT,
         schema: {
             body: {
                 type: 'object',

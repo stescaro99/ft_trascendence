@@ -27,7 +27,18 @@ const start = async (sequelize: any) => {
                     title: 'API ft_trascendence',
                     description: 'Documentazione API Pong',
                     version: '1.0.0'
-                }
+                },
+                components: {
+                    securitySchemes: {
+                        bearerAuth: {
+                            type: 'http',
+                            scheme: 'bearer',
+                            bearerFormat: 'JWT',
+                            description: 'Inserisci il token JWT come: Bearer <token>'
+                        }
+                    }
+                },
+                security: [{ bearerAuth: [] }]
             },
         });
         await server.register(swaggerUI, {

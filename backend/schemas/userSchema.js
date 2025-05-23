@@ -10,7 +10,6 @@ exports.userSchema = {
         surname: { type: 'string' },
         nickname: { type: 'string' },
         email: { type: 'string' },
-        password: { type: 'string' },
         language: { type: 'string' },
         image_url: { type: 'string' },
         stats: {

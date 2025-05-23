@@ -1,9 +1,11 @@
 import { FastifyInstance } from "fastify";
 import { addGame, getGame, updateGame, deleteGame } from "../controllers/gameController";
 import { gameSchema } from "../schemas/gameSchema";
+import { verifyJWT } from "../utils/jwt";
 
 export default async function (server: FastifyInstance) {
     server.post('/add_game', {
+        preHandler: verifyJWT,
         schema: {
             body: {
                 type: 'object',
@@ -54,6 +56,7 @@ export default async function (server: FastifyInstance) {
     }, getGame);
 
     server.put('/update_game', {
+        preHandler: verifyJWT,
         schema: {
             body: {
                 type: 'object',
@@ -78,6 +81,7 @@ export default async function (server: FastifyInstance) {
     }, updateGame);
 
     server.delete('/delete_game', {
+        preHandler: verifyJWT,
         schema: {
             querystring: {
                 type: 'object',

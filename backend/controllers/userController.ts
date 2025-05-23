@@ -3,6 +3,7 @@ import User from '../models/user';
 import Stats from '../models/stats';
 import sequelize from '../db';
 import bcrypt from 'bcrypt';
+import { createJWT } from '../utils/jwt';
 
 export async function addUser(request: FastifyRequest, reply: FastifyReply) {
     const { name, surname, nickname, email, password, image_url } = request.body as {
@@ -28,10 +29,12 @@ export async function addUser(request: FastifyRequest, reply: FastifyReply) {
         const stats_game2 = await Stats.create({ nickname: nickname });
 
         await user.setStats([stats_pong, stats_game2]);
-
         await user.reload({ include: [{ model: Stats, as: 'stats' }] });
 
-        reply.code(201).send({ message: 'User added!', user });
+        const payload = { id: user.id, nickname: user.nickname };
+        const token = createJWT(payload, '3h');
+
+        reply.code(201).send({ message: 'User added!', user, token });
     } catch (error) {
         reply.code(500).send({ error: 'Failed to add user', details: error });
     }
@@ -70,9 +73,7 @@ export async function getUser(request: FastifyRequest, reply: FastifyReply) {
 }
 
 export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
-    const { nickname } = request.body as { nickname: string };
-    const { field } = request.query as { field: string };
-    const { new_value } = request.body as { new_value: string; };
+    const { nickname, field, new_value } = request.body as { nickname: string; field: string; new_value: string };
     try {
         const user = await User.findOne({ where: { nickname: nickname } });
         if (user) {

@@ -12,9 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = default_1;
 const tournamentController_1 = require("../controllers/tournamentController");
 const tournamentSchema_1 = require("../schemas/tournamentSchema");
+const jwt_1 = require("../utils/jwt");
 function default_1(server) {
     return __awaiter(this, void 0, void 0, function* () {
         server.post('/add_tournament', {
+            preHandler: jwt_1.verifyJWT,
             schema: {
                 body: {
                     type: 'object',
@@ -66,6 +68,7 @@ function default_1(server) {
             }
         }, tournamentController_1.getTournament);
         server.put('/update_tournament', {
+            preHandler: jwt_1.verifyJWT,
             schema: {
                 body: {
                     type: 'object',
@@ -88,6 +91,7 @@ function default_1(server) {
             }
         }, tournamentController_1.updateTournament);
         server.delete('/delete_tournament', {
+            preHandler: jwt_1.verifyJWT,
             schema: {
                 querystring: {
                     type: "object",

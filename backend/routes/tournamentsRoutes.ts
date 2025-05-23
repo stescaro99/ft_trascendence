@@ -1,9 +1,11 @@
 import { FastifyInstance } from "fastify";
 import { addTournament, getTournament, updateTournament, deleteTournament } from "../controllers/tournamentController";
 import { tournamentSchema } from "../schemas/tournamentSchema";
+import { verifyJWT } from "../utils/jwt";
 
 export default async function (server: FastifyInstance) {
     server.post('/add_tournament', {
+        preHandler: verifyJWT,
         schema: {
             body: {
                 type: 'object',
@@ -57,6 +59,7 @@ export default async function (server: FastifyInstance) {
     }, getTournament);
 
     server.put('/update_tournament', {
+        preHandler: verifyJWT,
         schema: {
             body: {
                 type: 'object',
@@ -80,6 +83,7 @@ export default async function (server: FastifyInstance) {
     }, updateTournament);
 
     server.delete('/delete_tournament', {
+        preHandler: verifyJWT,
         schema :{
             querystring :{
                 type : "object",
