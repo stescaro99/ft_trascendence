@@ -70,7 +70,7 @@ function default_1(server) {
                 tags: ['User']
             }
         }, authController_1.login);
-        server.post('generate', {
+        server.post('/generate', {
             schema: {
                 body: {
                     type: 'object',
@@ -97,7 +97,7 @@ function default_1(server) {
                 tags: ['TwoFactor']
             }
         }, authController_1.generate2FA);
-        server.post('verify', {
+        server.post('/verify', {
             schema: {
                 body: {
                     type: 'object',
