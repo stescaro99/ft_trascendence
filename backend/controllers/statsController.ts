@@ -42,6 +42,10 @@ export async function updateStats(request: FastifyRequest, reply: FastifyReply) 
             case 2:
                 userStat.number_of_wins = (userStat.number_of_wins || 0) + 1;
                 break;
+            case 3:
+                userStat.number_of_tournaments_won = (userStat.number_of_tournaments_won || 0) + 1;
+                userStat.number_of_wins = (userStat.number_of_wins || 0) + 1;
+                break;
             default:
                 return reply.code(400).send({ message: 'Invalid result value' });
         }
@@ -66,3 +70,27 @@ export async function updateStats(request: FastifyRequest, reply: FastifyReply) 
         reply.code(500).send({ message: 'Failed to update stats', error });
     }
 }
+
+export async function getStats(request: FastifyRequest, reply: FastifyReply) {
+    const { nickname, index } = request.query as { nickname: string, index: number };
+
+    try {
+        const user = await User.findOne({
+            where: { nickname },
+            include: [{ model: Stats, as: 'stats' }]
+        });
+        if (!user) {
+            return reply.code(404).send({ message: 'User not found' });
+        }
+        const statsArray = user.stats as Stats[];
+        const userStat = statsArray[index];
+        if (!userStat) {
+            return reply.code(404).send({ message: 'Stats not found for given index' });
+        }
+        reply.code(200).send({ stats: userStat });
+    } catch (error) {
+        console.error('Error fetching stats:', error);
+        reply.code(500).send({ message: 'Failed to fetch stats', error });
+    }
+}
+

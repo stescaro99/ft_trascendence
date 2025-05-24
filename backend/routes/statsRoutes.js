@@ -12,9 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = default_1;
 const statsController_1 = require("../controllers/statsController");
 const statsSchema_1 = require("../schemas/statsSchema");
+const jwt_1 = require("../utils/jwt");
 function default_1(server) {
     return __awaiter(this, void 0, void 0, function* () {
         server.put('/update_stats', {
+            preHandler: jwt_1.verifyJWT,
             schema: {
                 body: {
                     type: 'object',
@@ -38,6 +40,27 @@ function default_1(server) {
                 tags: ['Stats']
             },
         }, statsController_1.updateStats);
+        server.get('/get_stats', {
+            schema: {
+                querystring: {
+                    type: 'object',
+                    required: ['nickname', 'index'],
+                    properties: {
+                        nickname: { type: 'string' },
+                        index: { type: 'integer' }
+                    },
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            stats: statsSchema_1.statsSchema,
+                        },
+                    },
+                },
+                tags: ['Stats']
+            },
+        }, statsController_1.getStats);
     });
 }
 ;

@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateStats = updateStats;
+exports.getStats = getStats;
 const user_1 = __importDefault(require("../models/user"));
 const game_1 = __importDefault(require("../models/game"));
 const stats_1 = __importDefault(require("../models/stats"));
@@ -48,6 +49,10 @@ function updateStats(request, reply) {
                 case 2:
                     userStat.number_of_wins = (userStat.number_of_wins || 0) + 1;
                     break;
+                case 3:
+                    userStat.number_of_tournaments_won = (userStat.number_of_tournaments_won || 0) + 1;
+                    userStat.number_of_wins = (userStat.number_of_wins || 0) + 1;
+                    break;
                 default:
                     return reply.code(400).send({ message: 'Invalid result value' });
             }
@@ -73,6 +78,30 @@ function updateStats(request, reply) {
         catch (error) {
             console.error('Error updating stats:', error);
             reply.code(500).send({ message: 'Failed to update stats', error });
+        }
+    });
+}
+function getStats(request, reply) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { nickname, index } = request.query;
+        try {
+            const user = yield user_1.default.findOne({
+                where: { nickname },
+                include: [{ model: stats_1.default, as: 'stats' }]
+            });
+            if (!user) {
+                return reply.code(404).send({ message: 'User not found' });
+            }
+            const statsArray = user.stats;
+            const userStat = statsArray[index];
+            if (!userStat) {
+                return reply.code(404).send({ message: 'Stats not found for given index' });
+            }
+            reply.code(200).send({ stats: userStat });
+        }
+        catch (error) {
+            console.error('Error fetching stats:', error);
+            reply.code(500).send({ message: 'Failed to fetch stats', error });
         }
     });
 }

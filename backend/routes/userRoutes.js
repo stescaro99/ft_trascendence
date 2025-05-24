@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = default_1;
 const userController_1 = require("../controllers/userController");
 const userSchema_1 = require("../schemas/userSchema");
+const jwt_1 = require("../utils/jwt");
 function default_1(server) {
     return __awaiter(this, void 0, void 0, function* () {
         server.post('/add_user', {
@@ -34,7 +35,8 @@ function default_1(server) {
                         type: 'object',
                         properties: {
                             message: { type: 'string' },
-                            user: userSchema_1.userSchema
+                            user: userSchema_1.userSchema,
+                            token: { type: 'string' }
                         }
                     }
                 },
@@ -42,6 +44,7 @@ function default_1(server) {
             }
         }, userController_1.addUser);
         server.delete('/delete_user', {
+            preHandler: jwt_1.verifyJWT,
             schema: {
                 body: {
                     type: 'object',
@@ -68,6 +71,7 @@ function default_1(server) {
             }
         }, userController_1.deleteUser);
         server.get('/get_user', {
+            preHandler: jwt_1.verifyJWT,
             schema: {
                 querystring: {
                     type: 'object',
@@ -91,6 +95,7 @@ function default_1(server) {
             }
         }, userController_1.getUser);
         server.put('/update_user', {
+            preHandler: jwt_1.verifyJWT,
             schema: {
                 body: {
                     type: 'object',

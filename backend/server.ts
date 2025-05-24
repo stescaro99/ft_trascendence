@@ -1,6 +1,9 @@
 import Fastify from 'fastify';
 import path from 'path';
 import fs from 'fs';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const dbDir = path.join(__dirname, 'db');
 const dbPath = path.join(dbDir, 'database.db');
@@ -24,7 +27,18 @@ const start = async (sequelize: any) => {
                     title: 'API ft_trascendence',
                     description: 'Documentazione API Pong',
                     version: '1.0.0'
-                }
+                },
+                components: {
+                    securitySchemes: {
+                        bearerAuth: {
+                            type: 'http',
+                            scheme: 'bearer',
+                            bearerFormat: 'JWT',
+                            description: 'Inserisci il token JWT come: Bearer <token>'
+                        }
+                    }
+                },
+                security: [{ bearerAuth: [] }]
             },
         });
         await server.register(swaggerUI, {
@@ -53,10 +67,10 @@ const start = async (sequelize: any) => {
 
 (async () => {
     const { default: sequelize } = await import('./db');
-    // Importa i modelli DOPO aver importato sequelize!
     await import('./models/game');
     await import('./models/stats');
     await import('./models/user');
+    await import('./models/tournament');
     // ...altri modelli se servono
 
     await sequelize.sync({ force: !dbExists, alter: dbExists });

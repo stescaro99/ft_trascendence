@@ -2,6 +2,7 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import User from '../models/user';
 import Stats from '../models/stats';
 import sequelize from '../db';
+import bcrypt from 'bcrypt';
 
 export async function addUser(request: FastifyRequest, reply: FastifyReply) {
     const { name, surname, nickname, email, password, image_url } = request.body as {
@@ -13,12 +14,13 @@ export async function addUser(request: FastifyRequest, reply: FastifyReply) {
         image_url?: string;
     };
     try {
+        const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create({
             name,
             surname,
             nickname,
             email,
-            password,
+            password: hashedPassword,
             image_url,
         });
 
@@ -26,10 +28,9 @@ export async function addUser(request: FastifyRequest, reply: FastifyReply) {
         const stats_game2 = await Stats.create({ nickname: nickname });
 
         await user.setStats([stats_pong, stats_game2]);
-
         await user.reload({ include: [{ model: Stats, as: 'stats' }] });
 
-        reply.code(201).send({ message: 'User added!', user });
+        reply.code(201).send({ message: 'User added!', user});
     } catch (error) {
         reply.code(500).send({ error: 'Failed to add user', details: error });
     }
@@ -68,9 +69,7 @@ export async function getUser(request: FastifyRequest, reply: FastifyReply) {
 }
 
 export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
-    const { nickname } = request.body as { nickname: string };
-    const { field } = request.query as { field: string };
-    const { new_value } = request.body as { new_value: string; };
+    const { nickname, field, new_value } = request.body as { nickname: string; field: string; new_value: string };
     try {
         const user = await User.findOne({ where: { nickname: nickname } });
         if (user) {
@@ -88,7 +87,7 @@ export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
                     user.email = new_value;
                     break;
                 case 'password':
-                    user.password = new_value;
+                    user.password = await bcrypt.hash(new_value, 10);
                     break;
                 case 'language':
                     user.language = new_value;
