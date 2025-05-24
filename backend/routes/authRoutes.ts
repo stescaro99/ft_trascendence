@@ -27,7 +27,7 @@ export default async function (server: FastifyInstance) {
                     }
                 }
             },
-            tags: ['User']
+            tags: ['Authentication']
         }
     }, isAvailable);
 
@@ -45,9 +45,8 @@ export default async function (server: FastifyInstance) {
                 200: {
                     type: 'object',
                     properties: {
+                        require2FA: { type: 'boolean' },
                         message: { type: 'string' },
-                        user: userSchema,
-                        token: { type: 'string' },
                     }
                 },
                 401: {
@@ -57,7 +56,7 @@ export default async function (server: FastifyInstance) {
                     }
                 }
             },
-            tags: ['User']
+            tags: ['Authentication']
         }
     }, login);
 
@@ -65,10 +64,11 @@ export default async function (server: FastifyInstance) {
         schema: {
             body: {
                 type: 'object',
-                required: ['nickname'],
                 properties: {
-                    nickname: { type: 'string' }
-                }
+                    nickname: { type: 'string' },
+                    password: { type: 'string' }
+                },
+                required: [],
             },
             response: {
                 200: {
@@ -78,6 +78,12 @@ export default async function (server: FastifyInstance) {
                         qrCode: { type: 'string' }
                     }
                 },
+                401: {
+                    type: 'object',
+                    properties: {
+                        error: { type: 'string' }
+                    }
+                },
                 404: {
                     type: 'object',
                     properties: {
@@ -85,7 +91,7 @@ export default async function (server: FastifyInstance) {
                     }
                 }
             },
-            tags: ['TwoFactor']
+            tags: ['Authentication']
         }
     }, generate2FA);
 
@@ -121,7 +127,7 @@ export default async function (server: FastifyInstance) {
                     }
                 },
             },
-            tags: ['TwoFactor']
+            tags: ['Authentication']
         }
     }, verify2FA);
 }

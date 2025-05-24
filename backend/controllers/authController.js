@@ -21,24 +21,38 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const jwt_1 = require("../utils/jwt");
 const speakeasy_1 = __importDefault(require("speakeasy"));
 const qrcode_1 = __importDefault(require("qrcode"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 function generate2FA(request, reply) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { nickname } = request.body;
+        let user = null;
+        // Prova autenticazione tramite JWT
+        const authHeader = request.headers.authorization;
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            try {
+                const token = authHeader.split(' ')[1];
+                const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET || 'default_key');
+                user = yield user_1.default.findOne({ where: { id: decoded.id } });
+            }
+            catch (_a) {
+            }
+        }
+        // Se non c'è JWT valido, prova con nickname+password
+        if (!user) {
+            const { nickname, password } = request.body;
+            if (!nickname || !password) {
+                return reply.code(401).send({ error: 'Missing credentials' });
+            }
+            user = yield user_1.default.findOne({ where: { nickname } });
+            if (!user || !(yield bcrypt_1.default.compare(password, user.password))) {
+                return reply.code(401).send({ error: 'Invalid credentials' });
+            }
+        }
         try {
-            const user = yield user_1.default.findOne({ where: { nickname } });
-            if (!user) {
-                reply.code(404).send({ error: 'User not found' });
-                return;
-            }
-            if (user.tfa_code) {
-                reply.code(400).send({ error: '2FA already enabled' });
-                return;
-            }
             const issuer = 'FT_TRASCENDENCE';
-            const secret = speakeasy_1.default.generateSecret({ name: nickname, issuer });
+            const secret = speakeasy_1.default.generateSecret({ name: user.nickname, issuer });
             user.tfa_code = secret.base32;
             yield user.save();
-            const label = encodeURIComponent(`${issuer}:${nickname}`);
+            const label = encodeURIComponent(`${issuer}:${user.nickname}`);
             const base32 = secret.base32;
             const otpauth_url = `otpauth://totp/${label}?secret=${base32}&issuer=${issuer}`;
             const qrCode = yield qrcode_1.default.toDataURL(otpauth_url);
