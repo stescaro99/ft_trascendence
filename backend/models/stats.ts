@@ -12,6 +12,7 @@ class Stats extends Model {
     public number_of_losses?: number;
     public number_of_draws?: number;
     public number_of_points?: number;
+    public number_of_tournaments_won?: number;
     public average_score?: number;
     public percentage_wins?: number;
     public percentage_losses?: number;
@@ -51,6 +52,11 @@ Stats.init(
             defaultValue: 0,
         },
         number_of_points: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            defaultValue: 0,
+        },
+        number_of_tournaments_won: {
             type: DataTypes.INTEGER,
             allowNull: true,
             defaultValue: 0,

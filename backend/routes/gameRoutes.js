@@ -12,9 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = default_1;
 const gameController_1 = require("../controllers/gameController");
 const gameSchema_1 = require("../schemas/gameSchema");
+const jwt_1 = require("../utils/jwt");
 function default_1(server) {
     return __awaiter(this, void 0, void 0, function* () {
         server.post('/add_game', {
+            preHandler: jwt_1.verifyJWT,
             schema: {
                 body: {
                     type: 'object',
@@ -63,6 +65,7 @@ function default_1(server) {
             }
         }, gameController_1.getGame);
         server.put('/update_game', {
+            preHandler: jwt_1.verifyJWT,
             schema: {
                 body: {
                     type: 'object',
@@ -86,6 +89,7 @@ function default_1(server) {
             }
         }, gameController_1.updateGame);
         server.delete('/delete_game', {
+            preHandler: jwt_1.verifyJWT,
             schema: {
                 querystring: {
                     type: 'object',

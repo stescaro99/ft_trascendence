@@ -48,6 +48,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fastify_1 = __importDefault(require("fastify"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 const dbDir = path_1.default.join(__dirname, 'db');
 const dbPath = path_1.default.join(dbDir, 'database.db');
 if (!fs_1.default.existsSync(dbDir)) {
@@ -65,7 +67,18 @@ const start = (sequelize) => __awaiter(void 0, void 0, void 0, function* () {
                     title: 'API ft_trascendence',
                     description: 'Documentazione API Pong',
                     version: '1.0.0'
-                }
+                },
+                components: {
+                    securitySchemes: {
+                        bearerAuth: {
+                            type: 'http',
+                            scheme: 'bearer',
+                            bearerFormat: 'JWT',
+                            description: 'Inserisci il token JWT come: Bearer <token>'
+                        }
+                    }
+                },
+                security: [{ bearerAuth: [] }]
             },
         });
         yield server.register(swagger_ui_1.default, {
@@ -92,10 +105,10 @@ const start = (sequelize) => __awaiter(void 0, void 0, void 0, function* () {
 });
 (() => __awaiter(void 0, void 0, void 0, function* () {
     const { default: sequelize } = yield Promise.resolve().then(() => __importStar(require('./db')));
-    // Importa i modelli DOPO aver importato sequelize!
     yield Promise.resolve().then(() => __importStar(require('./models/game')));
     yield Promise.resolve().then(() => __importStar(require('./models/stats')));
     yield Promise.resolve().then(() => __importStar(require('./models/user')));
+    yield Promise.resolve().then(() => __importStar(require('./models/tournament')));
     // ...altri modelli se servono
     yield sequelize.sync({ force: !dbExists, alter: dbExists });
     if (!dbExists) {
