@@ -17,7 +17,7 @@
 
 - Modulo major: Introdurre un avversario AI. (da fare)
 
-- Modulo major: 2fa (in corso)
+- Modulo major: 2fa ✅
 
 ## Piano dettagliato
 
@@ -59,7 +59,7 @@
 
 ---
 
-### Blockchain  ??????????????????????????????///
+### Blockchain  ??????????????????????????????
 1. **Utilizza la blockchain Avalanche**:
    - Configura un ambiente di sviluppo per Avalanche.
    - Crea un account e ottieni credenziali per interagire con la blockchain.
@@ -79,8 +79,7 @@
    - L'AI deve prendere decisioni basate sullo stato del gioco.
 
 2. **Dashboard per statistiche**:
-   - Crea endpoint per recuperare statistiche utente (es. vittorie, sconfitte, punteggi).
-   - Progetta un sistema per aggregare e visualizzare i dati di gioco.
+   ~~- Crea endpoint per recuperare statistiche utente (es. vittorie, sconfitte, punteggi).~~
 
 ---
 
