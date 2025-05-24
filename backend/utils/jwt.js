@@ -32,8 +32,8 @@ function verifyJWT(request, reply) {
         }
     });
 }
-function createJWT(payload, expiresIn = '3h') {
+function createJWT(payload, expiresIn) {
     const key = process.env.JWT_SECRET || 'default_key';
-    const options = { expiresIn };
+    const options = expiresIn ? { expiresIn } : {};
     return jsonwebtoken_1.default.sign(payload, key, options);
 }

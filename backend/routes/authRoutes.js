@@ -38,7 +38,7 @@ function default_1(server) {
                         }
                     }
                 },
-                tags: ['User']
+                tags: ['Authentication']
             }
         }, authController_1.isAvailable);
         server.post('/login', {
@@ -55,9 +55,8 @@ function default_1(server) {
                     200: {
                         type: 'object',
                         properties: {
+                            require2FA: { type: 'boolean' },
                             message: { type: 'string' },
-                            user: userSchema_1.userSchema,
-                            token: { type: 'string' },
                         }
                     },
                     401: {
@@ -67,17 +66,18 @@ function default_1(server) {
                         }
                     }
                 },
-                tags: ['User']
+                tags: ['Authentication']
             }
         }, authController_1.login);
-        server.post('/generate', {
+        server.post('/generate_2FA', {
             schema: {
                 body: {
                     type: 'object',
-                    required: ['nickname'],
                     properties: {
-                        nickname: { type: 'string' }
-                    }
+                        nickname: { type: 'string' },
+                        password: { type: 'string' }
+                    },
+                    required: [],
                 },
                 response: {
                     200: {
@@ -87,6 +87,12 @@ function default_1(server) {
                             qrCode: { type: 'string' }
                         }
                     },
+                    401: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' }
+                        }
+                    },
                     404: {
                         type: 'object',
                         properties: {
@@ -94,10 +100,10 @@ function default_1(server) {
                         }
                     }
                 },
-                tags: ['TwoFactor']
+                tags: ['Authentication']
             }
         }, authController_1.generate2FA);
-        server.post('/verify', {
+        server.post('/verify_2FA', {
             schema: {
                 body: {
                     type: 'object',
@@ -129,7 +135,7 @@ function default_1(server) {
                         }
                     },
                 },
-                tags: ['TwoFactor']
+                tags: ['Authentication']
             }
         }, authController_1.verify2FA);
     });

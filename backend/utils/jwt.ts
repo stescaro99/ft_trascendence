@@ -18,9 +18,9 @@ export async function verifyJWT(request: FastifyRequest, reply: FastifyReply) {
 
 export function createJWT(
     payload: JwtPayload | string,
-    expiresIn: SignOptions['expiresIn'] = '3h'
+    expiresIn?: SignOptions['expiresIn']
 ): string {
     const key = process.env.JWT_SECRET || 'default_key';
-    const options: SignOptions = { expiresIn };
+    const options: SignOptions = expiresIn ? { expiresIn } : {};
     return jwt.sign(payload, key, options);
 }
