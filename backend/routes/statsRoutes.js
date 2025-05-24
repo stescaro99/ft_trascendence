@@ -40,6 +40,27 @@ function default_1(server) {
                 tags: ['Stats']
             },
         }, statsController_1.updateStats);
+        server.get('/get_stats', {
+            schema: {
+                querystring: {
+                    type: 'object',
+                    required: ['nickname', 'index'],
+                    properties: {
+                        nickname: { type: 'string' },
+                        index: { type: 'integer' }
+                    },
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            stats: statsSchema_1.statsSchema,
+                        },
+                    },
+                },
+                tags: ['Stats']
+            },
+        }, statsController_1.getStats);
     });
 }
 ;

@@ -70,3 +70,27 @@ export async function updateStats(request: FastifyRequest, reply: FastifyReply) 
         reply.code(500).send({ message: 'Failed to update stats', error });
     }
 }
+
+export async function getStats(request: FastifyRequest, reply: FastifyReply) {
+    const { nickname, index } = request.query as { nickname: string, index: number };
+
+    try {
+        const user = await User.findOne({
+            where: { nickname },
+            include: [{ model: Stats, as: 'stats' }]
+        });
+        if (!user) {
+            return reply.code(404).send({ message: 'User not found' });
+        }
+        const statsArray = user.stats as Stats[];
+        const userStat = statsArray[index];
+        if (!userStat) {
+            return reply.code(404).send({ message: 'Stats not found for given index' });
+        }
+        reply.code(200).send({ stats: userStat });
+    } catch (error) {
+        console.error('Error fetching stats:', error);
+        reply.code(500).send({ message: 'Failed to fetch stats', error });
+    }
+}
+
