@@ -1,1 +1,19 @@
 @import "tailwindcss";
+
+.arcade-font {
+    font-family: 'Arcade';
+}
+
+.sidebar-icon {
+    @apply relative flex items-center justify-center h-12 w-12 mx-auto my-2 bg-amber-800
+            hover:bg-amber-500
+            rounded-3xl hover:rounded-xl
+            transition-all duration-200 ease-linear;
+}
+
+.sub-icon {
+    @apply relative flex items-center justify-center h-10 w-10 mx-auto my-2 bg-amber-700
+            hover:bg-amber-500
+            rounded-3xl hover:rounded-xl
+            transition-all duration-200 ease-linear;
+}

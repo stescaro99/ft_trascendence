@@ -24,3 +24,10 @@ export class IdentificationPage {
     }
   }
 }
+
+//from Claude
+// export default IdentificationPage;
+
+/* Ritorno una stringa con html altrimenti il router si lamenta */
+const identificationPage = () => autentificationHtml;
+export default identificationPage;
