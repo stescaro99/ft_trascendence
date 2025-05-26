@@ -2,6 +2,8 @@ import Fastify from 'fastify';
 import path from 'path';
 import fs from 'fs';
 import dotenv from 'dotenv';
+import fastifyMultipart from '@fastify/multipart';
+import fastifyStatic from '@fastify/static';
 
 dotenv.config();
 
@@ -43,6 +45,12 @@ const start = async (sequelize: any) => {
         });
         await server.register(swaggerUI, {
             routePrefix: '/swagger'
+        });
+
+        await server.register(fastifyMultipart);
+        await server.register(fastifyStatic, {
+            root: path.join(__dirname, '../uploads'),
+            prefix: '/uploads/',
         });
 
         const routes_path = path.join(__dirname, 'routes');

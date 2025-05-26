@@ -1,8 +1,11 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
+import { MultipartFile } from '@fastify/multipart';
 import User from '../models/user';
 import Stats from '../models/stats';
 import sequelize from '../db';
 import bcrypt from 'bcrypt';
+import path from 'path';
+import fs from 'fs';
 
 export async function addUser(request: FastifyRequest, reply: FastifyReply) {
     const { name, surname, nickname, email, password, image_url } = request.body as {
@@ -99,7 +102,16 @@ export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
                     user.active = false;
                     break;
                 case 'friends':
-                    //aggiungi o togli amico new_value
+                    if (user.friends) {
+                        if (user.friends.includes(new_value)) {
+                            user.friends = user.friends.filter(friend => friend !== new_value);
+                        } else {
+                            user.friends.push(new_value);
+                        }
+                    } else {
+                        user.friends = [new_value];
+                    }
+                    break;
                 default:
                     reply.code(400).send({ error: 'Invalid field' });
                     return;
@@ -114,3 +126,24 @@ export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
         reply.code(500).send({ error: 'Failed to update user', details: error });
     }
 }
+
+export async function uploadImage(request: FastifyRequest, reply: FastifyReply) {
+    const parts = request.parts ? request.parts() : [];
+    for await (const part of parts) {
+        if ((part as MultipartFile).file && part.fieldname === 'image') {
+            const filePart = part as MultipartFile;
+            const uploadDir = path.join(__dirname, '../../uploads');
+            if (!fs.existsSync(uploadDir)) {
+                fs.mkdirSync(uploadDir, { recursive: true });
+            }
+            const filename = `${Date.now()}_${filePart.filename}`;
+            const filepath = path.join(uploadDir, filename);
+            const writeStream = fs.createWriteStream(filepath);
+            await filePart.file.pipe(writeStream);
+            const imageUrl = `/uploads/${filename}`;
+            return reply.code(200).send({ imageUrl });
+        }
+    }
+    reply.code(400).send({ error: 'No image uploaded' });
+}
+

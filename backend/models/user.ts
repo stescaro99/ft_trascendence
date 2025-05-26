@@ -64,6 +64,10 @@ User.init(
             type: DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: false,
+        },
+        friends:{
+            type: DataTypes.ARRAY(DataTypes.STRING),
+            allowNull: true,
         }
     },
     {

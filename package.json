@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "fastify-multipart": "^5.3.1",
     "jsonwebtoken": "^9.0.2",
     "qrcode": "^1.5.4",
     "sequelize": "^6.37.7",
