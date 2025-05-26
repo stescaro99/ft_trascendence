@@ -140,7 +140,7 @@ export async function uploadImage(request: FastifyRequest, reply: FastifyReply) 
             const filepath = path.join(uploadDir, filename);
             const writeStream = fs.createWriteStream(filepath);
             await filePart.file.pipe(writeStream);
-            const imageUrl = `/uploads/${filename}`;
+            const imageUrl = `${Request.Scheme}://${Request.Host}/images/${filename}`; //da sistemare
             return reply.code(200).send({ imageUrl });
         }
     }
