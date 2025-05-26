@@ -101,17 +101,6 @@ export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
                 case 'active':
                     user.active = false;
                     break;
-                case 'friends':
-                    if (user.friends) {
-                        if (user.friends.includes(new_value)) {
-                            user.friends = user.friends.filter(friend => friend !== new_value);
-                        } else {
-                            user.friends.push(new_value);
-                        }
-                    } else {
-                        user.friends = [new_value];
-                    }
-                    break;
                 default:
                     reply.code(400).send({ error: 'Invalid field' });
                     return;
@@ -140,10 +129,67 @@ export async function uploadImage(request: FastifyRequest, reply: FastifyReply) 
             const filepath = path.join(uploadDir, filename);
             const writeStream = fs.createWriteStream(filepath);
             await filePart.file.pipe(writeStream);
-            const imageUrl = `${Request.Scheme}://${Request.Host}/images/${filename}`; //da sistemare
+            const imageUrl = `${request.protocol}://${request.hostname}/images/${filename}`;
             return reply.code(200).send({ imageUrl });
         }
     }
     reply.code(400).send({ error: 'No image uploaded' });
 }
+
+export async function addFriend(request: FastifyRequest, reply: FastifyReply) {
+    const { user1, user2 } = request.body as { user1: string; user2: string };
+
+    try {
+        const first_user = await User.findOne({ where: { nickname: user1 } });
+        const second_user = await User.findOne({ where: { nickname: user2 } });
+
+        if (!first_user || !second_user) {
+            return reply.code(404).send({ error: 'User not found' });
+        }
+
+        const friends1 = new Set(first_user.friends || []);
+        const friends2 = new Set(second_user.friends || []);
+        const requests2 = new Set(second_user.fr_request || []);
+        const requests1 = new Set(first_user.fr_request || []);
+
+        if (friends1.has(user2) && friends2.has(user1)) {
+            friends1.delete(user2);
+            friends2.delete(user1);
+
+            first_user.friends = Array.from(friends1);
+            second_user.friends = Array.from(friends2);
+
+            await first_user.save();
+            await second_user.save();
+
+            return reply.send({ message: 'Friendship removed' });
+        }
+        if (requests1.has(user2)) {
+            requests1.delete(user2);
+            friends1.add(user2);
+            friends2.add(user1);
+
+            first_user.fr_request = Array.from(requests1);
+            first_user.friends = Array.from(friends1);
+            second_user.friends = Array.from(friends2);
+
+            await first_user.save();
+            await second_user.save();
+
+            return reply.send({ message: 'Friendship established' });
+        }
+        if (!requests2.has(user1)) {
+            requests2.add(user1);
+            second_user.fr_request = Array.from(requests2);
+            await second_user.save();
+            return reply.send({ message: 'Friend request sent' });
+        }
+        return reply.code(409).send({ error: "Friend request already sent"})
+
+    } catch (err) {
+        console.error(err);
+        return reply.code(500).send({ error: 'Internal server error' });
+    }
+}
+
 

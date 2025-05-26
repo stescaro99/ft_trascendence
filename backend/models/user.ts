@@ -16,6 +16,7 @@ class User extends Model {
     public tfa_code?: string;
     public active!: boolean;
     public friends?: string[];
+    public fr_request?: string[];
 }
 
 User.init(
@@ -68,6 +69,12 @@ User.init(
         friends:{
             type: DataTypes.ARRAY(DataTypes.STRING),
             allowNull: true,
+            defaultValue: [],
+        },
+        fr_request:{
+            type: DataTypes.ARRAY(DataTypes.STRING),
+            allowNull: true,
+            defaultValue: [],
         }
     },
     {

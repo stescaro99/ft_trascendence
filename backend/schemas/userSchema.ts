@@ -15,6 +15,10 @@ export const userSchema = {
             type: 'array',
             items: { type: 'string' }
         },
+        fr_request: {
+            type: 'array',
+            items: { type: 'string' }
+        },
         stats: {
             type: 'array',
             items: statsSchema
