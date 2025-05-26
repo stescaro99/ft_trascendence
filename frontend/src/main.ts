@@ -22,7 +22,6 @@ const game: GameState = {
 
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
-const setupScreen = document.getElementById("setup-screen") as HTMLDivElement;
 const startBtn = document.getElementById("startBtn") as HTMLButtonElement;
 
 const preview1 = document.getElementById("preview1") as HTMLDivElement;
@@ -143,9 +142,10 @@ function startCountdown()
 // === Pulsante Start ===
 
 startBtn.addEventListener("click", () => {
-  setupScreen.style.display = "none";
-  canvas.style.display = "block";
+  document.querySelectorAll(".screen").forEach(el => el.classList.remove("visible"));
 
+  canvas.style.display = "block";
+  
   document.fonts.ready.then(() => {
     ctx.font = "28px 'Bit5x3'";
     startCountdown();

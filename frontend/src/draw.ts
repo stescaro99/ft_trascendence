@@ -32,6 +32,7 @@ export function drawScore(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasEleme
     ctx.fillText(scoreLeft.toString(), canvas.width / 2 - 20, 20);
     ctx.fillText(scoreRight.toString(), canvas.width / 2 + 20, 20);
 }
+
 export function drawField(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement)
 {
     const segmentHeight = 15;

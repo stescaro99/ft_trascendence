@@ -6,9 +6,7 @@
     <style>
       @font-face {
         font-family: 'Bit5x3';
-        src: url('/fonts/bit5x3.woff2') format('woff2'),
-             url('/fonts/bit5x3.woff') format('woff'),
-             url('/fonts/bit5x3.ttf') format('truetype');
+        src: url('/fonts/bit5x3.ttf') format('truetype');
         font-display: block;
       }
       body {
@@ -21,15 +19,79 @@
         align-items: center;
         height: 100vh;
       }
+
       canvas {
         border: 2px solid white;
         background: #111;
       }
+
+    .screen {
+      display: none;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .visible {
+      display: flex !important;
+    }
+
+    .column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .palette {
+      display: grid;
+      grid-template-columns: repeat(3, 30px);
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .palette button {
+      width: 30px;
+      height: 30px;
+      border: 2px solid white;
+      cursor: pointer;
+    }
+
+    .palette button.selected {
+      border: 3px solid gold;
+    }
+
+    .paddle-preview {
+      margin-top: 20px;
+      width: 20px;
+      height: 120px;
+      background-color: white;
+      border: 3px solid #eee;
+    }
+
+    .title {
+      font-size: 48px;
+    }
+
+    .btn-large {
+      margin-top: 40px;
+      font-size: 32px;
+      padding: 20px 50px;
+      border: 4px solid white;
+      background: black;
+      color: white;
+      cursor: pointer;
+    }
     </style>
   </head>
   <body style="margin: 0; background-color: black; color: white; font-family: Arial; height: 100vh;">
-    <div id="setup-screen" style="display: flex; flex-direction: column; height: 100%;">
-  
+    
+    <div id="hub-screen" class="screen visible" style="flex-direction: column;">
+      <h1 class="title"> PONG</h1>
+      <button class="btn-large" onclick="showScreen('setup2')">2 GIOCATORI</button>
+      <button class="btn-large" onclick="showScreen('setup4')">4 GIOCATORI</button>
+    </div>
+
+    <div id="setup2-screen" class="screen">
       <!-- Contenitore a 5 colonne -->
       <div style="flex: 1; display: flex; align-items: center; justify-content: space-between; width: 100vw;">
         
@@ -47,7 +109,7 @@
         <!-- Colonna 3: Titolo + Start -->
         <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
           <h1 style="font-size: 48px;">PONG</h1>
-          <button id="startBtn" style="margin-top: 40px; font-size: 32px; padding: 20px 50px; border: 4px solid white; background: black; color: white; cursor: pointer;">START</button>
+          <button id="startBtn" style="margin-top: 40px; font-size: 32px; padding: 20px 50px; border: 4px solid white; background: black; color: white; cursor: pointer;" onclick="startPongGame()">START</button>
         </div>
   
         <!-- Colonna 4: Vuota -->
@@ -63,39 +125,50 @@
       </div>
     </div>
   
+     <!-- SCHERMATA 4 GIOCATORI -->
+  <div id="setup4-screen" class="screen" style="flex-direction: column;">
+    <div style="display: flex; justify-content: space-around; flex-wrap: wrap; width: 100%;">
+      <div class="column">
+        <h2>GIOCATORE 1</h2>
+        <div class="palette" data-player="1"></div>
+        <div id="previewP1" class="paddle-preview"></div>
+      </div>
+
+      <div class="column">
+        <h2>GIOCATORE 2</h2>
+        <div class="palette" data-player="2"></div>
+        <div id="previewP2" class="paddle-preview"></div>
+      </div>
+
+      <div class="column">
+        <h2>GIOCATORE 3</h2>
+        <div class="palette" data-player="3"></div>
+        <div id="previewP3" class="paddle-preview"></div>
+      </div>
+
+      <div class="column">
+        <h2>GIOCATORE 4</h2>
+        <div class="palette" data-player="4"></div>
+        <div id="previewP4" class="paddle-preview"></div>
+      </div>
+    </div>
+
+    <div class="column">
+      <h1 class="title">PONG</h1>
+      <button id="startBtn4" class="btn-large">START</button>
+    </div>
+  </div>
+  
     <canvas id="pong" width="800" height="500" style="display: none; border: 2px solid white;"></canvas>
   
     <script type="module" src="/src/main.ts"></script>
-  
-    <style>
-      .palette {
-        display: grid;
-        grid-template-columns: repeat(3, 30px);
-        gap: 10px;
-        margin: 10px 0;
+
+    <script>
+      function showScreen(screenId) {
+        document.querySelectorAll(".screen").forEach(el => el.classList.remove("visible"));
+        document.getElementById(screenId + "-screen").classList.add("visible");
       }
-  
-      .palette button {
-        width: 30px;
-        height: 30px;
-        border: 2px solid white;
-        cursor: pointer;
-      }
-  
-      .palette button.selected {
-        border: 3px solid gold;
-      }
-  
-      .paddle-preview {
-        margin-top: 20px;
-        width: 20px;
-        height: 120px;
-        background-color: white;
-        border: 3px solid #eee;
-      }
-    </style>
-  </body>
-  
-  
-  
+    </script>
+
+  </body>  
 </html>
