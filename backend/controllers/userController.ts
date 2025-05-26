@@ -95,6 +95,11 @@ export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
                 case 'image_url':
                     user.image_url = new_value;
                     break;
+                case 'active':
+                    user.active = false;
+                    break;
+                case 'friends':
+                    //aggiungi o togli amico new_value
                 default:
                     reply.code(400).send({ error: 'Invalid field' });
                     return;

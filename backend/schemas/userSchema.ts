@@ -10,6 +10,11 @@ export const userSchema = {
         //email: { type: 'string' },
         language: { type: 'string' },
         image_url: { type: 'string' },
+        active: { type: 'boolean' },
+        friends: {
+            type: 'array',
+            items: { type: 'string' }
+        },
         stats: {
             type: 'array',
             items: statsSchema
