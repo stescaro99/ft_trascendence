@@ -1,12 +1,13 @@
 import { Stats } from './stats.model';
 
 export class User {
-    id!:null;
-    name!: '';
-    email!: '';
-    password!: '';
-    surname!: '';
-    language!: '';
-    image_url!: '';
-    stats!: Stats[];
+    id: number| null = null;
+    name: string = '';
+	nickname: string = '';
+    email: string = '';
+    password: string = '';
+    surname: string = '';
+    language: string = '';
+    image_url: string = '';
+    stats: Stats[] = [];
 }
