@@ -1,13 +1,24 @@
-import homePage from './home/home';
-import autentificationPage from './identification/identification';
+import {HomePage} from './home/home';
+import {IdentificationPage} from './identification/identification';
 
 console.log("Script caricato");
 
 const appDiv = document.getElementById('app')!;
 
 const routes: Record<string, () => string> = {
-  '/': homePage,
-  '/about': autentificationPage,
+  '/': () => {
+    if (localStorage.getItem('user')) {
+      new HomePage();
+	  return "";
+    } else {
+      new IdentificationPage();
+      return "";
+    }
+  },
+  '/identification': () => {
+    new IdentificationPage();
+    return "";
+  },
 };
 
 function router() {
