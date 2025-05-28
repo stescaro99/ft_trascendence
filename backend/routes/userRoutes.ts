@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { addUser, deleteUser, getUser, updateUser } from "../controllers/userController";
+import { addUser, deleteUser, getUser, updateUser, uploadImage, addFriend } from "../controllers/userController";
 import { userSchema } from "../schemas/userSchema";
 import { verifyJWT } from "../utils/jwt";
 
@@ -116,4 +116,55 @@ export default async function (server: FastifyInstance) {
             tags: ['User']
         }
     }, updateUser);
+
+    server.post('/upload_image', {
+        schema: {
+            consumes: ['multipart/form-data'],
+            body: {
+                type: 'object',
+                properties: {
+                    image: { type: 'string', format: 'binary' }
+                },
+                required: ['image']
+            },
+            response: {
+                200: {
+                    type: 'object',
+                    properties: {
+                        imageUrl: { type: 'string' }
+                    }
+                }
+            },
+            tags: ['User']
+        }
+    }, uploadImage);
+
+    server.put('/add_friend', {
+        preHandler: verifyJWT,
+        schema:{
+            body:{
+                type: 'object',
+                required: ['user1', 'user2'],
+                properties:{
+                    user1: { type: 'string' },
+                    user2: { type: 'string' },
+                }
+            },
+            response: {
+                200: {
+                    type: 'object',
+                    properties: {
+                        message: { type: 'string' },
+                    }
+                },
+                404: {
+                    type: 'object',
+                    properties: {
+                        error: { type: 'string' }
+                    }
+                }
+            },
+            tags: ['User']
+        }
+    }, addFriend)
 }

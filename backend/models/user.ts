@@ -14,6 +14,9 @@ class User extends Model {
     public setStats!: (stats: Stats[] | number[]) => Promise<void>;
     public stats?: Stats[];
     public tfa_code?: string;
+    public active!: boolean;
+    public friends?: string[];
+    public fr_request?: string[];
 }
 
 User.init(
@@ -58,6 +61,21 @@ User.init(
             type: DataTypes.STRING,
             allowNull: true,
         },
+        active: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false,
+        },
+        friends:{
+            type: DataTypes.ARRAY(DataTypes.STRING),
+            allowNull: true,
+            defaultValue: [],
+        },
+        fr_request:{
+            type: DataTypes.ARRAY(DataTypes.STRING),
+            allowNull: true,
+            defaultValue: [],
+        }
     },
     {
         sequelize,

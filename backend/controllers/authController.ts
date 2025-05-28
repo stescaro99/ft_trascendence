@@ -70,6 +70,8 @@ export async function verify2FA(request: FastifyRequest, reply: FastifyReply) {
         if (verified) {
             const payload = { id: user.id, nickname: user.nickname };
             const jwtToken = createJWT(payload);
+            user.active = true;
+            await user.save();
             reply.code(200).send({ message: '2FA verified successfully, you are now logged in', token: jwtToken, user });
         } else {
             reply.code(401).send({ error: 'Invalid 2FA token' });
