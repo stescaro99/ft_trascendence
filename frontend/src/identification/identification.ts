@@ -1,9 +1,15 @@
 import autentificationHtml from './identification.html?raw';
 import { User } from '../model/user.model';
+import { UserService } from '../service/user.service';
+import { AuthenticationService } from '../service/authentication.service';
 import '../style.css';
 
 export class IdentificationPage {
 	user: User = new User();
+	userService: UserService = new UserService();
+	authenticationService: AuthenticationService = new AuthenticationService();
+	qrCode: string = '';
+
 	constructor() {
     this.render();
     this.addEventListeners();
@@ -15,10 +21,24 @@ export class IdentificationPage {
 
   private handleSubmit(event: Event) {
 	console.log('button');
-	localStorage.setItem('user', JSON.stringify(this.user));
-    event.preventDefault();
-    alert('Form inviato!');
-	window.location.hash = '/';
+	localStorage.setItem('user', JSON.stringify(this.user.nickname));
+  event.preventDefault();
+  this.userService.postUserToApi(this.user)
+  .then((response) => {
+    console.log('User saved successfully:', response);
+	this.authenticationService.takeQrCodeFromApi(this.user.nickname, this.user.password) 
+	.then((qrResponse) => {
+		this.qrCode = qrResponse.qrCode;
+		const qrLabel = document.querySelector('label[for="qrCode"]');
+		if (qrLabel) { 
+		  qrLabel.textContent =  this.qrCode;
+		}
+	})
+    })
+    .catch((error) => {
+      console.error('Error saving user:', error);
+    });
+	// window.location.hash = '/';
 
   }
 
