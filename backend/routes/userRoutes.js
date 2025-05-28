@@ -124,5 +124,54 @@ function default_1(server) {
                 tags: ['User']
             }
         }, userController_1.updateUser);
+        server.post('/upload_image', {
+            schema: {
+                consumes: ['multipart/form-data'],
+                body: {
+                    type: 'object',
+                    properties: {
+                        image: { type: 'string', format: 'binary' }
+                    },
+                    required: ['image']
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            imageUrl: { type: 'string' }
+                        }
+                    }
+                },
+                tags: ['User']
+            }
+        }, userController_1.uploadImage);
+        server.put('/add_friend', {
+            preHandler: jwt_1.verifyJWT,
+            schema: {
+                body: {
+                    type: 'object',
+                    required: ['user1', 'user2'],
+                    properties: {
+                        user1: { type: 'string' },
+                        user2: { type: 'string' },
+                    }
+                },
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            message: { type: 'string' },
+                        }
+                    },
+                    404: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' }
+                        }
+                    }
+                },
+                tags: ['User']
+            }
+        }, userController_1.addFriend);
     });
 }
