@@ -4,6 +4,7 @@ import fs from 'fs';
 import dotenv from 'dotenv';
 import fastifyMultipart from '@fastify/multipart';
 import fastifyStatic from '@fastify/static';
+import fastifyCors from '@fastify/cors';
 
 dotenv.config();
 
@@ -23,6 +24,10 @@ const server = Fastify({ logger: true });
 
 const start = async (sequelize: any) => {
     try {
+        await server.register(fastifyCors, {
+            origin: true,
+            credentials: true
+        });
         await server.register(swagger, {
             openapi: {
                 info: {
