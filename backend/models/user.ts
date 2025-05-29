@@ -66,13 +66,13 @@ User.init(
             allowNull: false,
             defaultValue: false,
         },
-        friends:{
-            type: DataTypes.ARRAY(DataTypes.STRING),
+        friends: {
+            type: DataTypes.JSON,
             allowNull: true,
             defaultValue: [],
         },
-        fr_request:{
-            type: DataTypes.ARRAY(DataTypes.STRING),
+        fr_request: {
+            type: DataTypes.JSON,
             allowNull: true,
             defaultValue: [],
         }

@@ -84,6 +84,8 @@ function verify2FA(request, reply) {
             if (verified) {
                 const payload = { id: user.id, nickname: user.nickname };
                 const jwtToken = (0, jwt_1.createJWT)(payload);
+                user.active = true;
+                yield user.save();
                 reply.code(200).send({ message: '2FA verified successfully, you are now logged in', token: jwtToken, user });
             }
             else {

@@ -49,6 +49,21 @@ User.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,
     },
+    active: {
+        type: sequelize_1.DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+    },
+    friends: {
+        type: sequelize_1.DataTypes.JSON,
+        allowNull: true,
+        defaultValue: [],
+    },
+    fr_request: {
+        type: sequelize_1.DataTypes.JSON,
+        allowNull: true,
+        defaultValue: [],
+    }
 }, {
     sequelize: db_1.default,
     modelName: 'User',

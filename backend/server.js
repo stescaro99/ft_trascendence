@@ -49,6 +49,8 @@ const fastify_1 = __importDefault(require("fastify"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const multipart_1 = __importDefault(require("@fastify/multipart"));
+const static_1 = __importDefault(require("@fastify/static"));
 dotenv_1.default.config();
 const dbDir = path_1.default.join(__dirname, 'db');
 const dbPath = path_1.default.join(dbDir, 'database.db');
@@ -83,6 +85,11 @@ const start = (sequelize) => __awaiter(void 0, void 0, void 0, function* () {
         });
         yield server.register(swagger_ui_1.default, {
             routePrefix: '/swagger'
+        });
+        yield server.register(multipart_1.default);
+        yield server.register(static_1.default, {
+            root: path_1.default.join(__dirname, '../uploads'),
+            prefix: '/uploads/',
         });
         const routes_path = path_1.default.join(__dirname, 'routes');
         fs_1.default.readdirSync(routes_path).forEach((file) => {
