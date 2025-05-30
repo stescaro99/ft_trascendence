@@ -9,9 +9,16 @@ export class HomePage{
 	constructor() {
 	this.user = this.userService.getUser();
     this.render();
+	const logoutButton = document.getElementById('logoutButton');
+	if (logoutButton) {
+	logoutButton.addEventListener('click', () => {
+	  // Esegui il logout, ad esempio:
+	  localStorage.removeItem('user');
+	  window.location.hash = '/identification'; // o dove vuoi reindirizzare
+	});
   }
+}
 	private render() {
     document.body.innerHTML = homeHtml;
   }
 }
-7
