@@ -31,15 +31,50 @@ export class IdentificationPage {
 		this.qrCode = qrResponse.qrCode;
 		const qrLabel = document.querySelector('label[for="qrCode"]');
 		if (qrLabel) { 
-		  qrLabel.innerHTML = `<img src="${this.qrCode}" alt="QR Code" style="width: 200px; height: 200px;" /> \n 
-		  <br><input type="text" id="token2FA" placeholder="Enter 2FA token" class=" bg-stone-600 round-mid" /></input>`;
+		  qrLabel.innerHTML = `  <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+		<img src="${this.qrCode}" alt="QR Code" style="width: 200px; height: 200px;" />
+		<div id="token2FA" style="display: flex; gap: 8px; justify-content: center;">
+			<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
+			<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
+			<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
+			-
+			<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
+			<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
+			<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
+		</div>
+			<button id="verify2FA" class="bg-blue-600 round-med text-center text-white w-full max-w-50">Very</button>
+		</div>`;
 		}
-	})
+		const inputs = document.querySelectorAll('#token2FA input');
+		inputs.forEach((input, idx) => {
+			input.addEventListener('input', () => {
+				if ((input as HTMLInputElement).value.length === 1 && idx < inputs.length - 1) {
+					(inputs[idx + 1] as HTMLInputElement).focus();
+				}	
+			});
+		});
+		const verifyBtn = document.getElementById('verify2FA');
+		if (verifyBtn) {
+			verifyBtn.addEventListener('click', () => {
+				const inputs = document.querySelectorAll('#token2FA input');
+				let code = '';
+				inputs.forEach(input => {
+				code += (input as HTMLInputElement).value;
+				});
+				this.authenticationService.verifyQrCodeFromApi(this.user.nickname, code)
+				.then((verifyResponse) => {
+					console.log('2FA verified successfully:', verifyResponse);
+					localStorage.setItem('user', JSON.stringify(verifyResponse.user));
+					window.location.hash = '/home';
+			})
+			});
+	}
+})
+
     })
     .catch((error) => {
       console.error('Error saving user:', error);
     });
-	// window.location.hash = '/';
 
   }
 
