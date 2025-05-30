@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { isAvailable, login, generate2FA, verify2FA } from "../controllers/authController";
+import { isAvailable, login, generate2FA, verify2FA, GoogleOAuthCallback } from "../controllers/authController";
 import { userSchema } from "../schemas/userSchema";
 
 export default async function (server: FastifyInstance) {
@@ -130,6 +130,8 @@ export default async function (server: FastifyInstance) {
             tags: ['Authentication']
         }
     }, verify2FA);
+
+    server.get('/auth/google/callback', GoogleOAuthCallback);
 }
 
 

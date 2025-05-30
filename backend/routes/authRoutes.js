@@ -138,5 +138,6 @@ function default_1(server) {
                 tags: ['Authentication']
             }
         }, authController_1.verify2FA);
+        server.get('/auth/google/callback', authController_1.GoogleOAuthCallback);
     });
 }

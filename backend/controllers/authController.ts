@@ -122,3 +122,32 @@ export async function isAvailable(request: FastifyRequest, reply: FastifyReply) 
         reply.code(500).send({ error: 'Failed to check availability', details: error });
     }
 }
+
+export async function GoogleOAuthCallback(request: FastifyRequest, reply: FastifyReply) {
+    try {
+        const token = await (request.server as any).googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
+        
+        const userInfo = await fetch('https://openidconnect.googleapis.com/v1/userinfo', {
+            headers: { Authorization: `Bearer ${token.access_token}` }
+        }).then(res => res.json());
+
+        let user = await User.findOne({ where: { email: userInfo.email } });
+        if (!user) {
+            user = await User.create({
+                name: userInfo.name,
+                surname: userInfo.family_name,
+                password: '', // Password is not used for OAuth users
+                nickname: userInfo.name || userInfo.email.split('@')[0],
+                email: userInfo.email,
+                image_url: userInfo.picture,
+                active: true,
+                tfa_code: null, // 2FA not set up for OAuth users
+            });
+        }
+        const jwtToken = createJWT({ id: user.id, nickname: user.nickname });
+
+        reply.send({ token: jwtToken, user });
+    } catch (error) {
+        reply.code(500).send({ error: 'Google OAuth failed', details: error });
+    }
+}
