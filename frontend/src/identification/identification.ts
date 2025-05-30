@@ -31,7 +31,8 @@ export class IdentificationPage {
 		this.qrCode = qrResponse.qrCode;
 		const qrLabel = document.querySelector('label[for="qrCode"]');
 		if (qrLabel) { 
-		  qrLabel.textContent =  this.qrCode;
+		  qrLabel.innerHTML = `<img src="${this.qrCode}" alt="QR Code" style="width: 200px; height: 200px;" /> \n 
+		  <br><input type="text" id="token2FA" placeholder="Enter 2FA token" class=" bg-stone-600 round-mid" /></input>`;
 		}
 	})
     })
