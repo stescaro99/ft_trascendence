@@ -16,6 +16,7 @@ exports.generate2FA = generate2FA;
 exports.verify2FA = verify2FA;
 exports.login = login;
 exports.isAvailable = isAvailable;
+exports.GoogleOAuthCallback = GoogleOAuthCallback;
 const user_1 = __importDefault(require("../models/user"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jwt_1 = require("../utils/jwt");
@@ -136,6 +137,34 @@ function isAvailable(request, reply) {
         }
         catch (error) {
             reply.code(500).send({ error: 'Failed to check availability', details: error });
+        }
+    });
+}
+function GoogleOAuthCallback(request, reply) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const token = yield request.server.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
+            const userInfo = yield fetch('https://openidconnect.googleapis.com/v1/userinfo', {
+                headers: { Authorization: `Bearer ${token.access_token}` }
+            }).then(res => res.json());
+            let user = yield user_1.default.findOne({ where: { email: userInfo.email } });
+            if (!user) {
+                user = yield user_1.default.create({
+                    name: userInfo.name,
+                    surname: userInfo.family_name,
+                    password: '', // Password is not used for OAuth users
+                    nickname: userInfo.name || userInfo.email.split('@')[0],
+                    email: userInfo.email,
+                    image_url: userInfo.picture,
+                    active: true,
+                    tfa_code: null, // 2FA not set up for OAuth users
+                });
+            }
+            const jwtToken = (0, jwt_1.createJWT)({ id: user.id, nickname: user.nickname });
+            reply.send({ token: jwtToken, user });
+        }
+        catch (error) {
+            reply.code(500).send({ error: 'Google OAuth failed', details: error });
         }
     });
 }

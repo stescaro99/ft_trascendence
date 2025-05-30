@@ -59,20 +59,6 @@
 
 ---
 
-### Blockchain  ??????????????????????????????
-1. **Utilizza la blockchain Avalanche**:
-   - Configura un ambiente di sviluppo per Avalanche.
-   - Crea un account e ottieni credenziali per interagire con la blockchain.
-
-2. **Scrivi smart contract in Solidity**:
-   - Scrivi uno smart contract per registrare i punteggi dei tornei.
-   - Implementa funzioni per aggiungere, aggiornare e leggere i punteggi.
-
-3. **Interagisci con la blockchain**:
-   - Usa una libreria per comunicare con la blockchain dal backend.
-
----
-
 ### AI e dashboard
 1. **Modulo AI**:
    - Implementa un avversario AI che simula un giocatore umano.

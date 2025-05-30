@@ -51,6 +51,8 @@ const fs_1 = __importDefault(require("fs"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const multipart_1 = __importDefault(require("@fastify/multipart"));
 const static_1 = __importDefault(require("@fastify/static"));
+const cors_1 = __importDefault(require("@fastify/cors"));
+const oauth2_1 = __importDefault(require("@fastify/oauth2"));
 dotenv_1.default.config();
 const dbDir = path_1.default.join(__dirname, 'db');
 const dbPath = path_1.default.join(dbDir, 'database.db');
@@ -63,6 +65,10 @@ const swagger_ui_1 = __importDefault(require("@fastify/swagger-ui"));
 const server = (0, fastify_1.default)({ logger: true });
 const start = (sequelize) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        yield server.register(cors_1.default, {
+            origin: true,
+            credentials: true
+        });
         yield server.register(swagger_1.default, {
             openapi: {
                 info: {
@@ -90,6 +96,19 @@ const start = (sequelize) => __awaiter(void 0, void 0, void 0, function* () {
         yield server.register(static_1.default, {
             root: path_1.default.join(__dirname, '../uploads'),
             prefix: '/uploads/',
+        });
+        yield server.register(oauth2_1.default, {
+            name: 'googleOAuth2',
+            scope: ['profile', 'email'],
+            credentials: {
+                client: {
+                    id: process.env.GOOGLE_CLIENT_ID,
+                    secret: process.env.GOOGLE_CLIENT_SECRET,
+                },
+                auth: oauth2_1.default.GOOGLE_CONFIGURATION,
+            },
+            startRedirectPath: '/auth/google',
+            callbackUri: process.env.GOOGLE_REDIRECT_URI || 'http://localhost:2807/auth/google/callback',
         });
         const routes_path = path_1.default.join(__dirname, 'routes');
         fs_1.default.readdirSync(routes_path).forEach((file) => {
