@@ -71,13 +71,13 @@ const start = async (sequelize: any) => {
             },
             startRedirectPath: '/auth/google',
             callbackUri: process.env.GOOGLE_REDIRECT_URI || 'http://localhost:2807/auth/google/callback',
-            //debug
-
-            console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
-            console.log('GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET);
-            console.log('GOOGLE_REDIRECT_URI:', process.env.GOOGLE_REDIRECT_URI);
-        
+            
         });
+        //debug
+
+        console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
+        console.log('GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET);
+        console.log('GOOGLE_REDIRECT_URI:', process.env.GOOGLE_REDIRECT_URI);
         const routes_path = path.join(__dirname, 'routes');
         fs.readdirSync(routes_path).forEach((file) => {
             if (file.endsWith('.js')) {
