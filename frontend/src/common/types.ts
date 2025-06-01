@@ -4,6 +4,7 @@ export interface Ball {
     dx: number;
     dy: number;
     radius: number;
+    speed: number;
   }
   
   export interface Paddle {
@@ -12,7 +13,6 @@ export interface Ball {
     dy: number;
     speed: number;
     height: number;
-    color?: string;
   }
   
   export interface PowerUp {
@@ -25,16 +25,14 @@ export interface Ball {
   
   export interface GameState {
     ball: Ball;
-    leftPaddle: Paddle;
-    rightPaddle: Paddle;
+    leftPaddle: Paddle[];
+    rightPaddle: Paddle[];
     powerUp: PowerUp;
     scoreLeft: number;
     scoreRight: number;
     paddleHeight: number;
     canvas: HTMLCanvasElement;
     waitingForStart: boolean;
-    countdownActive: boolean;
-    countdown: number;
     maxScore: number;
     paddleWidth: number;
   }
