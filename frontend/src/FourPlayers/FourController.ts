@@ -8,6 +8,8 @@ const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 const paddleHeight = canvas.height / 6;
 const paddleWidth = 10;
 
+const isBotActive = false;
+
 const game: GameState = {
   ball: {
     x: canvas.width / 2,

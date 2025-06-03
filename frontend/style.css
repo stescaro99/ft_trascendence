@@ -107,3 +107,7 @@
     box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff inset;
   }
   
+  .btn-large.active-bot {
+  background: #4caf50;
+  color: #fff;
+}

@@ -1,5 +1,6 @@
 import { TwoGameLoop } from "./TwoPlayers/TwoController";
 import { FourGameLoop } from "./FourPlayers/FourController";
+import { setBotActive, getBotActive } from "./common/BotState";
 
 const canvas = document.getElementById("pong") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -16,9 +17,18 @@ const preview4 = document.getElementById("Preview4") as HTMLDivElement;
 let Team1Color = "#ffffff";
 let Team2Color = "#ffffff";
 
+let isBotActive = false;
 const colors = ["#ff0000", "#00ff00", "#ffff00", "#800080", "#007bff", "#ffffff"];
 
 const paletteContainers = document.querySelectorAll(".palette");
+
+const addBotBtn = document.getElementById("addBotBtn");
+addBotBtn?.addEventListener("click", () => {
+  isBotActive = !isBotActive;
+  setBotActive(isBotActive);
+  addBotBtn.classList.toggle("active-bot", isBotActive);
+  addBotBtn.textContent = isBotActive ? "BOT ATTIVO" : "ADD BOT";
+});
 
 paletteContainers.forEach((palette) => {
   palette.innerHTML = "";
