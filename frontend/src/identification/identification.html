@@ -1,44 +1,42 @@
-<div class="@container mt-5 bg-gradient-to-t from-blue-300 to-indigo-600 flex flex-col gap-2 p-4 items-center w-full mx-auto min-h-screen">
+<div class="@container mt-5 bg-black  flex flex-col gap-2 p-4 items-center w-full mx-auto min-h-screen">
     <form id="loginForm">
         <div>
-            <h1 class="text-white text-lg">Identification</h1>
+			<br>
+            <h1 class="text-cyan-400 text-lg  font-bold drop-shadow-[0_0_8px_cyan]">Identification</h1>
+			<br>
             <label class="flex items-center gap-2 w-full">
-                <span class="w-24 text-white">Name:</span>
-                <input type="text" class="bg-indigo-200 rounded-full border-indigo-700 border-4 w-full max-w-50"
+                <span class="w-24 text-cyan-300 drop-shadow-[0_0_6px_cyan]">Name:</span>
+                <input type="text" class="bg-gray-900 text-cyan-200 rounded-xl border-cyan-400 border-4 w-full max-w-50 shadow-[0_0_10px_#22d3ee] focus:ring-2 focus:ring-cyan-400"
                     placeholder="Enter your name" id="nameInput" />
             </label>
     
-            <label class="flex items-center gap-2 w-full">
-                <span class="w-24 text-white">Surname:</span>
-                <input type="text" class="bg-indigo-200 rounded-full border-indigo-700 border-4 w-full max-w-50"
+             <label class="flex items-center gap-2 w-full">
+                <span class="w-24 text-cyan-300 drop-shadow-[0_0_6px_cyan]">Surname:</span>
+                <input type="text" class="bg-gray-900 text-cyan-200 rounded-xl border-cyan-400 border-4 w-full max-w-50 shadow-[0_0_10px_#22d3ee] focus:ring-2 focus:ring-cyan-400"
                     placeholder="Enter your surname" id="surnameInput" />
             </label>
             <label class="flex items-center gap-2 w-full">
-                <span class="w-24 text-white">Nickname:</span>
-                <input type="text" class="bg-indigo-200 rounded-full border-indigo-700 border-4 w-full max-w-50"
+                <span class="w-24 text-cyan-300 drop-shadow-[0_0_6px_cyan]">Nickname:</span>
+                <input type="text" class="bg-gray-900 text-cyan-200 rounded-xl border-cyan-400 border-4 w-full max-w-50 shadow-[0_0_10px_#22d3ee] focus:ring-2 focus:ring-cyan-400"
                     placeholder="Enter your nickname" id="nicknameInput" />
             </label>
-    
             <label class="flex items-center gap-2 w-full">
-                <span class="w-24 text-white">Email:</span>
-                <input type="text" class="bg-indigo-200 rounded-full border-indigo-700 border-4 w-full max-w-50"
+                <span class="w-24 text-cyan-300 drop-shadow-[0_0_6px_cyan]">Email:</span>
+                <input type="text" class="bg-gray-900 text-cyan-200 rounded-xl border-cyan-400 border-4 w-full max-w-50 shadow-[0_0_10px_#22d3ee] focus:ring-2 focus:ring-cyan-400"
                     placeholder="Enter your email" id="emailInput" />
             </label>
-    
             <label class="flex items-center gap-2 w-full">
-                <span class="w-24 text-white">Password:</span>
-                <input type="text" class="bg-indigo-200 rounded-full border-indigo-700 border-4 w-full max-w-50"
+                <span class="w-24 text-cyan-300 drop-shadow-[0_0_6px_cyan]">Password:</span>
+                <input type="password" class="bg-gray-900 text-cyan-200 rounded-xl border-cyan-400 border-4 w-full max-w-50 shadow-[0_0_10px_#22d3ee] focus:ring-2 focus:ring-cyan-400"
                     placeholder="Enter your password" id="passwordInput" />
             </label>
-    
-            <label class="flex items-center gap-2 w-full text-white">
+            <label class="flex items-center gap-2 w-full text-cyan-300 drop-shadow-[0_0_6px_cyan]">
                 <span class="w-24">Image:</span>
-                <input type="file" id="imageInput" accept="image/*" class="w-full" />
+                <input type="file" id="imageInput" accept="image/*" class="w-full bg-black text-cyan-200 rounded-xl" />
             </label>
-    
-            <button id="submitButton" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-md w-full max-w-50"
+            <button id="submitButton" class="mt-2 bg-cyan-400 text-black font-bold px-4 py-2 rounded-md w-full max-w-50 shadow-[0_0_12px_#22d3ee] hover:bg-cyan-300 hover:shadow-[0_0_20px_#22d3ee]"
                 type="submit">Submit</button>
-            </div>
-        </form>
+        </div>
+    </form>
         <label for="qrCode"></label>
 </div>
