@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 .arcade-font {
-    font-family: 'Arcade';
+    font-family: 'Arcade' !important;
 }
 
 .sidebar-icon {
@@ -17,3 +17,5 @@
             rounded-3xl hover:rounded-xl
             transition-all duration-200 ease-linear;
 }
+
+
