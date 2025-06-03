@@ -145,6 +145,7 @@ export function FourGameLoop(TeamLeft: string, TeamRight: string)
 {
   if (game.scoreLeft >= game.maxScore || game.scoreRight >= game.maxScore)
   {
+      // Fine partita, aggiungere salvataggio statistiche backend
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = "white";
       ctx.font = "40px Arial";
