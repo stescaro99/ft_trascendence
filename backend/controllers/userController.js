@@ -158,7 +158,7 @@ function uploadImage(request, reply) {
                     const filepath = path_1.default.join(uploadDir, filename);
                     const writeStream = fs_1.default.createWriteStream(filepath);
                     yield filePart.file.pipe(writeStream);
-                    const imageUrl = `blob:${request.protocol}://${request.hostname}/images/${filename}`;
+                    const imageUrl = `${request.protocol}://${request.hostname}:2807/uploads/${filename}`;
                     return reply.code(200).send({ imageUrl });
                 }
             }
