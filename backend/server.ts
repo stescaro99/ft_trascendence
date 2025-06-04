@@ -7,7 +7,7 @@ import fastifyStatic from '@fastify/static';
 import fastifyCors from '@fastify/cors';
 import fastifyOauth2 from '@fastify/oauth2';
 
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const dbDir = path.join(__dirname, 'db');
 const dbPath = path.join(dbDir, 'database.db');

@@ -53,7 +53,7 @@ const multipart_1 = __importDefault(require("@fastify/multipart"));
 const static_1 = __importDefault(require("@fastify/static"));
 const cors_1 = __importDefault(require("@fastify/cors"));
 const oauth2_1 = __importDefault(require("@fastify/oauth2"));
-dotenv_1.default.config();
+dotenv_1.default.config({ path: path_1.default.join(__dirname, '../.env') });
 const dbDir = path_1.default.join(__dirname, 'db');
 const dbPath = path_1.default.join(dbDir, 'database.db');
 if (!fs_1.default.existsSync(dbDir)) {
@@ -110,6 +110,10 @@ const start = (sequelize) => __awaiter(void 0, void 0, void 0, function* () {
             startRedirectPath: '/auth/google',
             callbackUri: process.env.GOOGLE_REDIRECT_URI || 'http://localhost:2807/auth/google/callback',
         });
+        //debug
+        console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
+        console.log('GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET);
+        console.log('GOOGLE_REDIRECT_URI:', process.env.GOOGLE_REDIRECT_URI);
         const routes_path = path_1.default.join(__dirname, 'routes');
         fs_1.default.readdirSync(routes_path).forEach((file) => {
             if (file.endsWith('.js')) {

@@ -129,12 +129,13 @@ export async function uploadImage(request: FastifyRequest, reply: FastifyReply) 
             const filepath = path.join(uploadDir, filename);
             const writeStream = fs.createWriteStream(filepath);
             await filePart.file.pipe(writeStream);
-            const imageUrl = `${request.protocol}://${request.hostname}/images/${filename}`;
+            const imageUrl = `${request.protocol}://${request.hostname}:2807/uploads/${filename}`;
             return reply.code(200).send({ imageUrl });
         }
     }
     reply.code(400).send({ error: 'No image uploaded' });
 }
+
 
 export async function addFriend(request: FastifyRequest, reply: FastifyReply) {
     const { user1, user2 } = request.body as { user1: string; user2: string };
@@ -191,5 +192,3 @@ export async function addFriend(request: FastifyRequest, reply: FastifyReply) {
         return reply.code(500).send({ error: 'Internal server error' });
     }
 }
-
-

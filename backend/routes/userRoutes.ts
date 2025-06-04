@@ -120,13 +120,6 @@ export default async function (server: FastifyInstance) {
     server.post('/upload_image', {
         schema: {
             consumes: ['multipart/form-data'],
-            body: {
-                type: 'object',
-                properties: {
-                    image: { type: 'string', format: 'binary' }
-                },
-                required: ['image']
-            },
             response: {
                 200: {
                     type: 'object',
