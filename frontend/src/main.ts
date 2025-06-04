@@ -17,17 +17,44 @@ const preview4 = document.getElementById("Preview4") as HTMLDivElement;
 let Team1Color = "#ffffff";
 let Team2Color = "#ffffff";
 
-let isBotActive = false;
 const colors = ["#ff0000", "#00ff00", "#ffff00", "#800080", "#007bff", "#ffffff"];
 
 const paletteContainers = document.querySelectorAll(".palette");
 
-const addBotBtn = document.getElementById("addBotBtn");
-addBotBtn?.addEventListener("click", () => {
-  isBotActive = !isBotActive;
-  setBotActive(isBotActive);
-  addBotBtn.classList.toggle("active-bot", isBotActive);
-  addBotBtn.textContent = isBotActive ? "BOT ATTIVO" : "ADD BOT";
+const addBotBtn0 = document.getElementById("addBotBtn0");
+addBotBtn0?.addEventListener("click", () => {
+  const botIndex = 0;
+  const newState = !getBotActive(botIndex);
+  setBotActive(botIndex, newState);
+  addBotBtn0.classList.toggle("active-bot", newState);
+  addBotBtn0.textContent = newState ? "BOT ATTIVO" : "Add Bot";
+});
+
+const addBotBtn1 = document.getElementById("addBotBtn1");
+addBotBtn1?.addEventListener("click", () => {
+  const botIndex = 1;
+  const newState = !getBotActive(botIndex);
+  setBotActive(botIndex, newState);
+  addBotBtn1.classList.toggle("active-bot", newState);
+  addBotBtn1.textContent = newState ? "BOT ATTIVO" : "Add Bot";
+});
+
+const addBotBtn2 = document.getElementById("addBotBtn2");
+addBotBtn2?.addEventListener("click", () => {
+  const botIndex = 2;
+  const newState = !getBotActive(botIndex);
+  setBotActive(botIndex, newState);
+  addBotBtn2.classList.toggle("active-bot", newState);
+  addBotBtn2.textContent = newState ? "BOT ATTIVO" : "Add Bot";
+});
+
+const addBotBtn3 = document.getElementById("addBotBtn3");
+addBotBtn3?.addEventListener("click", () => {
+  const botIndex = 3;
+  const newState = !getBotActive(botIndex);
+  setBotActive(botIndex, newState);
+  addBotBtn3.classList.toggle("active-bot", newState);
+  addBotBtn3.textContent = newState ? "BOT ATTIVO" : "Add Bot";
 });
 
 paletteContainers.forEach((palette) => {

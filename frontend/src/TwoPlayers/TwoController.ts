@@ -1,7 +1,7 @@
 import { GameState } from "../common/types"; 
 import { update } from "./TwoGameUpdate";
 import { drawBall, drawRect, drawScore, drawPowerUp, drawField } from "./TwoDraw";
-import { setBotActive, getBotActive } from "../common/BotState";
+import { getBotActive } from "../common/BotState";
 
 const canvas = document.getElementById("pong") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -61,13 +61,13 @@ const game: GameState = {
 document.addEventListener("keydown", (e) => {
     if (e.key === "w") game.leftPaddle[0].dy = -game.leftPaddle[0].speed;
     if (e.key === "s") game.leftPaddle[0].dy = game.leftPaddle[0].speed;
-    if (!getBotActive() && e.key === "ArrowUp") game.rightPaddle[0].dy = -game.rightPaddle[0].speed;
-    if (!getBotActive() && e.key === "ArrowDown") game.rightPaddle[0].dy = game.rightPaddle[0].speed;
+    if (!getBotActive(0) && e.key === "ArrowUp") game.rightPaddle[0].dy = -game.rightPaddle[0].speed;
+    if (!getBotActive(0) && e.key === "ArrowDown") game.rightPaddle[0].dy = game.rightPaddle[0].speed;
   });
   
 document.addEventListener("keyup", (e) => {
     if (e.key === "w" || e.key === "s") game.leftPaddle[0].dy = 0;
-    if (!getBotActive() && (e.key === "ArrowUp" || e.key === "ArrowDown")) game.rightPaddle[0].dy = 0;
+    if (!getBotActive(0) && (e.key === "ArrowUp" || e.key === "ArrowDown")) game.rightPaddle[0].dy = 0;
   });
 
 // === Funzioni di disegno ===
@@ -98,11 +98,11 @@ export function TwoGameLoop(paddleColor1: string, paddleColor2: string)
       return;
   }
 
-    // --- logica bot---
-  if (getBotActive()) {
+  // --- logica bot---
+  if (getBotActive(0)) {
     const bot = game.rightPaddle[0];
     const ball = game.ball;
-    // Muovi il bot solo se la palla va verso destra
+    
     if (ball.dx > 0) {
       if (ball.y < bot.y + bot.height / 2) {
         bot.dy = -bot.speed;
@@ -112,7 +112,7 @@ export function TwoGameLoop(paddleColor1: string, paddleColor2: string)
         bot.dy = 0;
       }
     } else {
-      bot.dy = 0; // Fermo se la palla non va verso il bot
+      bot.dy = 0;
     }
   }
   // --- fine logica bot ---

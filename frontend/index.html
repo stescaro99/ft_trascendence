@@ -34,7 +34,7 @@
         <p>SELEZIONA COLORE</p>
         <div class="palette" data-player="2"></div>
         <div id="Preview2" class="paddle-preview"></div>
-        <button id="addBotBtn" class="btn-large">Add Bot</button>
+        <button id="addBotBtn0" class="btn-large">Add Bot</button>
       </div>
     </div>
 
@@ -44,6 +44,7 @@
         <p>SELEZIONA COLORE</p>
         <div class="palette" data-player="3"></div>
         <div id="Preview3" class="paddle-preview"></div>
+        <button id="addBotBtn1" class="btn-large">Add Bot</button>
       </div>
 
       <div class="spacer"></div>
@@ -60,6 +61,8 @@
         <p>SELEZIONA COLORE</p>
         <div class="palette" data-player="4"></div>
         <div id="Preview4" class="paddle-preview"></div>
+        <button id="addBotBtn2" class="btn-large">Add Bot</button>
+        <button id="addBotBtn3" class="btn-large">Add Bot</button>
       </div>
     </div>
 
@@ -69,7 +72,7 @@
     <script>
       function showScreen(screenId) {
         document.querySelectorAll(".screen").forEach(el => el.classList.remove("visible"));
-        document.getElementById("pong").style.display = "none"; // nascondi canvas
+        document.getElementById("pong").style.display = "none";
 
         const target = document.getElementById(screenId);
         if (target) {
