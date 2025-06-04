@@ -1,7 +1,7 @@
 
 @font-face {
     font-family: 'Arcade';
-    src: url('./fonts/arcade-classic.ttf');
+    src: url('/fonts/arcade-classic.ttf');
     font-weight: normal;
     font-style: normal;
     font-display: swap;

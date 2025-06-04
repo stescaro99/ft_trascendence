@@ -1,4 +1,5 @@
 import homePage from './home/home';
+import './style.css'
 import autentificationPage from './identification/identification';
 
 console.log("Script caricato");
