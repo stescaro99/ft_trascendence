@@ -85,6 +85,40 @@ function render(paddleColor1: string, paddleColor2: string)
 
 // === Game loop ===
 
+let botInterval: number | undefined = undefined;
+
+function predictBallY(ball: any, paddleX: number): number {
+  let x = ball.x;
+  let y = ball.y;
+
+  let velX = ball.dx * ball.speed;
+  let velY = ball.dy * ball.speed;
+
+  while ((velX > 0 && x < paddleX) || (velX < 0 && x > paddleX)) {
+    x += velX;
+    y += velY;
+
+    if (y <= ball.radius) {
+      y = ball.radius;
+      velY = -velY;
+    }
+    if (y >= canvas.height - ball.radius) {
+      y = canvas.height - ball.radius;
+      velY = -velY;
+    }
+  }
+  return y;
+}
+
+let predictedY: number | null = null;
+
+function moveBotPaddle() {
+  if (!getBotActive(0)) return;
+  const bot = game.rightPaddle[0];
+
+  predictedY = predictBallY(game.ball, bot.x)
+}
+
 export function TwoGameLoop(paddleColor1: string, paddleColor2: string)
 {
   if (game.scoreLeft >= game.maxScore || game.scoreRight >= game.maxScore)
@@ -95,27 +129,43 @@ export function TwoGameLoop(paddleColor1: string, paddleColor2: string)
       ctx.font = "40px Arial";
       const winner = game.scoreLeft > game.scoreRight ? "Giocatore 1" : "Giocatore 2";
       ctx.fillText(`${winner} ha vinto!`, canvas.width / 2, canvas.height / 2);
+
+      if (botInterval) {
+        clearInterval(botInterval);
+        botInterval = undefined;
+      }
+
       return;
   }
 
-  // --- logica bot---
-  if (getBotActive(0)) {
+    // --- muovo il bot fino all'ultima prediction---
+
+    if (getBotActive(0) && predictedY !== null) {
     const bot = game.rightPaddle[0];
-    const ball = game.ball;
-    
-    if (ball.dx > 0) {
-      if (ball.y < bot.y + bot.height / 2) {
-        bot.dy = -bot.speed;
-      } else if (ball.y > bot.y + bot.height / 2) {
-        bot.dy = bot.speed;
-      } else {
-        bot.dy = 0;
-      }
-    } else {
+
+    const centerY = bot.y + bot.height / 2;
+
+    const diff = predictedY - centerY;
+
+    const threshold = bot.speed * 2;
+
+    if (Math.abs(diff) <= threshold) {
+ 
       bot.dy = 0;
+      bot.y = predictedY - bot.height / 2;
+    } else if (diff < 0) {
+
+      bot.dy = -bot.speed;
+    } else {
+
+      bot.dy = bot.speed;
     }
   }
-  // --- fine logica bot ---
+
+  // --- calcolo posizione pallina ogni 1s---
+  if (!botInterval && getBotActive(0)) {
+    botInterval = setInterval(moveBotPaddle, 1000);
+  }
 
   update(game);
   render(paddleColor1, paddleColor2);
