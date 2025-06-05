@@ -1,7 +1,7 @@
 import { GameState } from "./../common/types"; 
 import { update } from "./FourGameUpdate";
 import { drawBall, drawRect, drawScore, drawPowerUp, drawField } from "./FourDraw";
-import { getBotActive } from "../common/BotState";
+import { getBotActive, predictBallY, moveBot} from "../common/BotState";
 
 const canvas = document.getElementById("pong") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -155,8 +155,33 @@ function render(TeamLeft: string, TeamRight: string)
 
 // === Game loop ===
 
-let bot1Strategy: "follow" | "up" | "down" | "stop" = "stop";
-let lastDir = game.ball.dx < 0 ? -1 : 1;
+let turn = 0;
+
+let botInterval: number | undefined = undefined;
+
+function moveBotPaddle() {
+  if (getBotActive(1)) {
+    const randomOffset = (Math.random() - 0.5) * 120;
+    predictedY[1] = predictBallY(game.ball, game.leftPaddle[1].x) + randomOffset;
+  }
+  if (getBotActive(2) && turn == 0) {
+    turn = 1;
+    const randomOffset = (Math.random() - 0.5) * 120;
+    predictedY[2] = predictBallY(game.ball, game.rightPaddle[0].x) + randomOffset;
+  }
+  if (getBotActive(3) && turn == 1) {
+    turn = 0;
+    const randomOffset = (Math.random() - 0.5) * 120;
+    predictedY[3] = predictBallY(game.ball, game.rightPaddle[1].x) + randomOffset;
+  }
+}
+
+let predictedY: (number | null)[] = [
+  null,
+  predictBallY(game.ball, game.leftPaddle[1].x),
+  predictBallY(game.ball, game.rightPaddle[0].x),
+  predictBallY(game.ball, game.rightPaddle[1].x),
+];
 
 export function FourGameLoop(TeamLeft: string, TeamRight: string)
 {
@@ -169,86 +194,30 @@ export function FourGameLoop(TeamLeft: string, TeamRight: string)
       ctx.font = "40px Arial";
       const winner = game.scoreLeft > game.scoreRight ? "Team 1" : "Team 2";
       ctx.fillText(`${winner} ha vinto!`, canvas.width / 2, canvas.height / 2);
+
+      if (botInterval) {
+        clearInterval(botInterval);
+        botInterval = undefined;
+      }
+
       return;
   }
 
-  const currentDir = game.ball.dx < 0 ? -1 : 1;
-  
-   if (getBotActive(1)) {
-      const bot = game.leftPaddle[1];
-      const ball = game.ball;
-      
-      if (ball.dx < 0) {
-        if (ball.y < bot.y + bot.height / 2) {
-          bot.dy = -bot.speed;
-        } else if (ball.y > bot.y + bot.height / 2) {
-          bot.dy = bot.speed;
-        } else {
-          bot.dy = 0;
-        }
-      } else if (currentDir !== lastDir) {
-        lastDir = currentDir;
-        const r = Math.random();
-        if (r < 0.33) {
-          bot.dy = -bot.speed;
-        } else if (r < 0.66) {
-          bot.dy = 0;
-        } else {
-          bot.dy = bot.speed;
-        }
-      }
-    }
-
-    if (getBotActive(2)) {
-      const bot = game.rightPaddle[0];
-      const ball = game.ball;
-      
-      if (ball.dx > 0) {
-        if (ball.y < bot.y + bot.height / 2) {
-          bot.dy = -bot.speed;
-        } else if (ball.y > bot.y + bot.height / 2) {
-          bot.dy = bot.speed;
-        } else {
-          bot.dy = 0;
-        }
-      } else if (currentDir !== lastDir) {
-        lastDir = currentDir;
-        const r = Math.random();
-        if (r < 0.33) {
-          bot.dy = -bot.speed;
-        } else if (r < 0.66) {
-          bot.dy = 0;
-        } else {
-          bot.dy = bot.speed;
-        }
-      }
-    }
-
-    if (getBotActive(3)) {
-      const bot = game.rightPaddle[1];
-      const ball = game.ball;
-      
-      if (ball.dx > 0) {
-        if (ball.y < bot.y + bot.height / 2) {
-          bot.dy = -bot.speed;
-        } else if (ball.y > bot.y + bot.height / 2) {
-          bot.dy = bot.speed;
-        } else {
-          bot.dy = 0;
-        }
-      } else if (currentDir !== lastDir) {
-        lastDir = currentDir;
-        const r = Math.random();
-        if (r < 0.33) {
-          bot.dy = -bot.speed;
-        } else if (r < 0.66) {
-          bot.dy = 0;
-        } else {
-          bot.dy = bot.speed;
-      }
-    }
+  if (getBotActive(1) && predictedY !== null) {
+      moveBot(game.leftPaddle[1], predictedY[1]!);
   }
-  
+
+  if (getBotActive(2) && predictedY !== null) {
+      moveBot(game.rightPaddle[0], predictedY[2]!);
+  }    
+
+  if (getBotActive(3) && predictedY !== null) {
+      moveBot(game.rightPaddle[1], predictedY[3]!);
+  }
+
+  if (!botInterval && (getBotActive(1) || getBotActive(2) || getBotActive(3))) {
+    botInterval = setInterval(moveBotPaddle, 1000);
+  }
   
   update(game);
   render(TeamLeft, TeamRight);

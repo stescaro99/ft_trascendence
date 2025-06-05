@@ -1,7 +1,7 @@
 import { GameState } from "../common/types"; 
 import { update } from "./TwoGameUpdate";
 import { drawBall, drawRect, drawScore, drawPowerUp, drawField } from "./TwoDraw";
-import { getBotActive } from "../common/BotState";
+import { getBotActive, predictBallY, moveBot} from "../common/BotState";
 
 const canvas = document.getElementById("pong") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -87,37 +87,16 @@ function render(paddleColor1: string, paddleColor2: string)
 
 let botInterval: number | undefined = undefined;
 
-function predictBallY(ball: any, paddleX: number): number {
-  let x = ball.x;
-  let y = ball.y;
-
-  let velX = ball.dx * ball.speed;
-  let velY = ball.dy * ball.speed;
-
-  while ((velX > 0 && x < paddleX) || (velX < 0 && x > paddleX)) {
-    x += velX;
-    y += velY;
-
-    if (y <= ball.radius) {
-      y = ball.radius;
-      velY = -velY;
-    }
-    if (y >= canvas.height - ball.radius) {
-      y = canvas.height - ball.radius;
-      velY = -velY;
-    }
-  }
-  return y;
-}
-
-let predictedY: number | null = null;
-
 function moveBotPaddle() {
   if (!getBotActive(0)) return;
   const bot = game.rightPaddle[0];
 
-  predictedY = predictBallY(game.ball, bot.x)
+  const randomOffset = (Math.random() - 0.5) * 60;
+
+  predictedY = predictBallY(game.ball, bot.x) + randomOffset;
 }
+
+let predictedY: number | null = predictBallY(game.ball, game.rightPaddle[0].x);
 
 export function TwoGameLoop(paddleColor1: string, paddleColor2: string)
 {
@@ -139,27 +118,9 @@ export function TwoGameLoop(paddleColor1: string, paddleColor2: string)
   }
 
     // --- muovo il bot fino all'ultima prediction---
-
+    
     if (getBotActive(0) && predictedY !== null) {
-    const bot = game.rightPaddle[0];
-
-    const centerY = bot.y + bot.height / 2;
-
-    const diff = predictedY - centerY;
-
-    const threshold = bot.speed * 2;
-
-    if (Math.abs(diff) <= threshold) {
- 
-      bot.dy = 0;
-      bot.y = predictedY - bot.height / 2;
-    } else if (diff < 0) {
-
-      bot.dy = -bot.speed;
-    } else {
-
-      bot.dy = bot.speed;
-    }
+      moveBot(game.rightPaddle[0], predictedY);
   }
 
   // --- calcolo posizione pallina ogni 1s---
