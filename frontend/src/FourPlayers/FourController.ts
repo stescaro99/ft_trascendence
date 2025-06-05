@@ -161,17 +161,17 @@ let botInterval: number | undefined = undefined;
 
 function moveBotPaddle() {
   if (getBotActive(1)) {
-    const randomOffset = (Math.random() - 0.5) * 120;
+    const randomOffset = (Math.random() - 0.5) * 200;
     predictedY[1] = predictBallY(game.ball, game.leftPaddle[1].x) + randomOffset;
   }
   if (getBotActive(2) && turn == 0) {
     turn = 1;
-    const randomOffset = (Math.random() - 0.5) * 120;
+    const randomOffset = (Math.random() - 0.5) * 200;
     predictedY[2] = predictBallY(game.ball, game.rightPaddle[0].x) + randomOffset;
   }
   if (getBotActive(3) && turn == 1) {
     turn = 0;
-    const randomOffset = (Math.random() - 0.5) * 120;
+    const randomOffset = (Math.random() - 0.5) * 200;
     predictedY[3] = predictBallY(game.ball, game.rightPaddle[1].x) + randomOffset;
   }
 }
