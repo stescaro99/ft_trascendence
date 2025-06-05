@@ -6,6 +6,7 @@ import fastifyMultipart from '@fastify/multipart';
 import fastifyStatic from '@fastify/static';
 import fastifyCors from '@fastify/cors';
 import fastifyOauth2 from '@fastify/oauth2';
+import fastifyCookie from '@fastify/cookie';
 
 dotenv.config();
 
@@ -22,6 +23,8 @@ import swagger from '@fastify/swagger';
 import swaggerUI from '@fastify/swagger-ui';
 
 const server = Fastify({ logger: true });
+
+server.register(fastifyCookie);
 
 const start = async (sequelize: any) => {
     try {
