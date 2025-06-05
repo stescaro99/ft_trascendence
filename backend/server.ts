@@ -24,7 +24,7 @@ import swaggerUI from '@fastify/swagger-ui';
 
 const server = Fastify({ logger: true });
 
-server.register(fastifyCookie);
+server.register(fastifyCookie); 
 
 const start = async (sequelize: any) => {
     try {
