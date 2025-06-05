@@ -23,7 +23,8 @@
     "jsonwebtoken": "^9.0.2",
     "qrcode": "^1.5.4",
     "sequelize": "^6.37.7",
-    "speakeasy": "^2.0.0"
+    "speakeasy": "^2.0.0",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
