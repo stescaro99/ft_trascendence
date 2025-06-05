@@ -15,8 +15,8 @@
 }
 
 .sidebar-icon {
-  @apply relative flex items-center justify-center h-12 w-12 mx-auto my-2 bg-blue-700
-          hover:bg-blue-500
+  @apply relative flex items-center justify-center h-12 w-12 mx-auto my-2 bg-blue-600
+          hover:bg-blue-400
           rounded-3xl 
           transition-all duration-200 ease-linear;
 }
@@ -25,8 +25,8 @@
 }
 
 .sub-icon {
-  @apply relative flex items-center justify-center h-10 w-10 mx-auto my-2 bg-blue-600
-          hover:bg-blue-500
+  @apply relative flex items-center justify-center h-10 w-10 mx-auto my-2 bg-blue-500
+          hover:bg-blue-400
           rounded-3xl 
           transition-all duration-200 ease-linear;
 }

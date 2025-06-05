@@ -3,7 +3,7 @@
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,ts,jsx,tsx,html}",
   ],
   theme: {
     extend: {
@@ -28,6 +28,19 @@ export default {
           700: '#1d4ed8',
           800: '#1e40af',
           900: '#1e3a8a',
+        },
+
+        'cyan-custom': {
+          50: '#f0fffe',
+          100: '#ccfffe',
+          200: '#99ffff',
+          300: '#66ffff',
+          400: '#33ffff',
+          500: '#00ffff',
+          600: '#00cccc',
+          700: '#009999',
+          800: '#006666',
+          900: '#003333',
         },
         
         // Custom named colors
