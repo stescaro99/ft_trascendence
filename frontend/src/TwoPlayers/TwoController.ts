@@ -21,7 +21,7 @@ const game: GameState = {
 
   leftPaddle: [
     {
-      x: 0,
+      x: 10,
       y: canvas.height / 2 - paddleHeight / 2,
       dy: 0,
       speed: 6,
@@ -31,7 +31,7 @@ const game: GameState = {
 
   rightPaddle: [
     {
-      x: canvas.width - paddleWidth,
+      x: canvas.width - paddleWidth - 10,
       y: canvas.height / 2 - paddleHeight / 2,
       dy: 0,
       speed: 6,

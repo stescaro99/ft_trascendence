@@ -1,4 +1,3 @@
-
 const canvas = document.getElementById("pong") as HTMLCanvasElement;
 const paddleHeight = canvas.height / 5;
 const paddleWidth = 10;

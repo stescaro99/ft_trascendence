@@ -1,4 +1,4 @@
-import { GameState } from "../common/types";
+import { Ball, GameState } from "../common/types";
 
 export function update(game: GameState)
 {
@@ -50,8 +50,26 @@ function handlePowerUpCollision(game: GameState)
 
 function handleWallCollision(game: GameState)
 {
-  if (game.ball.y + game.ball.radius > game.canvas.height || game.ball.y - game.ball.radius < 0)
-    game.ball.dy *= -1;
+  const s = 60;
+  const ball = game.ball;
+
+  const isInTriangleZone =
+    ball.x - ball.radius < s || ball.x + ball.radius > game.canvas.width - s;
+
+  if (isInTriangleZone)
+    return;
+
+  if (
+    ball.y - ball.radius < 0 ||
+    ball.y + ball.radius > game.canvas.height
+  ) {
+    ball.dy *= -1;
+
+    if (ball.y < game.canvas.height / 2)
+      ball.y = ball.radius + 1;
+    else
+      ball.y = game.canvas.height - ball.radius - 1;
+  }
 }
 
 function isPointInTriangle(px: number, py: number, ax: number, ay: number, bx: number, by: number, cx: number, cy: number): boolean
@@ -83,6 +101,20 @@ function ballIntersectsTriangle(
   return (points.some(([px, py]) => isPointInTriangle(px, py, ax, ay, bx, by, cx, cy)));
 }
 
+function bounceFromTriangle(ball: Ball, centerX: number, centerY: number, canvasWidth: number, triangleSize: number)
+{
+  const maxBounceAngle = Math.PI / 3;
+  const speed = Math.sqrt(ball.dx ** 2 + ball.dy ** 2);
+  const relativeY = centerY - ball.y;
+  const normalized = relativeY / (triangleSize / 2);
+  const bounceAngle = normalized * maxBounceAngle;
+
+  const dirX = ball.x < canvasWidth / 2 ? 1 : -1;
+
+  ball.dx = dirX * speed * Math.cos(bounceAngle);
+  ball.dy = -speed * Math.sin(bounceAngle);
+}
+
 function handleTriangleCollision(game: GameState)
 {
   const ball = game.ball;
@@ -91,32 +123,20 @@ function handleTriangleCollision(game: GameState)
   const s = 60;
 
   // TOP-LEFT
-  if (ballIntersectsTriangle(ball, 0, 0, s, 0, 0, s))
-  {
-    ball.dx *= -1;
-    ball.dy *= -1;
-  }
+  if (ballIntersectsTriangle(ball, 0, 0, s, 0, 0, s)) 
+    bounceFromTriangle(ball, s / 2, s / 2, w, s);
 
   // TOP-RIGHT
   if (ballIntersectsTriangle(ball, w, 0, w - s, 0, w, s))
-  {
-    ball.dx *= -1;
-    ball.dy *= -1;
-  }
+    bounceFromTriangle(ball, w - s / 2, s / 2, w, s);
 
   // BOTTOM-LEFT
   if (ballIntersectsTriangle(ball, 0, h, s, h, 0, h - s))
-  {
-    ball.dx *= -1;
-    ball.dy *= -1;
-  }
+    bounceFromTriangle(ball, s / 2, h - s / 2, w, s);
 
   // BOTTOM-RIGHT
   if (ballIntersectsTriangle(ball, w, h, w - s, h, w, h - s))
-  {
-    ball.dx *= -1;
-    ball.dy *= -1;
-  }
+    bounceFromTriangle(ball, w - s / 2, h - s / 2, w, s);
 }
 
 function handlePaddleCollision(game: GameState)
