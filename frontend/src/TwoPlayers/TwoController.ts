@@ -1,6 +1,6 @@
 import { GameState } from "../common/types"; 
-import { update } from "./TwoGameUpdate";
-import { drawBall, drawRect, drawScore, drawPowerUp, drawField } from "./TwoDraw";
+import { update } from "./../common/GameUpdate";
+import { drawBall, drawRect, drawScore, drawPowerUp, drawField } from "../common/Draw";
 import { getBotActive, predictBallY, moveBot} from "../common/BotState";
 
 const canvas = document.getElementById("pong") as HTMLCanvasElement;

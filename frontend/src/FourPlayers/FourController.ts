@@ -1,6 +1,6 @@
 import { GameState } from "./../common/types"; 
-import { update } from "./FourGameUpdate";
-import { drawBall, drawRect, drawScore, drawPowerUp, drawField } from "./FourDraw";
+import { update } from "./../common/GameUpdate";
+import { drawBall, drawRect, drawScore, drawPowerUp, drawField } from "../common/Draw";
 import { getBotActive, predictBallY, moveBot} from "../common/BotState";
 
 const canvas = document.getElementById("pong") as HTMLCanvasElement;
@@ -21,14 +21,14 @@ const game: GameState = {
 
   leftPaddle: [
     {
-      x: 0,
+      x: 10,
       y: canvas.height / 2 - paddleHeight / 2,
       dy: 0,
       speed: 4,
       height: paddleHeight
     },
     {
-      x: canvas.width / 10 - paddleWidth / 2,
+      x: canvas.width / 8,
       y: canvas.height / 2 - paddleHeight / 2,
       dy: 0,
       speed: 4,
@@ -38,14 +38,14 @@ const game: GameState = {
 
   rightPaddle: [
     {
-      x: canvas.width - paddleWidth,
+      x: canvas.width - paddleWidth - 10,
       y: canvas.height / 2 - paddleHeight / 2,
       dy: 0,
       speed: 4,
       height: paddleHeight
     },
     {
-      x: canvas.width - canvas.width / 10 + paddleWidth / 2,
+      x: canvas.width - canvas.width / 8 - paddleWidth,
       y: canvas.height / 2 - paddleHeight / 2,
       dy: 0,
       speed: 4,
