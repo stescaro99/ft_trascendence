@@ -109,9 +109,13 @@ function updateUser(request, reply) {
                         user.nickname = new_value;
                         break;
                     case 'email':
+                        if (!user.tfa_code || user.password === '')
+                            reply.code(400).send({ error: 'Cannot change email after Google Signup' });
                         user.email = new_value;
                         break;
                     case 'password':
+                        if (!user.tfa_code || user.password === '')
+                            reply.code(400).send({ error: 'Cannot change password after Google Signup' });
                         user.password = yield bcrypt_1.default.hash(new_value, 10);
                         break;
                     case 'language':

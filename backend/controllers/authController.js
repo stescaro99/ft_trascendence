@@ -48,6 +48,8 @@ function generate2FA(request, reply) {
                 return reply.code(401).send({ error: 'Invalid credentials' });
             }
         }
+        if (!user.tfa_code || user.password === '')
+            reply.code(400).send({ error: 'Can\'t get 2FA code after Google Signup' });
         try {
             const issuer = 'FT_TRASCENDENCE';
             const secret = speakeasy_1.default.generateSecret({ name: user.nickname, issuer });
@@ -144,11 +146,9 @@ function GoogleOAuthCallback(request, reply) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const token = yield request.server.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
-            console.log('Google token:', token);
             const userInfo = yield fetch('https://openidconnect.googleapis.com/v1/userinfo', {
                 headers: { Authorization: `Bearer ${token.token.access_token}` }
             }).then(res => res.json());
-            console.log('Google userInfo:', userInfo);
             if (userInfo.error) {
                 return reply.status(401).send({ error: 'Google userinfo error', details: userInfo });
             }
@@ -169,7 +169,6 @@ function GoogleOAuthCallback(request, reply) {
             reply.send({ token: jwtToken, user });
         }
         catch (error) {
-            console.error('Google OAuth error:', error);
             return reply.status(500).send({
                 error: 'Google OAuth failed',
                 details: error instanceof Error ? { message: error.message, stack: error.stack } : error

@@ -19,6 +19,7 @@ const game_1 = __importDefault(require("../models/game"));
 const stats_1 = __importDefault(require("../models/stats"));
 function updateStats(request, reply) {
     return __awaiter(this, void 0, void 0, function* () {
+        var _a;
         const { nickname, game_id, result, index } = request.body;
         try {
             const user = yield user_1.default.findOne({
@@ -56,17 +57,12 @@ function updateStats(request, reply) {
                 default:
                     return reply.code(400).send({ message: 'Invalid result value' });
             }
-            if (game.player1_nickname === nickname) {
-                userStat.number_of_points = (userStat.number_of_points || 0) + (game.player1_score || 0);
-            }
-            else if (game.player2_nickname === nickname) {
-                userStat.number_of_points = (userStat.number_of_points || 0) + (game.player2_score || 0);
-            }
-            else if (game.player3_nickname === nickname) {
-                userStat.number_of_points = (userStat.number_of_points || 0) + (game.player3_score || 0);
+            const playerIndex = (_a = game.players) === null || _a === void 0 ? void 0 : _a.indexOf(nickname);
+            if (playerIndex !== undefined && playerIndex >= 0 && Array.isArray(game.scores)) {
+                userStat.number_of_points = (userStat.number_of_points || 0) + (game.scores[playerIndex] || 0);
             }
             else {
-                userStat.number_of_points = (userStat.number_of_points || 0) + (game.player4_score || 0);
+                userStat.number_of_points = (userStat.number_of_points || 0);
             }
             userStat.average_score = (userStat.number_of_points || 0) / userStat.number_of_games;
             userStat.percentage_wins = (userStat.number_of_wins || 0) / userStat.number_of_games;

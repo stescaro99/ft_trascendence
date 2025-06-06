@@ -18,43 +18,32 @@ Game.init({
         allowNull: false,
         defaultValue: 'pending',
     },
-    player1_nickname: {
-        type: sequelize_1.DataTypes.STRING,
+    players: {
+        type: sequelize_1.DataTypes.JSON,
         allowNull: false,
+        validate: {
+            isPlayersValid(value) {
+                if (!Array.isArray(value) || (value.length !== 2 && value.length !== 4)) {
+                    throw new Error('Players must be an array of 2 or 4 nicknames');
+                }
+                const uniquePlayers = new Set(value);
+                if (uniquePlayers.size !== value.length) {
+                    throw new Error('Players must have unique nicknames');
+                }
+            }
+        }
     },
-    player2_nickname: {
-        type: sequelize_1.DataTypes.STRING,
+    scores: {
+        type: sequelize_1.DataTypes.JSON,
         allowNull: false,
-    },
-    player3_nickname: {
-        type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
-        defaultValue: "",
-    },
-    player4_nickname: {
-        type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
-        defaultValue: "",
-    },
-    player1_score: {
-        type: sequelize_1.DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0,
-    },
-    player2_score: {
-        type: sequelize_1.DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0,
-    },
-    player3_score: {
-        type: sequelize_1.DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0,
-    },
-    player4_score: {
-        type: sequelize_1.DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0,
+        defaultValue: [0, 0],
+        validate: {
+            isScoresValid(value) {
+                if (!Array.isArray(value) || value.length !== 2) {
+                    throw new Error('Scores must be an array of 2 numbers');
+                }
+            }
+        }
     },
     winner_nickname: {
         type: sequelize_1.DataTypes.STRING,

@@ -2,22 +2,20 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import Game from '../models/game';
 
 export async function addGame(request: FastifyRequest, reply: FastifyReply) {
-    const { player1_nickname, player2_nickname, player3_nickname, player4_nickname, date } = request.body as {
-        player1_nickname: string;
-        player2_nickname: string;
-        player3_nickname: string;
-        player4_nickname: string;
+    const { players, date } = request.body as {
+        players: string[];
         date: Date;
     };
+    if (!Array.isArray(players) || (players.length !== 2 && players.length !== 4)) {
+        return reply.code(400).send({ error: 'Players must be an array of 2 or 4 nicknames' });
+    }
     try {
         const game = await Game.create({
-            player1_nickname,
-            player2_nickname,
-            player3_nickname,
-            player4_nickname,
+            players,
+            scores: [0, 0],
             date,
         });
-        reply.code(201).send({ message: 'Game added!', game: game });
+        reply.code(201).send({ message: 'Game added!', game });
     } catch (error) {
         reply.code(500).send({ error: 'Failed to add game', details: error });
     }
@@ -26,7 +24,7 @@ export async function addGame(request: FastifyRequest, reply: FastifyReply) {
 export async function getGame(request: FastifyRequest, reply: FastifyReply) {
     const { game_id } = request.query as { game_id: number };
     try {
-        const game = await Game.findOne({ where: { game_id: game_id } });
+        const game = await Game.findOne({ where: { game_id } });
         if (game) {
             reply.code(200).send(game);
         } else {
@@ -38,36 +36,25 @@ export async function getGame(request: FastifyRequest, reply: FastifyReply) {
 }
 
 export async function updateGame(request: FastifyRequest, reply: FastifyReply) {
-    const { game_id } = request.body as { game_id: number };
-    const { field } = request.body as { field: string };
-    const { new_value } = request.body as { new_value: string };
-    console.log('game_id:', game_id);
+    const { game_id, field, new_value } = request.body as { game_id: number; field: string; new_value: any };
     try {
-        const game = await Game.findOne({ where: { game_id: game_id } });
+        const game = await Game.findOne({ where: { game_id } });
         if (!game) {
-            reply.code(404).send({ error: 'Game not found' });
-            return;
+            return reply.code(404).send({ error: 'Game not found' });
         }
         switch (field) {
-            case 'player1_score':
-                await game?.update({ player1_score: Number(new_value) });
+            case '1_scores':
+                await game?.update({ scores: [Number(new_value), game.scores[1]] });
                 break;
-            case 'player2_score':
-                await game?.update({ player2_score: Number(new_value) });
-                break;
-            case 'player3_score':
-                await game?.update({ player3_score: Number(new_value) });
-                break;
-            case 'player4_score':
-                await game?.update({ player4_score: Number(new_value) });
+            case '2_scores':
+                await game?.update({ scores: [game.scores[0], Number(new_value)] });
                 break;
             case 'winner_nickname':
                 await game?.update({ winner_nickname: new_value });
                 await game?.update({ game_status: 'finished' });
                 break;
             default:
-                reply.code(400).send({ error: 'Invalid field' });
-                return;
+                return reply.code(400).send({ error: 'Invalid field' });
         }
         await game.save();
         reply.code(200).send({ message: 'Game updated!', game });
@@ -79,7 +66,7 @@ export async function updateGame(request: FastifyRequest, reply: FastifyReply) {
 export async function deleteGame(request: FastifyRequest, reply: FastifyReply) {
     const { game_id } = request.query as { game_id: number };
     try {
-        const game = await Game.findOne({ where: { game_id: game_id } });
+        const game = await Game.findOne({ where: { game_id } });
         if (game) {
             await game.destroy();
             reply.code(200).send({ message: 'Game deleted!' });
@@ -90,4 +77,3 @@ export async function deleteGame(request: FastifyRequest, reply: FastifyReply) {
         reply.code(500).send({ error: 'Failed to delete game', details: error });
     }
 }
-
