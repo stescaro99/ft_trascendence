@@ -9,6 +9,17 @@ const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 const paddleHeight = canvas.height / 5;
 const paddleWidth = 10;
 
+const powerUpType = (() => {
+  const types = ["IncreaseSize", "SpeedBoost"];
+  return types[Math.floor(Math.random() * types.length)];
+})();
+
+const typeToColor: { [key: string]: string } = {
+  IncreaseSize: "00ff00",
+  DecreaseSize: "ff0000",
+  SpeedBoost: "ffff00"
+};
+
 const game: GameState = {
   ball: {
     x: canvas.width / 2,
@@ -21,7 +32,7 @@ const game: GameState = {
 
   leftPaddle: [
     {
-      x: 10,
+      x: 30,
       y: canvas.height / 2 - paddleHeight / 2,
       dy: 0,
       speed: 6,
@@ -31,7 +42,7 @@ const game: GameState = {
 
   rightPaddle: [
     {
-      x: canvas.width - paddleWidth - 10,
+      x: canvas.width - paddleWidth - 30,
       y: canvas.height / 2 - paddleHeight / 2,
       dy: 0,
       speed: 6,
@@ -44,7 +55,9 @@ const game: GameState = {
     y: Math.random() * (canvas.height - 200) + 10,
     width: 20,
     height: 20,
-    active: true
+    active: true,
+    type: powerUpType,
+    color: typeToColor[powerUpType]
   },
 
   scoreLeft: 0,
@@ -53,7 +66,8 @@ const game: GameState = {
   paddleWidth: paddleWidth,
   canvas: canvas,
   waitingForStart: false,
-  maxScore: 5
+  maxScore: 5,
+  paddleSpeed: 6
 };
 
 // === Eventi tastiera ===

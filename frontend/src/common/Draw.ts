@@ -1,9 +1,11 @@
+import { triangleSize } from "./types";
+
 export function drawPowerUp(ctx: CanvasRenderingContext2D, powerUp: any)
 {
     if (powerUp.active)
     {
-        ctx.fillStyle = "#ff9900";
-        ctx.shadowColor = "#ff9900";
+        ctx.fillStyle = powerUp.color;
+        ctx.shadowColor = powerUp.color;
         ctx.shadowBlur = 20;
 
         const radius = 8;
@@ -72,37 +74,35 @@ export function drawScore(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasEleme
 
 function drawCornerTriangles(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement)
 {
-    const size = 60;
-
     ctx.fillStyle = "#00ffff";
     ctx.shadowColor = "#00ffff";
     ctx.shadowBlur = 10;
 
     ctx.beginPath();
     ctx.moveTo(0, 0);
-    ctx.lineTo(size, 0);
-    ctx.lineTo(0, size);
+    ctx.lineTo(triangleSize, 0);
+    ctx.lineTo(0, triangleSize);
     ctx.closePath();
     ctx.fill();
 
     ctx.beginPath();
     ctx.moveTo(canvas.width, 0);
-    ctx.lineTo(canvas.width - size, 0);
-    ctx.lineTo(canvas.width, size);
+    ctx.lineTo(canvas.width - triangleSize, 0);
+    ctx.lineTo(canvas.width, triangleSize);
     ctx.closePath();
     ctx.fill();
 
     ctx.beginPath();
     ctx.moveTo(0, canvas.height);
-    ctx.lineTo(0, canvas.height - size);
-    ctx.lineTo(size, canvas.height);
+    ctx.lineTo(0, canvas.height - triangleSize);
+    ctx.lineTo(triangleSize, canvas.height);
     ctx.closePath();
     ctx.fill();
 
     ctx.beginPath();
     ctx.moveTo(canvas.width, canvas.height);
-    ctx.lineTo(canvas.width - size, canvas.height);
-    ctx.lineTo(canvas.width, canvas.height - size);
+    ctx.lineTo(canvas.width - triangleSize, canvas.height);
+    ctx.lineTo(canvas.width, canvas.height - triangleSize);
     ctx.closePath();
     ctx.fill();
 

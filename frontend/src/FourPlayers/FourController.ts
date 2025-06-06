@@ -9,6 +9,17 @@ const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 const paddleHeight = canvas.height / 6;
 const paddleWidth = 10;
 
+const powerUpType = (() => {
+    const types = ["IncreaseSize", "SpeedBoost"];
+    return types[Math.floor(Math.random() * types.length)];
+})();
+
+const typeToColor: { [key: string]: string } = {
+    IncreaseSize: "green",
+    DecreaseSize: "red",
+    SpeedBoost: "yellow"
+};
+
 const game: GameState = {
   ball: {
     x: canvas.width / 2,
@@ -21,14 +32,14 @@ const game: GameState = {
 
   leftPaddle: [
     {
-      x: 10,
+      x: 30,
       y: canvas.height / 2 - paddleHeight / 2,
       dy: 0,
       speed: 4,
       height: paddleHeight
     },
     {
-      x: canvas.width / 8,
+      x: canvas.width / 7,
       y: canvas.height / 2 - paddleHeight / 2,
       dy: 0,
       speed: 4,
@@ -38,14 +49,14 @@ const game: GameState = {
 
   rightPaddle: [
     {
-      x: canvas.width - paddleWidth - 10,
+      x: canvas.width - paddleWidth - 30,
       y: canvas.height / 2 - paddleHeight / 2,
       dy: 0,
       speed: 4,
       height: paddleHeight
     },
     {
-      x: canvas.width - canvas.width / 8 - paddleWidth,
+      x: canvas.width - canvas.width / 7 - paddleWidth,
       y: canvas.height / 2 - paddleHeight / 2,
       dy: 0,
       speed: 4,
@@ -58,7 +69,9 @@ const game: GameState = {
     y: Math.random() * (canvas.height - 200) + 10,
     width: 20,
     height: 20,
-    active: true
+    active: true,
+    type: powerUpType,
+    color: typeToColor[powerUpType]
   },
 
   scoreLeft: 0,
@@ -67,7 +80,8 @@ const game: GameState = {
   paddleWidth: paddleWidth,
   canvas: canvas,
   waitingForStart: false,
-  maxScore: 5
+  maxScore: 5,
+  paddleSpeed: 1.5
 };
 
 document.addEventListener("keydown", (e) => {

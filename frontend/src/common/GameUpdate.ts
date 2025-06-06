@@ -1,4 +1,4 @@
-import { Ball, GameState } from "types";
+import { Ball, GameState, triangleSize } from "./types";
 
 export function update(game: GameState)
 {
@@ -32,13 +32,28 @@ function handlePowerUpCollision(game: GameState)
     const isLeft = game.ball.dx < 0;
 
     const affectedTeam = isLeft ? game.rightPaddle : game.leftPaddle;
+    const oppositeTeam = isLeft ? game.leftPaddle : game.rightPaddle;
 
-    affectedTeam.forEach(p => p.height = game.canvas.height / 4);
+    affectedTeam.forEach(p => {
+      if (game.powerUp.type === "SizeIncrease") {
+        p.height += p.height / 2;
+      } else if (game.powerUp.type === "SpeedBoost") {
+        p.speed *= 1.5;
+      }
+    });
+
+    if (game.powerUp.type === "SizeDecrease") {
+      oppositeTeam.forEach(p => {
+        p.height -= p.height / 3;
+      });
+    }
     game.powerUp.active = false;
 
     setTimeout(() => {
       game.leftPaddle.forEach(p => p.height = game.paddleHeight);
       game.rightPaddle.forEach(p => p.height = game.paddleHeight);
+      game.leftPaddle.forEach(p => p.speed = game.paddleSpeed);
+      game.rightPaddle.forEach(p => p.speed = game.paddleSpeed);
       setTimeout(() => {
         randomizePowerUp(game);
         game.powerUp.active = true;
@@ -50,11 +65,10 @@ function handlePowerUpCollision(game: GameState)
 
 function handleWallCollision(game: GameState)
 {
-  const s = 60;
   const ball = game.ball;
 
   const isInTriangleZone =
-    ball.x - ball.radius < s || ball.x + ball.radius > game.canvas.width - s;
+    ball.x - ball.radius < triangleSize || ball.x + ball.radius > game.canvas.width - triangleSize;
 
   if (isInTriangleZone)
     return;
@@ -120,7 +134,7 @@ function handleTriangleCollision(game: GameState)
   const ball = game.ball;
   const w = game.canvas.width;
   const h = game.canvas.height;
-  const s = 60;
+  const s = triangleSize;
 
   // TOP-LEFT
   if (ballIntersectsTriangle(ball, 0, 0, s, 0, 0, s)) 
@@ -142,14 +156,14 @@ function handleTriangleCollision(game: GameState)
 function handlePaddleCollision(game: GameState)
 {
   // Collisione con paddle sinistri
-  for (let i = 0; i < game.leftPaddle.length; i++) {
+  for (let i = 0; i < game.leftPaddle.length; i++)
+{
     const paddle = game.leftPaddle[i];
   
-    // Se sta andando verso destra, ignora leftPaddle[1]
     if (game.ball.dx > 0 && i === 1)
       continue;
 
-    if (i === 1 && game.ball.x + game.ball.radius < paddle.x)
+    if (i === 1 && game.ball.x < paddle.x)
       continue;
 
     if (
@@ -173,11 +187,11 @@ function handlePaddleCollision(game: GameState)
   for (let i = 0; i < game.rightPaddle.length; i++)
   {
     const paddle = game.rightPaddle[i];
-    // Se sta andando verso sinistra, ignora rightPaddle[1]
+
     if (game.ball.dx < 0 && i === 1)
       continue;
     
-    if (i === 1 && game.ball.x + game.ball.radius < paddle.x)
+    if (i === 1 && game.ball.x < paddle.x)
       continue;
 
     if (
@@ -199,11 +213,10 @@ function handlePaddleCollision(game: GameState)
   }
 }
 
-
 function updatePaddleMovement(game: GameState)
 {
-    const size = 60;
-    
+    const size = triangleSize / 2;
+  
     game.leftPaddle.forEach(paddle => {
         paddle.y += paddle.dy;
         if (paddle.y < size)
@@ -266,8 +279,27 @@ function resetAfterPoint(x: number, game: GameState)
   game.ball.dx *= -1;
 }
 
+function randomizePowerUp(game: GameState)
+{
+  game.powerUp.x = Math.random() * (game.canvas.width - 200) + 10;
+  game.powerUp.y = Math.random() * (game.canvas.height - 200) + 10;
+  const types = ["SizeIncrease", "SizeDecrease", "SpeedBoost"];
+  const index = Math.floor(Math.random() * types.length);
+  game.powerUp.type = types[index];
 
-function randomizePowerUp(game: GameState) {
-  game.powerUp.x = Math.random() * (game.canvas.width - game.canvas.width / 4) + 10;
-  game.powerUp.y = Math.random() * (game.canvas.height - game.canvas.height / 4) + 10;
+  switch (game.powerUp.type)
+  {
+    case "SizeIncrease":
+      game.powerUp.color = "#00ff00"; // verde
+      game.powerUp.type = "SizeIncrease";
+      break;
+    case "SizeDecrease":
+      game.powerUp.color = "#ff0000"; // rosso
+      game.powerUp.type = "SizeDecrease";
+      break;
+    case "SpeedBoost":
+      game.powerUp.color = "#ffff00"; // giallo
+      game.powerUp.type = "SpeedBoost";
+      break;
+  }
 }

@@ -21,6 +21,8 @@ export interface Ball {
     width: number;
     height: number;
     active: boolean;
+    type: string;
+    color: string;
   }
   
   export interface GameState {
@@ -35,4 +37,7 @@ export interface Ball {
     waitingForStart: boolean;
     maxScore: number;
     paddleWidth: number;
+    paddleSpeed: number;
   }
+
+  export const triangleSize = 60;
