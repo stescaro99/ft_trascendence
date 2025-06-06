@@ -7,13 +7,16 @@ const appDiv = document.getElementById('app')!;
 
 const routes: Record<string, () => string> = {
   '/': () => {
-    if (localStorage.getItem('user')) {
-      new HomePage();
+    /* Uncomment to make redirection work */
+    // if (localStorage.getItem('user')) {
+    //   new HomePage();
+	  // return "";
+    // } else {
+    //   new IdentificationPage();
+    //   return "";
+    // }
+    new HomePage();
 	  return "";
-    } else {
-      new IdentificationPage();
-      return "";
-    }
   },
   '/identification': () => {
     new IdentificationPage();
