@@ -192,3 +192,5 @@ export async function addFriend(request: FastifyRequest, reply: FastifyReply) {
         return reply.code(500).send({ error: 'Internal server error' });
     }
 }
+
+

@@ -6,6 +6,7 @@ import fastifyMultipart from '@fastify/multipart';
 import fastifyStatic from '@fastify/static';
 import fastifyCors from '@fastify/cors';
 import fastifyOauth2 from '@fastify/oauth2';
+import fastifyCookie from '@fastify/cookie';
 
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
@@ -22,6 +23,8 @@ import swagger from '@fastify/swagger';
 import swaggerUI from '@fastify/swagger-ui';
 
 const server = Fastify({ logger: true });
+
+server.register(fastifyCookie); 
 
 const start = async (sequelize: any) => {
     try {
@@ -61,23 +64,19 @@ const start = async (sequelize: any) => {
 
         await server.register(fastifyOauth2 as any, {
             name: 'googleOAuth2',
-            scope: ['profile', 'email'],
+            scope: ['profile', 'email', 'openid'],
             credentials: {
                 client: {
-                    id: process.env.GOOGLE_CLIENT_ID,
-                    secret: process.env.GOOGLE_CLIENT_SECRET,
+                    id: process.env.GOOGLE_CLIENT_ID!,
+                    secret: process.env.GOOGLE_CLIENT_SECRET!
                 },
                 auth: fastifyOauth2.GOOGLE_CONFIGURATION,
             },
-            startRedirectPath: '/auth/google',
-            callbackUri: process.env.GOOGLE_REDIRECT_URI || 'http://localhost:2807/auth/google/callback',
-            
+            startRedirectPath: '/api/google_login',
+            callbackUri: process.env.GOOGLE_REDIRECT_URI!
         });
-        //debug
+    
 
-        console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
-        console.log('GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET);
-        console.log('GOOGLE_REDIRECT_URI:', process.env.GOOGLE_REDIRECT_URI);
         const routes_path = path.join(__dirname, 'routes');
         fs.readdirSync(routes_path).forEach((file) => {
             if (file.endsWith('.js')) {

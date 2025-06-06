@@ -144,9 +144,14 @@ function GoogleOAuthCallback(request, reply) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const token = yield request.server.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
+            console.log('Google token:', token);
             const userInfo = yield fetch('https://openidconnect.googleapis.com/v1/userinfo', {
-                headers: { Authorization: `Bearer ${token.access_token}` }
+                headers: { Authorization: `Bearer ${token.token.access_token}` }
             }).then(res => res.json());
+            console.log('Google userInfo:', userInfo);
+            if (userInfo.error) {
+                return reply.status(401).send({ error: 'Google userinfo error', details: userInfo });
+            }
             let user = yield user_1.default.findOne({ where: { email: userInfo.email } });
             if (!user) {
                 user = yield user_1.default.create({
@@ -164,7 +169,11 @@ function GoogleOAuthCallback(request, reply) {
             reply.send({ token: jwtToken, user });
         }
         catch (error) {
-            reply.code(500).send({ error: 'Google OAuth failed', details: error });
+            console.error('Google OAuth error:', error);
+            return reply.status(500).send({
+                error: 'Google OAuth failed',
+                details: error instanceof Error ? { message: error.message, stack: error.stack } : error
+            });
         }
     });
 }

@@ -53,6 +53,7 @@ const multipart_1 = __importDefault(require("@fastify/multipart"));
 const static_1 = __importDefault(require("@fastify/static"));
 const cors_1 = __importDefault(require("@fastify/cors"));
 const oauth2_1 = __importDefault(require("@fastify/oauth2"));
+const cookie_1 = __importDefault(require("@fastify/cookie"));
 dotenv_1.default.config({ path: path_1.default.join(__dirname, '../.env') });
 const dbDir = path_1.default.join(__dirname, 'db');
 const dbPath = path_1.default.join(dbDir, 'database.db');
@@ -63,6 +64,7 @@ const dbExists = fs_1.default.existsSync(dbPath);
 const swagger_1 = __importDefault(require("@fastify/swagger"));
 const swagger_ui_1 = __importDefault(require("@fastify/swagger-ui"));
 const server = (0, fastify_1.default)({ logger: true });
+server.register(cookie_1.default);
 const start = (sequelize) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield server.register(cors_1.default, {
@@ -99,21 +101,17 @@ const start = (sequelize) => __awaiter(void 0, void 0, void 0, function* () {
         });
         yield server.register(oauth2_1.default, {
             name: 'googleOAuth2',
-            scope: ['profile', 'email'],
+            scope: ['profile', 'email', 'openid'],
             credentials: {
                 client: {
                     id: process.env.GOOGLE_CLIENT_ID,
-                    secret: process.env.GOOGLE_CLIENT_SECRET,
+                    secret: process.env.GOOGLE_CLIENT_SECRET
                 },
                 auth: oauth2_1.default.GOOGLE_CONFIGURATION,
             },
-            startRedirectPath: '/auth/google',
-            callbackUri: process.env.GOOGLE_REDIRECT_URI || 'http://localhost:2807/auth/google/callback',
+            startRedirectPath: '/api/google_login',
+            callbackUri: process.env.GOOGLE_REDIRECT_URI
         });
-        //debug
-        console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
-        console.log('GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET);
-        console.log('GOOGLE_REDIRECT_URI:', process.env.GOOGLE_REDIRECT_URI);
         const routes_path = path_1.default.join(__dirname, 'routes');
         fs_1.default.readdirSync(routes_path).forEach((file) => {
             if (file.endsWith('.js')) {
