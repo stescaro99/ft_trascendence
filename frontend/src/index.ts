@@ -1,3 +1,4 @@
+import './style.css';
 import {HomePage} from './home/home';
 import {IdentificationPage} from './identification/identification';
 
@@ -28,8 +29,30 @@ function router() {
   const path = location.hash.slice(1) || '/';
   console.log("Navigazione verso:", path);
   const render = routes[path];
-  appDiv.innerHTML = render ? render() : `<h1>404</h1><p>Pagina non trovata</p>`;
+
+  if (render) {
+    const content = render(); // This calls new HomePage() or new IdentificationPage()
+    // Don't set innerHTML if content is empty (let the classes handle rendering)
+    if (content) {
+      appDiv.innerHTML = content;
+    }
+  } else {
+    // Only set innerHTML for 404 pages
+    appDiv.innerHTML = `<h1>404</h1><p>Pagina non trovata</p>`;
+  }
+  // appDiv.innerHTML = render ? render() : `<h1>404</h1><p>Pagina non trovata</p>`;
 }
 
 window.addEventListener('hashchange', router);
 window.addEventListener('load', router);
+
+if (render) {
+  const content = render(); // This calls new HomePage() or new IdentificationPage()
+  // Don't set innerHTML if content is empty (let the classes handle rendering)
+  if (content) {
+    appDiv.innerHTML = content;
+  }
+} else {
+  // Only set innerHTML for 404 pages
+  appDiv.innerHTML = `<h1>404</h1><p>Pagina non trovata</p>`;
+}

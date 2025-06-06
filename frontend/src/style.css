@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @font-face {
   font-family: 'Arcade';
@@ -57,7 +55,6 @@ canvas {
 .screen.visible {
   display: flex !important;
 }
-
 
 .column-screen {
   flex-direction: column;
