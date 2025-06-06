@@ -126,10 +126,18 @@ export async function isAvailable(request: FastifyRequest, reply: FastifyReply) 
 export async function GoogleOAuthCallback(request: FastifyRequest, reply: FastifyReply) {
     try {
         const token = await (request.server as any).googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
-        
+
+        console.log('Google token:', token);
+
         const userInfo = await fetch('https://openidconnect.googleapis.com/v1/userinfo', {
-            headers: { Authorization: `Bearer ${token.access_token}` }
+            headers: { Authorization: `Bearer ${token.token.access_token}` }
         }).then(res => res.json());
+
+        console.log('Google userInfo:', userInfo);
+
+        if (userInfo.error) {
+            return reply.status(401).send({ error: 'Google userinfo error', details: userInfo });
+        }
 
         let user = await User.findOne({ where: { email: userInfo.email } });
         if (!user) {
@@ -148,6 +156,10 @@ export async function GoogleOAuthCallback(request: FastifyRequest, reply: Fastif
 
         reply.send({ token: jwtToken, user });
     } catch (error) {
-        reply.code(500).send({ error: 'Google OAuth failed', details: error });
+        console.error('Google OAuth error:', error);
+        return reply.status(500).send({
+            error: 'Google OAuth failed',
+            details: error instanceof Error ? { message: error.message, stack: error.stack } : error
+        });
     }
 }

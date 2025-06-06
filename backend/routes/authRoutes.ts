@@ -131,7 +131,7 @@ export default async function (server: FastifyInstance) {
         }
     }, verify2FA);
 
-    server.get('/auth/google/callback', GoogleOAuthCallback);
+    server.get('/google/callback', GoogleOAuthCallback);
 }
 
 
