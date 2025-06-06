@@ -3,13 +3,56 @@
 <head>
   <meta charset="UTF-8" />
   <title>ft_transcendence</title>
-  <link rel="stylesheet" href="/dist/style.css" />
+  <link rel="stylesheet" href="./src/style.css" />
 </head>
+
   <body>
-    <div class="bg-blue-400 text-white flex flex-col items-center ">
-      <h1 class="text-3xl font-bold">ft_transcendence</h1>
-      <div id="app"></div>
+      <div id="app" class="bg-body h-screen"></div>
       <script type="module" src="/src/index.ts"></script>
-    </div>
+
+      <nav class="flex flex-col text-center
+                bg-body shadow-lg
+                top-0 fixed left-0 h-screen w-20">
+
+        <i class="sidebar-icon">
+          <img class="h-6 text-white hover:text-black" src="./src/icons/puzzle-alt.svg" alt="">
+        </i>
+        <i class="sidebar-icon">
+          <img class="h-6 text-white hover:text-black" src="./src/icons/console-controller.svg" alt="">
+        </i>
+        <i class="sidebar-icon">
+          <img class="h-6 text-white hover:text-black" src="./src/icons/chart-tree.svg" alt="">
+        </i>
+        <i class="sidebar-icon">
+          <img class="h-6 text-white hover:text-black" src="./src/icons/info.svg" alt="">
+        </i>
+
+        <div class="w-full text-center">
+          <div class="bg-blue-900 h-1 w-5/6 mx-auto"></div>
+        </div>
+
+        <div class="group flex flex-col text-center">
+          <!-- Main Icon -->
+          <i class="sidebar-icon">
+            <img class="h-6 text-white hover:text-black" src="./src/icons/user.svg" alt="">
+          </i>
+
+          <!-- Dropdown menu -->
+          <div class="max-h-0 group-hover:max-h-40 transition-all duration-300 ease-out">
+            <i class="sub-icon opacity-0 group-hover:opacity-100">
+              <img class="h-5" src="./src/icons/stats.svg" alt="">
+            </i>
+            <i class="sub-icon opacity-0 group-hover:opacity-100">
+              <img class="h-5" src="./src/icons/power.svg" alt="">
+            </i>
+          </div>
+        </div>
+
+        <i class="sidebar-icon">
+          <img class="h-6 text-white hover:text-black" src="./src/icons/settings-sliders.svg" alt="">
+        </i>
+
+      </nav>
+      
   </body>
 </html>
