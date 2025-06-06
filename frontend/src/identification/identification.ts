@@ -3,6 +3,7 @@ import { User } from '../model/user.model';
 import { UserService } from '../service/user.service';
 import { AuthenticationService } from '../service/authentication.service';
 import '../style.css';
+import './identification.css'
 
 export class IdentificationPage {
 	user: User = new User();
@@ -19,57 +20,71 @@ export class IdentificationPage {
     document.body.innerHTML = autentificationHtml;
   }
 
-  private handleSubmit(event: Event) {
+private handleSubmit(event: Event) {
 	console.log('button');
 	localStorage.setItem('user', JSON.stringify(this.user.nickname));
-  event.preventDefault();
-  this.userService.postUserToApi(this.user)
-  .then((response) => {
-    console.log('User saved successfully:', response);
-	this.authenticationService.takeQrCodeFromApi(this.user.nickname, this.user.password) 
-	.then((qrResponse) => {
-		this.qrCode = qrResponse.qrCode;
-		const qrLabel = document.querySelector('label[for="qrCode"]');
-		if (qrLabel) { 
-		  qrLabel.innerHTML = `  <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
-		<img src="${this.qrCode}" alt="QR Code" style="width: 200px; height: 200px;" />
-		<div id="token2FA" style="display: flex; gap: 8px; justify-content: center;">
-			<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
-			<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
-			<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
-			-
-			<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
-			<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
-			<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
-		</div>
-			<button id="verify2FA" class="bg-blue-600 round-med text-center text-white w-full max-w-50">Very</button>
-		</div>`;
-		}
-		const inputs = document.querySelectorAll('#token2FA input');
-		inputs.forEach((input, idx) => {
-			input.addEventListener('input', () => {
-				if ((input as HTMLInputElement).value.length === 1 && idx < inputs.length - 1) {
-					(inputs[idx + 1] as HTMLInputElement).focus();
-				}	
+	event.preventDefault();
+	this.userService.postUserToApi(this.user)
+	.then((response) => {
+    	console.log('User saved successfully:', response);
+		this.authenticationService.takeQrCodeFromApi(this.user.nickname, this.user.password) 
+		.then((qrResponse) => {
+			this.qrCode = qrResponse.qrCode;
+			const qrLabel = document.querySelector('label[for="qrCode"]');
+			if (qrLabel) { 
+			  qrLabel.innerHTML = `  <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+			<img src="${this.qrCode}" alt="QR Code" style="width: 200px; height: 200px;" />
+			<div id="token2FA" style="display: flex; gap: 8px; justify-content: center;">
+				<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
+				<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
+				<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
+				-
+				<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
+				<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
+				<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
+			</div>
+				<button id="verify2FA" class="button">Very</button>
+			</div>`;
+			}
+			const inputs = document.querySelectorAll('#token2FA input');
+			inputs.forEach((input, idx) => {
+				input.addEventListener('input', () => {
+					if ((input as HTMLInputElement).value.length === 1 && idx < inputs.length - 1) {
+						(inputs[idx + 1] as HTMLInputElement).focus();
+					}	
+				});
+			});
+			const verifyBtn = document.getElementById('verify2FA');
+			if (verifyBtn) {
+				verifyBtn.addEventListener('click', () => {
+					const inputs = document.querySelectorAll('#token2FA input');
+					let code = '';
+					inputs.forEach(input => {
+					code += (input as HTMLInputElement).value;
+					});
+					this.authenticationService.verifyQrCodeFromApi(this.user.nickname, code)
+					.then((verifyResponse) => {
+						console.log('2FA verified successfully:', verifyResponse);
+						localStorage.setItem('user', JSON.stringify(verifyResponse.user));
+						window.location.hash = '/home';
+				})
+					.catch((verifyError) => {
+						console.error('Error verifying 2FA:', verifyError);
+						alert('Verification failed. Please try again.');
+					});
+				});
+			}
+		})
+		.catch((error) => {
+			console.error('Error fetching QR code:', error);
+			this.userService.deleteUserFromApi(this.user.nickname)
+			.then(() => {
+				console.log('User deleted successfully due to QR code error');
+			})
+			.catch((deleteError) => {
+				console.error('Error deleting user:', deleteError);
 			});
 		});
-		const verifyBtn = document.getElementById('verify2FA');
-		if (verifyBtn) {
-			verifyBtn.addEventListener('click', () => {
-				const inputs = document.querySelectorAll('#token2FA input');
-				let code = '';
-				inputs.forEach(input => {
-				code += (input as HTMLInputElement).value;
-				});
-				this.authenticationService.verifyQrCodeFromApi(this.user.nickname, code)
-				.then((verifyResponse) => {
-					console.log('2FA verified successfully:', verifyResponse);
-					localStorage.setItem('user', JSON.stringify(verifyResponse.user));
-					window.location.hash = '/home';
-			})
-			});
-	}
-})
 
     })
     .catch((error) => {
@@ -99,16 +114,41 @@ export class IdentificationPage {
 	}
 	const nicknameInput = document.getElementById('nicknameInput') as HTMLInputElement;
 	if (nicknameInput) {
-	nicknameInput.addEventListener('blur', () => {
-			this.user.nickname = nicknameInput.value;
-			console.log('nickname', this.user.nickname);
+		nicknameInput.addEventListener('blur', () => {
+				this.authenticationService.aviabilityCheck('nickname', nicknameInput.value)
+				.then((response) => {
+					if (response.available) {
+						this.user.nickname = nicknameInput.value;
+					}
+					else {
+						alert('Nickname is already taken. Please choose another one.');
+						nicknameInput.value = '';
+						const nickSpan = document.getElementById('nicknameSpan');
+						if (nickSpan) {
+							nickSpan.textContent = 'Nickname is already taken. Please choose another one.';
+						}
+					}
+			});
 		});
 	}
 	const emailInput = document.getElementById('emailInput') as HTMLInputElement;
 	if (emailInput) {
 	emailInput.addEventListener('blur', () => {
 			this.user.email = emailInput.value;
-			console.log('surname', this.user.surname);
+			this.authenticationService.aviabilityCheck('email', emailInput.value)
+			.then((response) => {
+				if (response.available) {
+					this.user.email = emailInput.value;
+				}
+				else {
+					alert('Email is already taken. Please choose another one.');
+					emailInput.value = '';
+					const emailSpan = document.getElementById('emailSpan');
+					if (emailSpan) {
+						emailSpan.textContent = 'Email is already taken. Please choose another one.';
+					}
+				}
+			})
 		});
 	}
 	const passwordInput = document.getElementById('passwordInput') as HTMLInputElement;
@@ -123,8 +163,20 @@ export class IdentificationPage {
 		imageInput.addEventListener('change', () => {
 			const file = imageInput.files?.[0];
 			if (file) {
-				this.user.image_url = URL.createObjectURL(file);
-				console.log('image_url', this.user.image_url);
+					const reader = new FileReader();
+					reader.onload =  (e) =>{
+					const base64String = (e.target?.result as string) || '';
+					this.userService.UpdateImageUrl(base64String)
+					.then((response) => {
+						console.log('Image URL updated successfully:', response);
+						this.user.image_url = response.imageUrl;
+					})
+					.catch((error) => {
+						console.error('Error updating image URL:', error);
+						alert('Failed to update image URL. Please try again.');
+					});
+				}
+				reader.readAsDataURL(file);
 			}
 		});
 	}

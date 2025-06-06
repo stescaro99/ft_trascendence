@@ -55,4 +55,40 @@ export class UserService {
         return response.json();
     }
 
+    async deleteUserFromApi(nickname : string): Promise<any> {
+        const url = `${this.apiUrl}/delete_user`;
+        const body = JSON.stringify({
+            nickname: nickname,
+        });
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: body,
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    }
+
+    async UpdateImageUrl(image_Url: string): Promise<any> {
+        const url = `${this.apiUrl}/upload_image`;
+        const body = JSON.stringify({
+            imageUrl: image_Url,
+        });
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: body,
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    }
+
 }
