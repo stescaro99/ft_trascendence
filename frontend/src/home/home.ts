@@ -3,12 +3,13 @@ import '../style.css';
 import { User } from '../model/user.model';
 import { UserService } from '../service/user.service';
 
-export class HomePage{
+export class HomePage {
 	user: User | null;
 	userService: UserService = new UserService();
 	constructor() {
 	this.user = this.userService.getUser();
     this.render();
+	
 	const logoutButton = document.getElementById('logoutButton');
 	if (logoutButton) {
 	logoutButton.addEventListener('click', () => {
@@ -18,7 +19,11 @@ export class HomePage{
 	});
   }
 }
+
 	private render() {
-    document.body.innerHTML = homeHtml;
+	const appDiv = document.getElementById('app');
+	if (appDiv) {
+		appDiv.innerHTML = homeHtml;
+	}
   }
 }

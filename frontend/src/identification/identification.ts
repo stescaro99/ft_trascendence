@@ -17,7 +17,10 @@ export class IdentificationPage {
   }
 
   private render() {
-    document.body.innerHTML = autentificationHtml;
+    const appDiv = document.getElementById('app');
+    if (appDiv) {
+        appDiv.innerHTML = autentificationHtml;
+    }
   }
 
 private handleSubmit(event: Event) {
