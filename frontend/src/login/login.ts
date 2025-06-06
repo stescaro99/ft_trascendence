@@ -1,0 +1,30 @@
+import { User } from '../model/user.model';
+import { UserService } from '../service/user.service';
+import { AuthenticationService } from '../service/authentication.service';
+import '../style.css';
+import './login.css';
+import loginHtml from './login.html?raw';
+
+export class LogInPage{
+	user: User = new User();
+	userService: UserService = new UserService();
+	authenticationService: AuthenticationService = new AuthenticationService();
+	constructor() {
+		this.render();
+		this.addEventListeners();
+	}
+	private render() {
+		document.body.innerHTML = loginHtml;
+	}
+
+	handleSubmit() {
+		
+	}
+
+	private addEventListeners() {
+		const loginForm = document.getElementById('loginForm');
+		if (loginForm) {
+			loginForm.addEventListener('submit', (event) => this.handleSubmit());
+		}
+	}
+}

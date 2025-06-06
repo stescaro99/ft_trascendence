@@ -47,4 +47,32 @@ export class AuthenticationService {
         }
         return response.json();
     }
+
+    async loginUserWithGoogleToApi(): Promise<any> {
+        const api = `http://localhost:2807/api/google_login`;
+        const response = await fetch(api, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    }
+
+    async aviabilityCheck(field: string, value: string): Promise<any> {
+        const api = `${this.apiUrl}/available_field?field=${field}&value=${value}`;
+        const response = await fetch(api, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },  
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    }
 }
