@@ -91,7 +91,7 @@ function moveBotPaddle() {
   if (!getBotActive(0)) return;
   const bot = game.rightPaddle[0];
 
-  const randomOffset = (Math.random() - 0.5) * 120;
+  const randomOffset = (Math.random() - 0.5) * 200;
 
   predictedY = predictBallY(game.ball, bot.x) + randomOffset;
 }
