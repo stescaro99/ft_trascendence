@@ -8,13 +8,6 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Single color
-        'brand': '#3b82f6',
-
-        'body': '#030712',
-        'icon': '#1E429F',
-        'icon-hover': '#1C64F2',
-        'nav-shadow': '#00ffff',
         
         // Color with shades
         'primary': {

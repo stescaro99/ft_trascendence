@@ -2,10 +2,28 @@
 
 @font-face {
   font-family: 'Arcade';
-  src: url('./fonts/arcade-classic.ttf');
+  src: url('./utils/fonts/arcade-classic.TTF');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
+}
+
+@theme {
+  --color-body: #030712;
+  --color-icon: #1E429F;
+  --color-icon-hover: #1C64F2;
+  --color-nav-shadow: #00ffff;
+  
+  --color-c-50: #eff6ff;
+  --color-c-100: #dbeafe;
+  --color-c-200: #bfdbfe;
+  --color-c-300: #93c5fd;
+  --color-c-400: #60a5fa;
+  --color-c-500: #3b82f6;
+  --color-c-600: #2563eb;
+  --color-c-700: #1d4ed8;
+  --color-c-800: #1e40af;
+  --color-c-900: #1e3a8a;
 }
 
 .arcade-font {
@@ -13,8 +31,8 @@
 }
 
 .sidebar-icon {
-  @apply relative flex items-center justify-center h-12 w-12 mx-auto my-2 bg-blue-600
-          hover:bg-blue-400
+  @apply relative flex items-center justify-center h-12 w-12 mx-auto my-2 bg-c-600
+          hover:bg-c-400
           rounded-3xl 
           transition-all duration-200 ease-linear;
 }
@@ -23,8 +41,8 @@
 }
 
 .sub-icon {
-  @apply relative flex items-center justify-center h-10 w-10 mx-auto my-2 bg-blue-500
-          hover:bg-blue-400
+  @apply relative flex items-center justify-center h-10 w-10 mx-auto my-2 bg-c-500
+          hover:bg-c-400
           rounded-3xl 
           transition-all duration-200 ease-linear;
 }
