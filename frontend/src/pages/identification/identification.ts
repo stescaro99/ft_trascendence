@@ -1,8 +1,8 @@
 import autentificationHtml from './identification.html?raw';
-import { User } from '../model/user.model';
-import { UserService } from '../service/user.service';
-import { AuthenticationService } from '../service/authentication.service';
-import '../style.css';
+import { User } from '../../model/user.model';
+import { UserService } from '../../service/user.service';
+import { AuthenticationService } from '../../service/authentication.service';
+import '../../style.css';
 import './identification.css'
 
 export class IdentificationPage {

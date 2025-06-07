@@ -1,6 +1,8 @@
 import './style.css';
-import {HomePage} from './home/home';
-import {IdentificationPage} from './identification/identification';
+import {HomePage} from './pages/home/home';
+import {IdentificationPage} from './pages/identification/identification';
+import {StatsPage} from './pages/stats/stats';
+import {LogInPage} from './pages/login/login';
 
 console.log("Script caricato");
 
@@ -23,6 +25,14 @@ const routes: Record<string, () => string> = {
     new IdentificationPage();
     return "";
   },
+  '/login': () => {
+    new LogInPage();
+    return "";
+  },
+  '/stats': () => {
+    new StatsPage();
+    return "";
+  }
 };
 
 function router() {
@@ -46,13 +56,13 @@ function router() {
 window.addEventListener('hashchange', router);
 window.addEventListener('load', router);
 
-if (render) {
-  const content = render(); // This calls new HomePage() or new IdentificationPage()
-  // Don't set innerHTML if content is empty (let the classes handle rendering)
-  if (content) {
-    appDiv.innerHTML = content;
-  }
-} else {
-  // Only set innerHTML for 404 pages
-  appDiv.innerHTML = `<h1>404</h1><p>Pagina non trovata</p>`;
-}
+// if (render) {
+//   const content = render(); // This calls new HomePage() or new IdentificationPage()
+//   // Don't set innerHTML if content is empty (let the classes handle rendering)
+//   if (content) {
+//     appDiv.innerHTML = content;
+//   }
+// } else {
+//   // Only set innerHTML for 404 pages
+//   appDiv.innerHTML = `<h1>404</h1><p>Pagina non trovata</p>`;
+// }

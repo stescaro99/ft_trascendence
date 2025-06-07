@@ -1,7 +1,7 @@
-import { User } from '../model/user.model';
-import { UserService } from '../service/user.service';
-import { AuthenticationService } from '../service/authentication.service';
-import '../style.css';
+import { User } from '../../model/user.model';
+import { UserService } from '../../service/user.service';
+import { AuthenticationService } from '../../service/authentication.service';
+import '../../style.css';
 import './login.css';
 import loginHtml from './login.html?raw';
 
