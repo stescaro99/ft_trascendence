@@ -26,6 +26,10 @@
   --color-c-900: #1e3a8a;
 }
 
+body {
+  overflow-x: hidden;
+}
+
 .arcade-font {
     font-family: 'Arcade' !important;
 }

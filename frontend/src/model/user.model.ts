@@ -6,8 +6,8 @@ export class User {
 	nickname: string = '';
     email: string = '';
     password: string = '';
-    surname: string = '';
+    surname: string = ''; // lastname?
     language: string = '';
     image_url: string = '';
-    stats: Stats[] = [];
+    stats: Stats = {}
 }

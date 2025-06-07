@@ -18,7 +18,7 @@ export class LogInPage{
 	}
 
 	handleSubmit() {
-		
+		// TO DO
 	}
 
 	private addEventListeners() {

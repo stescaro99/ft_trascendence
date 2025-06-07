@@ -2,7 +2,7 @@ import { Game } from './game.model';
 
 export class Stats {
     stat_index?: number;
-    nickname?: '';
+    nickname?: string;
     addGame?: (game: Game, options?: any) => Promise<void>;
     games?: Game[];
     number_of_games?: number;
