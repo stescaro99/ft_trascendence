@@ -3,6 +3,7 @@ import {HomePage} from './pages/home/home';
 import {IdentificationPage} from './pages/identification/identification';
 import {StatsPage} from './pages/stats/stats';
 import {LogInPage} from './pages/login/login';
+import {ProfilePage} from './pages/profile/profile';
 
 console.log("Script caricato");
 
@@ -31,6 +32,10 @@ const routes: Record<string, () => string> = {
   },
   '/stats': () => {
     new StatsPage();
+    return "";
+  },
+  '/profile': () => {
+    new ProfilePage();
     return "";
   }
 };
