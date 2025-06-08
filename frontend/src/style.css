@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+/* Fonts */
 @font-face {
   font-family: 'Arcade';
   src: url('./utils/fonts/arcade-classic.TTF');
@@ -7,7 +8,66 @@
   font-style: normal;
   font-display: swap;
 }
+.arcade-font {
+  font-family: 'Arcade' !important;
+}
 
+@font-face {
+  font-family: 'Xirod';
+  src: url('./utils/fonts/Xirod.otf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+.xirod-font {
+  font-family: 'Xirod' !important;
+}
+
+@font-face {
+  font-family: 'Led';
+  src: url('./utils/fonts/led_counter.ttf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+.led-font {
+  font-family: 'Led' !important;
+}
+
+@font-face {
+  font-family: 'Digital';
+  src: url('./utils/fonts/Technology.ttf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+.digital-font {
+  font-family: 'Digital' !important;
+}
+
+@font-face {
+  font-family: 'Digital-bold';
+  src: url('./utils/fonts/Technology-Bold.ttf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+.digital-b-font {
+  font-family: 'Digital-bold' !important;
+}
+
+@font-face {
+  font-family: 'Rushblade';
+  src: url('./utils/fonts/Rushblade.ttf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+.rushblade-font {
+  font-family: 'Rushblade' !important;
+}
+
+/* Colors */
 @theme {
   --color-body: #030712;
   --color-icon: #1E429F;
@@ -26,128 +86,47 @@
   --color-c-900: #1e3a8a;
 }
 
+[data-theme="blue"] {
+  --primary: #1e40af;
+  --secondary: #3F83F8;
+  --hover: #3b82f6;
+  --shadow-glow: 0 0 20px var(--secondary);
+  --shadow-lateral: 0 0 35px var(--secondary);
+}
+
+[data-theme="green"] {
+  --primary: #22ff22;
+  --secondary: #7bf1a8;
+  --hover: #05df72;
+  --shadow-glow: 0 0 20px var(--primary);
+  --shadow-lateral: 0 0 35px var(--primary);
+}
+
 body {
   overflow-x: hidden;
 }
 
-.arcade-font {
-    font-family: 'Arcade' !important;
+h1 {
+  @apply font-['Rushblade']
+}
+
+/*  NAVBAR */
+nav {
+  @apply shadow-[var(--shadow-lateral)] !shadow-[var(--shadow-lateral)];
 }
 
 .sidebar-icon {
-  @apply relative flex items-center justify-center h-12 w-12 mx-auto my-2 bg-c-600
-          hover:bg-c-400
+  @apply relative flex items-center justify-center h-12 w-12 mx-auto my-2 bg-[color:var(--primary)]
+          hover:bg-[color:var(--hover)] hover:shadow-[var(--shadow-glow)]
           rounded-3xl 
           transition-all duration-200 ease-linear;
-}
-.sidebar-icon:hover {
-  box-shadow: 0 0 15px #00ffff;
 }
 
 .sub-icon {
-  @apply relative flex items-center justify-center h-10 w-10 mx-auto my-2 bg-c-500
-          hover:bg-c-400
+  @apply relative flex items-center justify-center h-10 w-10 mx-auto my-2 bg-[color:var(--secondary)]
+          hover:bg-[color:var(--hover)] hover:shadow-[var(--shadow-glow)]
           rounded-3xl 
           transition-all duration-200 ease-linear;
 }
-.sub-icon:hover {
-    box-shadow: 0 0 15px #00ffff;
-}
 
-nav {
-  box-shadow: 0 0 20px #3F83F8, 0 0 40px #3F83F8 !important;
-}
-
-/* ACONCIAR STYLE */
-
-canvas {
-  display: none;
-  border: none;
-  background: #111;
-  box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
-  border-radius: 20px;
-}
-
-.screen {
-  display: none !important;
-  width: 100vw;
-  height: 100vh;
-}
-
-.screen.visible {
-  display: flex !important;
-}
-
-.column-screen {
-  flex-direction: column;
-}
-
-.row-screen {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100vw;
-}
-
-.column {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.spacer {
-  flex: 1;
-}
-
-.palette {
-  display: grid;
-  grid-template-columns: repeat(3, 30px);
-  gap: 10px;
-  margin: 10px 0;
-}
-
-.palette button {
-  width: 30px;
-  height: 30px;
-  border: 2px solid white;
-  cursor: pointer;
-}
-
-.palette button.selected {
-  border: 3px solid gold;
-}
-
-.paddle-preview {
-  margin-top: 20px;
-  width: 20px;
-  height: 120px;
-  background-color: white;
-  border: 3px solid #eee;
-}
-
-.title {
-  font-size: 48px;
-  color: #00ffff;
-  text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
-}
-
-.btn-large {
-  margin-top: 40px;
-  font-size: 32px;
-  padding: 20px 50px;
-  border: 4px solid white;
-  background: black;
-  color: white;
-  cursor: pointer;
-  border-radius: 12px;
-  box-shadow: 0 0 10px white, 0 0 20px #00ffff inset;
-}
-
-.btn-large:hover {
-  background: #111;
-  color: #00ffff;
-  box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff inset;
-}
 

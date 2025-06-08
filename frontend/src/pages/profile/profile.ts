@@ -27,7 +27,7 @@ export class ProfilePage {
             nickname: "The Boolers",
             email: "una@email.com",
             password: 'cccp',
-            surname: "Coolers",
+            surname: "Alloc",
             language: 'it',
             image_url: './src/utils/images/mr_mime.png',
             stats: this.stats
@@ -38,14 +38,9 @@ export class ProfilePage {
 
     private render() {
         const appDiv = document.getElementById('app');
-        const imgElement = document.getElementById('profile_image') as HTMLImageElement;
 
         if (appDiv) {
             appDiv.innerHTML = profileHtml;
-
-            if (imgElement) {
-                imgElement.src = this.user.image_url;
-            }
 
             this.showValueProfile("name");
             this.showValueProfile("nickname");
@@ -61,6 +56,12 @@ export class ProfilePage {
             this.showValueStats("percentage_wins")
             this.showValueStats("percentage_losses")
             this.showValueStats("percentage_draws")
+
+            setTimeout(() => {
+                const imgElement = document.getElementById('profile_image') as HTMLImageElement;
+                imgElement.src = this.user.image_url;
+            }, 0);
+
         }
     }
 

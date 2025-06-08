@@ -9,12 +9,17 @@ export class LogInPage{
 	user: User = new User();
 	userService: UserService = new UserService();
 	authenticationService: AuthenticationService = new AuthenticationService();
+	
 	constructor() {
 		this.render();
 		this.addEventListeners();
+		this.setTheme('green');
 	}
 	private render() {
-		document.body.innerHTML = loginHtml;
+		const appDiv = document.getElementById('app');
+		if (appDiv) {
+			appDiv.innerHTML = loginHtml;
+		}
 	}
 
 	handleSubmit() {
@@ -27,4 +32,10 @@ export class LogInPage{
 			loginForm.addEventListener('submit', (event) => this.handleSubmit());
 		}
 	}
+
+	private setTheme(theme: string) {
+		const element = document.querySelector('[data-theme]') as HTMLElement;
+
+		element.dataset.theme = theme;
+	} 
 }
