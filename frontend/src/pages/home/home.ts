@@ -2,6 +2,7 @@ import homeHtml from './home.html?raw';
 import '../../style.css';
 import { User } from '../../model/user.model';
 import { UserService } from '../../service/user.service';
+import './home.css';
 
 export class HomePage {
 	user: User | null;
@@ -9,6 +10,7 @@ export class HomePage {
 	constructor() {
 		this.user = this.userService.getUser();
 		this.render();
+		this.setTheme('blue');
 		
 		const logoutButton = document.getElementById('logoutButton');
 		if (logoutButton) {
@@ -26,4 +28,10 @@ export class HomePage {
 			appDiv.innerHTML = homeHtml;
 		}
 	}
+
+	private setTheme(theme: string) {
+		const element = document.querySelector('[data-theme]') as HTMLElement;
+
+		element.dataset.theme = theme;
+	} 
 }

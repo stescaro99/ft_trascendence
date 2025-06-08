@@ -1,23 +1,24 @@
-<div
-  class="@container flex flex-col bg-black min-h-screen shadow-[0_0_60px_#22ff22,0_0_120px_#22ff22] border-4 border-green-400">
+<div class="login-container">
+
   <div class="flex flex-col justify-center items-center gap-8 mt-10">
+
     <form id="loginForm"
-      class="flex flex-col items-center w-[70%] max-w-2xl gap-6 p-6  rounded-lg shadow-[0_0_32px_#22ff22] border-2 border-green-400">
-      <span class="text-white">Login</span>
+      class="login-form">
+      <h1 class="text-white text-3xl">LOGIN</h1>
       <input type="text" id="username" placeholder="Username" class="display-neon-green" />
       <input type="password" id="password" placeholder="Password" class="display-neon-green" />
       <button type="submit" id="loginButton"
-        class="text-gray-600 font-bold bg-green-300 rounded-md w-[60%] px-6 py-3 shadow-[0_0_16px_#22ff22,0_0_32px_#22ff22] hover:bg-green-400 hover:shadow-[0_0_32px_#22ff22,0_0_64px_#22ff22] transition">
+        class="login-btn w-[60%]">
         Login
       </button>
-      <button
-      class="bg-red-400 w-[60%] font-bold text-white rounded-md px-6 py-3 self-center shadow-[0_0_16px_#ff2222,0_0_32px_#ff2222] hover:bg-red-400 hover:shadow-[0_0_32px_#ff2222,0_0_64px_#ff2222] transition">
-      login with google
-    </button>
-  </form>
+      <button class="login-google">login with google</button>
+    </form>
+
     <button onclick="window.location.href='#/identification'"
-      class="text-gray-600 font-bold bg-green-300 rounded-md px-6 py-3 h-fit self-center shadow-[0_0_16px_#22ff22,0_0_32px_#22ff22] hover:bg-green-400 hover:shadow-[0_0_32px_#22ff22,0_0_64px_#22ff22] transition">
+      class="login-btn h-fit self-center">
       Sign Up
     </button>
+
   </div>
+
 </div>
