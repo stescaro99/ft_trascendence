@@ -1,0 +1,78 @@
+@import "../../style.css";
+
+.identification {
+    @apply shadow-[0_0_20px_#60a5fa] font-['Digital'] rounded-tl-[50%] [clip-path:inset(-30px_0_-30px_-30px)]
+            hover:shadow-[0_0_40px_#60a5fa] hover:[clip-path:inset(-60px_0_-60px_-60px)] ease-linear duration-300
+}
+
+.login {
+    @apply shadow-[0_0_20px_#2563eb] font-['Digital'] rounded-br-[50%] [clip-path:inset(-30px_-30px_-30px_0)]
+            hover:shadow-[0_0_40px_#2563eb] hover:[clip-path:inset(-60px_-60px_-60px_0)] ease-linear duration-300
+}
+
+.glow-text {
+    text-shadow: 0 0 10px #22d3ee, 0 0 20px #22d3ee, 0 0 30px #22d3ee;
+    color: #22d3ee; /* Cyan color */
+}
+
+.hollywood-sign {
+    color: #60a5fa;
+    text-shadow: 
+        0 1px 0 #60a5fa,          /* Small top highlight */
+        0 2px 0 rgb(37, 99, 235),       /* Text depth */
+        0 3px 0 #2563eb,          /* More depth */
+        0 4px 0 rgb(37, 99, 235),       /* Even more depth */
+        0 5px 10px rgba(0,0,0,0.6),  /* Dark shadow */
+        0 15px 25px rgba(37, 99, 235, 0.8); /* Bottom glow */
+}
+
+/* #ff006e, rgb(255, 0, 110) pinkish color */
+.neon-sign {
+    color: rgb(96, 165, 250);
+    font-weight: bold;
+    text-shadow: 
+        0 0 3px #60a5fa,
+        0 0 10px #60a5fa,
+        0 0 20px #60a5fa,
+        0 0 40px #60a5fa;
+    background: linear-gradient(180deg,
+        rgba(96, 165, 250, 0.1) 0%, 
+        rgba(96, 165, 250, 0.3) 50%, 
+        rgba(96, 165, 250, 0.1) 100%);
+    border: 1px solid rgba(96, 165, 250, 0.5);
+    border-radius: 25px;
+    padding: 15px 30px;
+    /* animation: flicker 1.5s infinite alternate; */
+}
+
+@keyframes flicker {
+    0%, 18%, 22%, 25%, 53%, 57%, 100% {
+        text-shadow: 0 0 10px #60a5fa, 0 0 20px #60a5fa, 0 0 40px #60a5fa;
+    }
+    20%, 24%, 55% {
+        text-shadow: none;
+    }
+}
+
+.early-digital-effect {
+    color: #60a5fa;
+    text-shadow:
+        1px -1px 0 rgb(37, 99, 235),
+        /* Landing/current position */
+        5px -5px 0 rgba(96, 165, 250, 0.7),
+        
+        /* Early trajectory */
+        10px -10px 0 rgba(96, 165, 250, 0.6),
+        15px -20px 0 rgba(96, 165, 250, 0.4),
+        20px -30px 0 rgba(96, 165, 250, 0.2),
+        
+        /* Middle of arc */
+        24px -45px 0 rgba(96, 165, 250, 0.15),
+        27px -65px 0 rgba(96, 165, 250, 0.1),
+        
+        /* Peak of parabola */
+        29px -90px 0 rgba(96, 165, 250, 0.05),
+        30px -120px 0 rgba(96, 165, 250, 0.03);
+}
+
+

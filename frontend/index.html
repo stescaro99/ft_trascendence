@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="it">
+
+<head>
+  <meta charset="UTF-8"/>
+  <title>ft_transcendence</title>
+  <link rel="stylesheet" href="./src/style.css"/>
+</head>
+
+  <body data-theme="blue">
+
+    <div id="app" class="h-screen"></div>
+    <script type="module" src="./src/index.ts"></script>
+
+    <nav class="flex flex-col text-center
+              shadow-lg bg-body
+              top-0 fixed left-0 h-screen w-20 z-10">
+
+      <i class="sidebar-icon">
+        <a href="#/">
+          <img class="h-6 text-white hover:text-black" src="./src/utils/icons/puzzle-alt.svg" alt="">
+        </a>
+      </i>
+      <i class="sidebar-icon">
+        <img class="h-6 text-white hover:text-black" src="./src/utils/icons/console-controller.svg" alt="">
+      </i>
+      <i class="sidebar-icon">
+        <img class="h-6 text-white hover:text-black" src="./src/utils/icons/chart-tree.svg" alt="">
+      </i>
+      <i class="sidebar-icon">
+        <img class="h-6 text-white hover:text-black" src="./src/utils/icons/info.svg" alt="">
+      </i>
+
+      <div class="w-full text-center">
+        <div class="bg-[color:var(--primary)] h-1 w-5/6 mx-auto"></div>
+      </div>
+
+      <div class="group flex flex-col text-center">
+        
+        <i class="sidebar-icon">
+          <a href="#/profile">
+            <img class="h-6 text-white hover:text-black" src="./src/utils/icons/user.svg" alt="">
+          </a>
+        </i>
+
+        <div class="max-h-0 group-hover:max-h-20 transition-all duration-300 ease-out">
+          <!-- <i class="sub-icon opacity-0 group-hover:opacity-100">
+            <a href="#/stats">
+              <img class="h-5" src="./src/utils/icons/stats.svg" alt="">
+            </a>
+          </i> -->
+          <i class="sub-icon opacity-0 group-hover:opacity-100">
+            <img class="h-5" src="./src/utils/icons/power.svg" alt="">
+          </i>
+        </div>
+      </div>
+
+      <i class="sidebar-icon">
+        <img class="h-6 text-white hover:text-black" src="./src/utils/icons/settings-sliders.svg" alt="">
+      </i>
+
+      </nav>
+      
+  </body>
+</html>
