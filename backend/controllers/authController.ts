@@ -29,8 +29,6 @@ export async function generate2FA(request: FastifyRequest, reply: FastifyReply) 
             return reply.code(401).send({ error: 'Invalid credentials' });
         }
     }
-    if (!user.tfa_code || user.password === '')
-        reply.code(400).send({ error: 'Can\'t get 2FA code after Google Signup' });
     try {
         const issuer = 'FT_TRASCENDENCE';
         const secret = speakeasy.generateSecret({ name: user.nickname, issuer });

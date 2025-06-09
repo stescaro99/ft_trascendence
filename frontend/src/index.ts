@@ -46,17 +46,25 @@ function router() {
   const render = routes[path];
 
   if (render) {
-    const content = render(); // This calls new HomePage() or new IdentificationPage()
-    // Don't set innerHTML if content is empty (let the classes handle rendering)
+    const content = render(); 
     if (content) {
       appDiv.innerHTML = content;
     }
   } else {
-    // Only set innerHTML for 404 pages
+
     appDiv.innerHTML = `<h1>404</h1><p>Pagina non trovata</p>`;
   }
-  // appDiv.innerHTML = render ? render() : `<h1>404</h1><p>Pagina non trovata</p>`;
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const powerBtn = document.getElementById('powerBtn');
+  if (powerBtn) {
+    powerBtn.addEventListener('click', () => {
+      localStorage.removeItem('user');
+      window.location.hash = '/login';
+    });
+  }
+});
 
 window.addEventListener('hashchange', router);
 window.addEventListener('load', router);

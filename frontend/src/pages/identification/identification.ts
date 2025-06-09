@@ -25,7 +25,6 @@ export class IdentificationPage {
 
 private handleSubmit(event: Event) {
 	console.log('button');
-	localStorage.setItem('user', JSON.stringify(this.user.nickname));
 	event.preventDefault();
 	this.userService.postUserToApi(this.user)
 	.then((response) => {
@@ -46,7 +45,7 @@ private handleSubmit(event: Event) {
 				<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
 				<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
 			</div>
-				<button id="verify2FA" class="button">Very</button>
+				<button id="verify2FA" class="button">Verify</button>
 			</div>`;
 			}
 			const inputs = document.querySelectorAll('#token2FA input');
@@ -121,6 +120,9 @@ private handleSubmit(event: Event) {
 				this.authenticationService.aviabilityCheck('nickname', nicknameInput.value)
 				.then((response) => {
 					if (response.available) {
+						const nickSpan = document.getElementById('nicknameSpan');
+						if (nickSpan) 
+							nickSpan.textContent = ''
 						this.user.nickname = nicknameInput.value;
 					}
 					else {
@@ -141,6 +143,10 @@ private handleSubmit(event: Event) {
 			this.authenticationService.aviabilityCheck('email', emailInput.value)
 			.then((response) => {
 				if (response.available) {
+					const emailSpan = document.getElementById('emailSpan');
+					if (emailSpan) {
+						emailSpan.textContent = '';
+					}
 					this.user.email = emailInput.value;
 				}
 				else {
