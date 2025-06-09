@@ -11,6 +11,8 @@ RUN mkdir -p db uploads
 
 RUN npm run build
 
+RUN cp -r cert dist/
+
 EXPOSE 2807
 
 CMD ["npm", "run", "start"]

@@ -23,7 +23,16 @@ const dbExists = fs.existsSync(dbPath);
 import swagger from '@fastify/swagger';
 import swaggerUI from '@fastify/swagger-ui';
 
-const server = Fastify({ logger: true });
+// Carica i certificati SSL
+const httpsOptions = {
+    key: fs.readFileSync(path.join(__dirname, 'cert', 'key.pem')),
+    cert: fs.readFileSync(path.join(__dirname, 'cert', 'cert.pem'))
+};
+
+const server = Fastify({ 
+    logger: true,
+    https: httpsOptions
+});
 
 server.register(fastifyCookie); 
 
@@ -90,8 +99,8 @@ const start = async (sequelize: any) => {
         console.log('Database connection has been established successfully.');
         console.log('Database synchronized successfully.');
         await server.listen({ port: 2807, host: '0.0.0.0' });
-        console.log('Server is running on http://localhost:2807');
-        console.log('Swagger UI is available at http://localhost:2807/swagger');
+        console.log('Server is running on https://localhost:2807');
+        console.log('Swagger UI is available at https://localhost:2807/swagger');
     } catch (err) {
         server.log.error(err);
         process.exit(1);
