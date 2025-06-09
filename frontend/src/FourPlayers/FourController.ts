@@ -93,33 +93,33 @@ document.addEventListener("keydown", (e) => {
       game.leftPaddle[0].dy = game.leftPaddle[0].speed;
       break;
     case "a":
-      if (!getBotActive(1))
+      if (getBotActive(1))
         break;
       game.leftPaddle[1].dy = -game.leftPaddle[1].speed;
       break;
     case "z":
-      if (!getBotActive(1))
+      if (getBotActive(1))
         break;
       game.leftPaddle[1].dy = game.leftPaddle[1].speed;
       break;
 
     case "ArrowUp":
-      if (!getBotActive(2))
+      if (getBotActive(2))
         break;
       game.rightPaddle[0].dy = -game.rightPaddle[0].speed;
       break;
     case "ArrowDown":
-      if (!getBotActive(2))
+      if (getBotActive(2))
         break;
       game.rightPaddle[0].dy = game.rightPaddle[0].speed;
       break;
     case "i":
-      if (!getBotActive(3))
+      if (getBotActive(3))
         break;
       game.rightPaddle[1].dy = -game.rightPaddle[1].speed;
       break;
     case "k":
-      if (!getBotActive(3))
+      if (getBotActive(3))
         break;
       game.rightPaddle[1].dy = game.rightPaddle[1].speed;
       break;
@@ -169,23 +169,19 @@ function render(TeamLeft: string, TeamRight: string)
 
 // === Game loop ===
 
-let turn = 0;
-
 let botInterval: number | undefined = undefined;
 
 function moveBotPaddle() {
   if (getBotActive(1)) {
-    const randomOffset = (Math.random() - 0.5) * 250;
+    const randomOffset = (Math.random() - 0.5) * 200;
     predictedY[1] = predictBallY(game.ball, game.leftPaddle[1].x) + randomOffset;
   }
-  if (getBotActive(2) && turn == 0) {
-    turn = 1;
+  if (getBotActive(2)) {
     const randomOffset = (Math.random() - 0.5) * 200;
     predictedY[2] = predictBallY(game.ball, game.rightPaddle[0].x) + randomOffset;
   }
-  if (getBotActive(3) && turn == 1) {
-    turn = 0;
-    const randomOffset = (Math.random() - 0.5) * 250;
+  if (getBotActive(3)) {
+    const randomOffset = (Math.random() - 0.5) * 200;
     predictedY[3] = predictBallY(game.ball, game.rightPaddle[1].x) + randomOffset;
   }
 }
