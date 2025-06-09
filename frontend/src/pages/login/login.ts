@@ -31,6 +31,21 @@ export class LogInPage{
 		if (loginForm) {
 			loginForm.addEventListener('submit', (event) => this.handleSubmit());
 		}
+		const googleid = document.getElementById('googleid');
+		if (googleid) {
+			googleid.addEventListener('click', () => {
+				this.authenticationService.loginUserWithGoogleToApi()
+				.then((response) => {
+					console.log('Google login successful:', response);
+					localStorage.setItem('user', JSON.stringify(response.user));
+					location.hash = '/';
+				})
+				.catch((error) => {
+					console.error('Google login failed:', error);
+					alert('Google login failed. Please try again.');
+				});
+			});
+		}
 	}
 
 	private setTheme(theme: string) {
