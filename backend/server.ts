@@ -8,7 +8,8 @@ import fastifyCors from '@fastify/cors';
 import fastifyOauth2 from '@fastify/oauth2';
 import fastifyCookie from '@fastify/cookie';
 
-dotenv.config({ path: path.join(__dirname, '../.env') });
+//dotenv.config({ path: path.join(__dirname, '../.env') });
+dotenv.config(); //con docker non serve specificare il path, prende automaticamente il file .env nella root del progetto
 
 const dbDir = path.join(__dirname, 'db');
 const dbPath = path.join(dbDir, 'database.db');
