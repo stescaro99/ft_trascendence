@@ -14,7 +14,7 @@
 
     <nav class="flex flex-col text-center
               shadow-lg bg-body
-              top-0 fixed left-0 h-screen w-20 z-10">
+              top-0 fixed left-0 h-screen w-20 z-10" id="navbar">
 
       <i class="sidebar-icon">
         <a href="#/">
@@ -62,4 +62,14 @@
       </nav>
       
   </body>
+
+  <script>
+    /* Mostra navabr solo se utente e' loggato --> 'user' in LocalStorage */
+    var navbar = document.getElementById('navbar')
+    if (localStorage.getItem('user')) {
+      navbar.style.display = 'block'
+    } else {
+      navbar.style.display = 'none'
+    }
+  </script>
 </html>
