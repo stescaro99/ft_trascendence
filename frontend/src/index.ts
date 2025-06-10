@@ -8,19 +8,26 @@ import {ProfilePage} from './pages/profile/profile';
 console.log("Script caricato");
 
 const appDiv = document.getElementById('app')!;
+const params = new URLSearchParams(window.location.search);
+const token = params.get('token');
+const nickname = params.get('nickname');
+
+if (token && nickname) {
+  localStorage.setItem('user', JSON.stringify({ token }));
+  localStorage.setItem('nickname', nickname);
+  window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+}
 
 const routes: Record<string, () => string> = {
   '/': () => {
     /* Uncomment to make redirection work */
-    // if (localStorage.getItem('user')) {
-    //   new HomePage();
-	  // return "";
-    // } else {
-    //   new IdentificationPage();
-    //   return "";
-    // }
-    new HomePage();
+    if (localStorage.getItem('user')) {
+      new HomePage();
 	  return "";
+    } else {
+      new LogInPage();
+      return "";
+    }
   },
   '/identification': () => {
     new IdentificationPage();

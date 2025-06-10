@@ -49,17 +49,8 @@ export class AuthenticationService {
     }
 
     async loginUserWithGoogleToApi(): Promise<any> {
-        const api = `http://localhost:2807/api/google_login`;
-        const response = await fetch(api, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
+        const api = `https://localhost:2807/api/google_login`;
+        window.location.href = api;
     }
 
     async aviabilityCheck(field: string, value: string): Promise<any> {
