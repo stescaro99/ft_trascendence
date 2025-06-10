@@ -9,12 +9,14 @@ export default async function (server: FastifyInstance) {
         schema: {
             body: {
                 type: 'object',
-                required: ['player1_nickname', 'player2_nickname'],
+                required: ['players'],
                 properties: {
-                    player1_nickname: { type: 'string' },
-                    player2_nickname: { type: 'string' },
-                    player3_nickname: { type: 'string' },
-                    player4_nickname: { type: 'string' },
+                    players: {
+                        type: 'array',
+                        items: { type: 'string' },
+                        minItems: 2,
+                        maxItems: 4
+                    },
                     date: { type: 'string', format: 'date-time' }
                 }
             },
@@ -63,8 +65,8 @@ export default async function (server: FastifyInstance) {
                 required: ['game_id', 'field', 'new_value'],
                 properties: {
                     game_id: { type: 'integer' },
-                    field: { type: 'string' },
-                    new_value: { type: 'string' }
+                    field: { type: 'string', enum: ['1_scores', '2_scores', 'winner_nickname'] },
+                    new_value: {}
                 }
             },
             response: {

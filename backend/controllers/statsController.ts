@@ -49,14 +49,11 @@ export async function updateStats(request: FastifyRequest, reply: FastifyReply) 
             default:
                 return reply.code(400).send({ message: 'Invalid result value' });
         }
-        if (game.player1_nickname === nickname) {
-            userStat.number_of_points = (userStat.number_of_points || 0) + (game.player1_score || 0);
-        } else if (game.player2_nickname === nickname) {
-            userStat.number_of_points = (userStat.number_of_points || 0) + (game.player2_score || 0);
-        } else if (game.player3_nickname === nickname) {
-            userStat.number_of_points = (userStat.number_of_points || 0) + (game.player3_score || 0);
+        const playerIndex = game.players?.indexOf(nickname);
+        if (playerIndex !== undefined && playerIndex >= 0 && Array.isArray(game.scores)) {
+            userStat.number_of_points = (userStat.number_of_points || 0) + (game.scores[playerIndex] || 0);
         } else {
-            userStat.number_of_points = (userStat.number_of_points || 0) + (game.player4_score || 0);
+            userStat.number_of_points = (userStat.number_of_points || 0);
         }
 
         userStat.average_score = (userStat.number_of_points || 0) / userStat.number_of_games;

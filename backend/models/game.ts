@@ -1,18 +1,11 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../db';
-import { Stats } from 'fs';
 
 class Game extends Model {
     public game_id!: number;
     public game_status!: 'pending' | 'finished';
-    public player1_nickname!: string;
-    public player2_nickname!: string;
-    public player3_nickname?: string;
-    public player4_nickname?: string;
-    public player1_score?: number;
-    public player2_score?: number;
-    public player3_score?: number;
-    public player4_score?: number;
+    public players!: string[];
+    public scores!: [number, number];
     public winner_nickname?: string;
     public date!: Date;
 }
@@ -29,43 +22,32 @@ Game.init(
             allowNull: false,
             defaultValue: 'pending',
         },
-        player1_nickname: {
-            type: DataTypes.STRING,
+        players: {
+            type: DataTypes.JSON,
             allowNull: false,
+            validate: {
+                isPlayersValid(value: string[]) {
+                    if (!Array.isArray(value) || (value.length !== 2 && value.length !== 4)) {
+                        throw new Error('Players must be an array of 2 or 4 nicknames');
+                    }
+                    const uniquePlayers = new Set(value);
+                    if (uniquePlayers.size !== value.length) {
+                        throw new Error('Players must have unique nicknames');
+                    }
+                }
+            }
         },
-        player2_nickname: {
-            type: DataTypes.STRING,
+        scores: {
+            type: DataTypes.JSON,
             allowNull: false,
-        },
-        player3_nickname: {
-            type: DataTypes.STRING,
-            allowNull: true,
-            defaultValue: "",
-        },
-        player4_nickname: {
-            type: DataTypes.STRING,
-            allowNull: true,
-            defaultValue: "",
-        },
-        player1_score: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-            defaultValue: 0,
-        },
-        player2_score: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-            defaultValue: 0,
-        },
-        player3_score: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-            defaultValue: 0,
-        },
-        player4_score: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-            defaultValue: 0,
+            defaultValue: [0, 0],
+            validate: {
+                isScoresValid(value: [number, number]) {
+                    if (!Array.isArray(value) || value.length !== 2) {
+                        throw new Error('Scores must be an array of 2 numbers');
+                    }
+                }
+            }
         },
         winner_nickname: {
             type: DataTypes.STRING,
