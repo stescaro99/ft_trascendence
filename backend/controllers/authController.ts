@@ -151,7 +151,8 @@ export async function GoogleOAuthCallback(request: FastifyRequest, reply: Fastif
         }
         const jwtToken = createJWT({ id: user.id, nickname: user.nickname });
 
-        reply.send({ token: jwtToken, user });
+        const frontendUrl = 'https://10.0.2.15:5173'; // Cambia con il tuo IP se serve
+        return reply.redirect(`${frontendUrl}/?token=${jwtToken}&nickname=${encodeURIComponent(user.nickname)}`);
     } catch (error) {
         return reply.status(500).send({
             error: 'Google OAuth failed',

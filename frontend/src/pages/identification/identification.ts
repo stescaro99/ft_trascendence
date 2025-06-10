@@ -68,7 +68,7 @@ private handleSubmit(event: Event) {
 					.then((verifyResponse) => {
 						console.log('2FA verified successfully:', verifyResponse);
 						localStorage.setItem('user', JSON.stringify(verifyResponse.user));
-						window.location.hash = '/home';
+						window.location.hash = '#/';
 				})
 					.catch((verifyError) => {
 						console.error('Error verifying 2FA:', verifyError);
