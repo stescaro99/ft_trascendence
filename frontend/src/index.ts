@@ -4,6 +4,7 @@ import {IdentificationPage} from './pages/identification/identification';
 import {StatsPage} from './pages/stats/stats';
 import {LogInPage} from './pages/login/login';
 import {ProfilePage} from './pages/profile/profile';
+import {SettingsPage} from './pages/settings/settings';
 
 console.log("Script caricato");
 
@@ -21,13 +22,15 @@ if (token && nickname) {
 const routes: Record<string, () => string> = {
   '/': () => {
     /* Uncomment to make redirection work */
-    if (localStorage.getItem('user')) {
-      new HomePage();
-	  return "";
-    } else {
-      new LogInPage();
-      return "";
-    }
+    // if (localStorage.getItem('user')) {
+    //   new HomePage();
+	  // return "";
+    // } else {
+    //   new LogInPage();
+    //   return "";
+    // }
+    new HomePage();
+    return "";
   },
   '/identification': () => {
     new IdentificationPage();
@@ -43,6 +46,10 @@ const routes: Record<string, () => string> = {
   },
   '/profile': () => {
     new ProfilePage();
+    return "";
+  },
+  '/settings': () => {
+    new SettingsPage();
     return "";
   }
 };

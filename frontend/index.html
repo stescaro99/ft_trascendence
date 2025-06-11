@@ -56,20 +56,22 @@
       </div>
 
       <i class="sidebar-icon">
-        <img class="h-6 text-white hover:text-black" src="./src/utils/icons/settings-sliders.svg" alt="">
+        <a href="#/settings">
+          <img class="h-6 text-white hover:text-black" src="./src/utils/icons/settings-sliders.svg" alt="">
+        </a>
       </i>
 
       </nav>
       
   </body>
 
-  <script>
-    //  Mostra navabr solo se utente e' loggato --> 'user' in LocalStorage 
+ <!--  <script>
+    //  Mostra navabr solo se utente e' loggato -> 'user' in LocalStorage 
     var navbar = document.getElementById('navbar')
     if (localStorage.getItem('user')) {
       navbar.style.display = 'block'
     } else {
       navbar.style.display = 'none'
     }
-  </script>
+  </script> -->
 </html>

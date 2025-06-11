@@ -95,9 +95,33 @@
 }
 
 [data-theme="green"] {
-  --primary: #22ff22;
+  --primary: #05DF72;
   --secondary: #7bf1a8;
-  --hover: #05df72;
+  --hover: #16B016;
+  --shadow-glow: 0 0 20px var(--primary);
+  --shadow-lateral: 0 0 35px var(--primary);
+}
+
+[data-theme="purple"] {
+  --primary: #3F83F8;
+  --secondary: #53EAFD;
+  --hover: #48D7E9;
+  --shadow-glow: 0 0 20px var(--primary);
+  --shadow-lateral: 0 0 35px var(--primary);
+}
+
+[data-theme="cyan"] {
+  --primary: #06B6D4;
+  --secondary: #67E8F9;
+  --hover: #0891B2;
+  --shadow-glow: 0 0 20px var(--primary);
+  --shadow-lateral: 0 0 35px var(--primary);
+}
+
+[data-theme="pink"] {
+  --primary: #EC4899;
+  --secondary: #F9A8D4;
+  --hover: #DB2777;
   --shadow-glow: 0 0 20px var(--primary);
   --shadow-lateral: 0 0 35px var(--primary);
 }

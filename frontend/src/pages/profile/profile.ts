@@ -33,6 +33,7 @@ export class ProfilePage {
             stats: this.stats
         }
 
+        this.setTheme('purple');
         this.render();
     }
 
@@ -79,4 +80,10 @@ export class ProfilePage {
             element.textContent = this.user[property as keyof User]?.toString() || '-';
         }
     }
+
+    private setTheme(theme: string) {
+		const element = document.querySelector('[data-theme]') as HTMLElement;
+
+		element.dataset.theme = theme;
+	}
 }
