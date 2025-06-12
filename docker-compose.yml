@@ -8,11 +8,3 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "5123:5123"
-    restart: unless-stopped
