@@ -2,11 +2,13 @@ import homeHtml from './home.html?raw';
 import '../../style.css';
 import { User } from '../../model/user.model';
 import { UserService } from '../../service/user.service';
+import { TranslationService } from '../../service/translation.service';
 import './home.css';
 
 export class HomePage {
 	user: User | null;
 	userService: UserService = new UserService();
+    translation = new TranslationService();
 
 	constructor() {
 		this.user = this.userService.getUser();
@@ -27,7 +29,8 @@ export class HomePage {
 	private render() {
 		const appDiv = document.getElementById('app');
 		if (appDiv) {
-			appDiv.innerHTML = homeHtml;
+            const translatedHtml = this.translation.translateTemplate(homeHtml);
+			appDiv.innerHTML = translatedHtml;
 		}
 	}
 

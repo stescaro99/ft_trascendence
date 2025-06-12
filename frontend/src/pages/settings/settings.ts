@@ -13,6 +13,7 @@ export class SettingsPage {
     private render() {
 		const appDiv = document.getElementById('app');
 		if (appDiv) {
+		
 			appDiv.innerHTML = settingsHtml;
 		}
 	}
