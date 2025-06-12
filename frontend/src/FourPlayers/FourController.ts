@@ -10,14 +10,14 @@ const paddleHeight = canvas.height / 6;
 const paddleWidth = 10;
 
 const powerUpType = (() => {
-    const types = ["IncreaseSize", "SpeedBoost"];
+    const types = ["SizeIncrease", "SizeDecrease" ,"SpeedBoost"];
     return types[Math.floor(Math.random() * types.length)];
 })();
 
 const typeToColor: { [key: string]: string } = {
-    IncreaseSize: "green",
-    DecreaseSize: "red",
-    SpeedBoost: "yellow"
+    SizeIncrease: "00ff00",
+    SizeDecrease: "ff0000",
+    SpeedBoost: "ffff00"
 };
 
 const game: GameState = {

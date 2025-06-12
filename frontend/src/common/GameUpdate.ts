@@ -191,7 +191,7 @@ function handlePaddleCollision(game: GameState)
     if (game.ball.dx < 0 && i === 1)
       continue;
     
-    if (i === 1 && game.ball.x < paddle.x)
+    if (i === 1 && game.ball.x > paddle.x)
       continue;
 
     if (

@@ -8,6 +8,8 @@ export function drawPowerUp(ctx: CanvasRenderingContext2D, powerUp: any)
         ctx.shadowColor = powerUp.color;
         ctx.shadowBlur = 20;
 
+        //printa il nella console il colore del powerUp
+        console.log("PowerUp color:", powerUp.color);
         const radius = 8;
         ctx.beginPath();
         ctx.moveTo(powerUp.x + radius, powerUp.y);
