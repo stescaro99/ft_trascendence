@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <title>Pong</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="hub-screen" class="screen visible column-screen">
+      <h1 class="title">PONG</h1>
+      <button class="btn-large" onclick="showScreen('setup2-screen')">2 GIOCATORI</button>
+      <button class="btn-large" onclick="showScreen('setup4-screen')">4 GIOCATORI</button>
+    </div>
+
+    <div id="setup2-screen" class="screen row-screen">
+      <div class="column">
+        <h2>GIOCATORE 1</h2>
+        <p>SELEZIONA COLORE</p>
+        <div class="palette" data-player="1"></div>
+        <div id="Preview1" class="paddle-preview"></div>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="column">
+        <h1 class="title">PONG</h1>
+        <button id="startBtn2" class="btn-large">START</button>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="column">
+        <h2>GIOCATORE 2</h2>
+        <p>SELEZIONA COLORE</p>
+        <div class="palette" data-player="2"></div>
+        <div id="Preview2" class="paddle-preview"></div>
+        <button id="addBotBtn0" class="btn-large">Add Bot</button>
+      </div>
+    </div>
+
+    <div id="setup4-screen" class="screen row-screen">
+      <div class="column">
+        <h2>TEAM 1</h2>
+        <p>SELEZIONA COLORE</p>
+        <div class="palette" data-player="3"></div>
+        <div id="Preview3" class="paddle-preview"></div>
+        <button id="addBotBtn1" class="btn-large">Add Bot</button>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="column">
+        <h1 class="title">PONG</h1>
+        <button id="startBtn4" class="btn-large">START</button>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="column">
+        <h2>TEAM 2</h2>
+        <p>SELEZIONA COLORE</p>
+        <div class="palette" data-player="4"></div>
+        <div id="Preview4" class="paddle-preview"></div>
+        <button id="addBotBtn2" class="btn-large">Add Bot</button>
+        <button id="addBotBtn3" class="btn-large">Add Bot</button>
+      </div>
+    </div>
+
+    <canvas id="pong" width="1200" height="750" style="display: none;"></canvas>
+
+    <script type="module" src="/src/main.ts"></script>
+    <script>
+      function showScreen(screenId) {
+        document.querySelectorAll(".screen").forEach(el => el.classList.remove("visible"));
+        document.getElementById("pong").style.display = "none";
+
+        const target = document.getElementById(screenId);
+        if (target) {
+          if (target.tagName === "CANVAS") {
+            target.style.display = "block";
+          } else {
+            target.classList.add("visible");
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
