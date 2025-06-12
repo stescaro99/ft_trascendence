@@ -39,7 +39,10 @@ server.register(fastifyCookie);
 const start = async (sequelize: any) => {
     try {
         await server.register(fastifyCors, {
-            origin: true,
+            origin: [
+                        'https://localhost:5173',
+                        'https://10.0.2.15:5173',
+                    ],
             credentials: true,
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
         });
