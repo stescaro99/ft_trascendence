@@ -4,6 +4,8 @@ import {IdentificationPage} from './pages/identification/identification';
 import {StatsPage} from './pages/stats/stats';
 import {LogInPage} from './pages/login/login';
 import {ProfilePage} from './pages/profile/profile';
+import { PongApp } from './pages/game/game';
+
 
 console.log("Script caricato");
 
@@ -25,7 +27,7 @@ const routes: Record<string, () => string> = {
       new HomePage();
 	  return "";
     } else {
-      new LogInPage();
+      window.location.hash = '/login';
       return "";
     }
   },
@@ -43,6 +45,10 @@ const routes: Record<string, () => string> = {
   },
   '/profile': () => {
     new ProfilePage();
+    return "";
+  },
+  '/game': () => {
+    new PongApp();
     return "";
   }
 };

@@ -129,7 +129,7 @@ function startCountdown(x: number)
   }, 1000);
 }
 
-// === Pulsante Start ===
+
 
 startBtn2.addEventListener("click", () => {
   document.querySelectorAll(".screen").forEach(el => el.classList.remove("visible"));

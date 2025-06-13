@@ -13,16 +13,67 @@ export class HomePage {
 		this.render();
 		this.setTheme('blue');
 		this.initializeBall();
+        this.addEventListeners();
 		
 		const logoutButton = document.getElementById('logoutButton');
 		if (logoutButton) {
 			logoutButton.addEventListener('click', () => {
-				// Esegui il logout, ad esempio:
 				localStorage.removeItem('user');
 				window.location.hash = '/identification'; // o dove vuoi reindirizzare
 			});
 		}
 	}
+
+    private addEventListeners() {
+         const playBtn = document.getElementById('playButton');
+       if (!playBtn) return;
+
+        let extensionDiv: HTMLDivElement | null = null;
+
+        playBtn.addEventListener('click', function handler() {
+            if (extensionDiv) {
+                extensionDiv.remove();
+                extensionDiv = null;
+                playBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                return;
+            }
+
+           extensionDiv = document.createElement('div');
+            extensionDiv.className = "flex flex-col gap-2 mt-2 w-full items-center";
+
+            // Contenitore riga per i due bottoni
+            const rowDiv = document.createElement('div');
+            rowDiv.className = "flex flex-row gap-2 w-full justify-center";
+
+            // Bottone 2 Giocatori
+            const btn2 = document.createElement('button');
+            btn2.className = "text-white w-1/2 bg-c-400 text-center identification block rounded-lg py-2";
+            btn2.textContent = "2 Giocatori";
+            btn2.onclick = (e) => {
+                e.stopPropagation();
+                console.log("2 Giocatori premuto!");
+                window.location.hash = '#/game';
+            };
+
+            // Bottone 4 Giocatori
+            const btn4 = document.createElement('button');
+            btn4.className = "text-white w-1/2 bg-c-400 text-center identification block rounded-lg py-2";
+            btn4.textContent = "4 Giocatori";
+            btn4.onclick = (e) => {
+                e.stopPropagation();
+                alert("4 Giocatori premuto!");
+            };
+
+            rowDiv.appendChild(btn2);
+            rowDiv.appendChild(btn4);
+            extensionDiv.appendChild(rowDiv);
+
+            playBtn.parentElement?.insertBefore(extensionDiv, playBtn.nextSibling);
+
+            // Cambia solo lo stile, NON disabilitare il bottone!
+            playBtn.classList.add('opacity-50');
+        });
+    }
 
 	private render() {
 		const appDiv = document.getElementById('app');
