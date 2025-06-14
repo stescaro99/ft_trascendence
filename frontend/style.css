@@ -122,7 +122,7 @@
 }
 
 .player-name {
-  flex: 1;
+  flex: 0; /* Adatta la larghezza al contenuto */
   text-align: center;
 }
 
@@ -132,20 +132,30 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  overflow: hidden;
 }
-
 #playerNames {
   width: 100%;
   position: absolute;
   top: 15px;
   left: 0;
-  display: none;
+  display: none; /* Nascondi inizialmente */
   justify-content: space-between;
-  padding: 0 30px;
+  align-items: center;
   font-size: 24px;
   font-weight: bold;
   color: white;
   z-index: 10;
   pointer-events: none;
+}
+
+#player1Name {
+  width: 200px; /* Larghezza fissa */
+  text-align: center;
+  margin-left: 30px;
+}
+
+#player2Name {
+  width: 200px; /* Larghezza fissa */
+  text-align: center;
+  margin-right: 30px;
 }
