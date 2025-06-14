@@ -61,25 +61,44 @@ const game: GameState = {
 
 randomizePowerUp(game);
 
-// === Eventi tastiera ===
+// === Sistema di tracking dei tasti ===
+const keys: { [key: string]: boolean } = {};
 
 document.addEventListener("keydown", (e) => {
-    if (e.key === "w")
-      game.leftPaddle[0].dy = -game.leftPaddle[0].speed;
-    if (e.key === "s")
-      game.leftPaddle[0].dy = game.leftPaddle[0].speed;
-    if (!getBotActive(0) && e.key === "ArrowUp")
-      game.rightPaddle[0].dy = -game.rightPaddle[0].speed;
-    if (!getBotActive(0) && e.key === "ArrowDown")
-      game.rightPaddle[0].dy = game.rightPaddle[0].speed;
-  });
-  
+  keys[e.key] = true;
+  updatePaddleMovement();
+});
+
 document.addEventListener("keyup", (e) => {
-    if (e.key === "w" || e.key === "s")
-      game.leftPaddle[0].dy = 0;
-    if (!getBotActive(0) && (e.key === "ArrowUp" || e.key === "ArrowDown"))
+  keys[e.key] = false;
+  updatePaddleMovement();
+});
+
+function updatePaddleMovement() {
+  // Movimento paddle sinistro (Giocatore 1)
+  if (keys["w"] && keys["s"]) {
+    game.leftPaddle[0].dy = 0; // Se entrambi i tasti sono premuti, ferma
+  } else if (keys["w"]) {
+    game.leftPaddle[0].dy = -game.leftPaddle[0].speed;
+  } else if (keys["s"]) {
+    game.leftPaddle[0].dy = game.leftPaddle[0].speed;
+  } else {
+    game.leftPaddle[0].dy = 0;
+  }
+
+  // Movimento paddle destro (Giocatore 2) - solo se non è un bot
+  if (!getBotActive(0)) {
+    if (keys["ArrowUp"] && keys["ArrowDown"]) {
+      game.rightPaddle[0].dy = 0; // Se entrambi i tasti sono premuti, ferma
+    } else if (keys["ArrowUp"]) {
+      game.rightPaddle[0].dy = -game.rightPaddle[0].speed;
+    } else if (keys["ArrowDown"]) {
+      game.rightPaddle[0].dy = game.rightPaddle[0].speed;
+    } else {
       game.rightPaddle[0].dy = 0;
-  });
+    }
+  }
+}
 
 // === Funzioni di disegno ===
 

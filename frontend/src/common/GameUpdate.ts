@@ -217,20 +217,36 @@ function updatePaddleMovement(game: GameState)
 {
     const size = triangleSize / 2;
   
-    game.leftPaddle.forEach(paddle => {
+    game.leftPaddle.forEach((paddle, index) => {
         paddle.y += paddle.dy;
-        if (paddle.y < size)
-        paddle.y = size;
-        if (paddle.y + paddle.height > game.canvas.height - size)
-        paddle.y = game.canvas.height - size - paddle.height;
+
+        if (index === 1) {
+            if (paddle.y < 0)
+                paddle.y = 0;
+            if (paddle.y + paddle.height > game.canvas.height)
+                paddle.y = game.canvas.height - paddle.height;
+        } else {
+            if (paddle.y < size)
+                paddle.y = size;
+            if (paddle.y + paddle.height > game.canvas.height - size)
+                paddle.y = game.canvas.height - size - paddle.height;
+        }
     });
     
-    game.rightPaddle.forEach(paddle => {
+    game.rightPaddle.forEach((paddle, index) => {
         paddle.y += paddle.dy;
-        if (paddle.y < size)
-        paddle.y = size;
-        if (paddle.y + paddle.height > game.canvas.height - size)
-        paddle.y = game.canvas.height - size - paddle.height;
+
+        if (index === 1) {
+            if (paddle.y < 0)
+                paddle.y = 0;
+            if (paddle.y + paddle.height > game.canvas.height)
+                paddle.y = game.canvas.height - paddle.height;
+        } else {
+            if (paddle.y < size)
+                paddle.y = size;
+            if (paddle.y + paddle.height > game.canvas.height - size)
+                paddle.y = game.canvas.height - size - paddle.height;
+        }
     });
 }
 

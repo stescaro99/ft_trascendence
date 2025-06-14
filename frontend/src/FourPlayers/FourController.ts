@@ -70,79 +70,71 @@ const game: GameState = {
   canvas: canvas,
   waitingForStart: false,
   maxScore: 5,
-  paddleSpeed: 1.5
+  paddleSpeed: 4
 };
 
 randomizePowerUp(game);
 
-// === Eventi tastiera ===
+// === Sistema di tracking dei tasti ===
+const keys: { [key: string]: boolean } = {};
 
 document.addEventListener("keydown", (e) => {
-  switch (e.key) {
-    case "w":
-      game.leftPaddle[0].dy = -game.leftPaddle[0].speed;
-      break;
-    case "s":
-      game.leftPaddle[0].dy = game.leftPaddle[0].speed;
-      break;
-    case "a":
-      if (getBotActive(1))
-        break;
-      game.leftPaddle[1].dy = -game.leftPaddle[1].speed;
-      break;
-    case "z":
-      if (getBotActive(1))
-        break;
-      game.leftPaddle[1].dy = game.leftPaddle[1].speed;
-      break;
-
-    case "ArrowUp":
-      if (getBotActive(2))
-        break;
-      game.rightPaddle[0].dy = -game.rightPaddle[0].speed;
-      break;
-    case "ArrowDown":
-      if (getBotActive(2))
-        break;
-      game.rightPaddle[0].dy = game.rightPaddle[0].speed;
-      break;
-    case "i":
-      if (getBotActive(3))
-        break;
-      game.rightPaddle[1].dy = -game.rightPaddle[1].speed;
-      break;
-    case "k":
-      if (getBotActive(3))
-        break;
-      game.rightPaddle[1].dy = game.rightPaddle[1].speed;
-      break;
-  }
+  keys[e.key] = true;
+  updatePaddleMovement();
 });
 
 document.addEventListener("keyup", (e) => {
-  switch (e.key) {
-    case "w":
-    case "s":
-      game.leftPaddle[0].dy = 0;
-      break;
-    case "a":
-    case "z":
-      if (!getBotActive(1)) // 1 = leftPaddle[1]
-        game.leftPaddle[1].dy = 0;
-      break;
-
-    case "ArrowUp":
-    case "ArrowDown":
-      if (!getBotActive(2)) // 2 = rightPaddle[0]
-        game.rightPaddle[0].dy = 0;
-      break;
-    case "i":
-    case "k":
-      if (!getBotActive(3)) // 3 = rightPaddle[1] (se esiste)
-        game.rightPaddle[1].dy = 0;
-      break;
-  }
+  keys[e.key] = false;
+  updatePaddleMovement();
 });
+
+function updatePaddleMovement() {
+  if (keys["w"] && keys["s"]) {
+    game.leftPaddle[0].dy = 0;
+  } else if (keys["w"]) {
+    game.leftPaddle[0].dy = -game.leftPaddle[0].speed;
+  } else if (keys["s"]) {
+    game.leftPaddle[0].dy = game.leftPaddle[0].speed;
+  } else {
+    game.leftPaddle[0].dy = 0;
+  }
+
+  if (!getBotActive(1)) {
+    if (keys["a"] && keys["z"]) {
+      game.leftPaddle[1].dy = 0;
+    } else if (keys["a"]) {
+      game.leftPaddle[1].dy = -game.leftPaddle[1].speed;
+    } else if (keys["z"]) {
+      game.leftPaddle[1].dy = game.leftPaddle[1].speed;
+    } else {
+      game.leftPaddle[1].dy = 0;
+    }
+  }
+
+  if (!getBotActive(2)) {
+    if (keys["ArrowUp"] && keys["ArrowDown"]) {
+      game.rightPaddle[0].dy = 0;
+    } else if (keys["ArrowUp"]) {
+      game.rightPaddle[0].dy = -game.rightPaddle[0].speed;
+    } else if (keys["ArrowDown"]) {
+      game.rightPaddle[0].dy = game.rightPaddle[0].speed;
+    } else {
+      game.rightPaddle[0].dy = 0;
+    }
+  }
+
+  if (!getBotActive(3)) {
+    if (keys["i"] && keys["k"]) {
+      game.rightPaddle[1].dy = 0;
+    } else if (keys["i"]) {
+      game.rightPaddle[1].dy = -game.rightPaddle[1].speed;
+    } else if (keys["k"]) {
+      game.rightPaddle[1].dy = game.rightPaddle[1].speed;
+    } else {
+      game.rightPaddle[1].dy = 0;
+    }
+  }
+}
 
 function render(TeamLeft: string, TeamRight: string)
 {
