@@ -1,5 +1,5 @@
 import { GameState } from "./../common/types"; 
-import { update } from "./../common/GameUpdate";
+import { randomizePowerUp, update } from "./../common/GameUpdate";
 import { drawBall, drawRect, drawScore, drawPowerUp, drawField } from "../common/Draw";
 import { getBotActive, predictBallY, moveBot} from "../common/BotState";
 
@@ -8,17 +8,6 @@ const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
 const paddleHeight = canvas.height / 6;
 const paddleWidth = 10;
-
-const powerUpType = (() => {
-    const types = ["SizeIncrease", "SizeDecrease" ,"SpeedBoost"];
-    return types[Math.floor(Math.random() * types.length)];
-})();
-
-const typeToColor: { [key: string]: string } = {
-    SizeIncrease: "00ff00",
-    SizeDecrease: "ff0000",
-    SpeedBoost: "ffff00"
-};
 
 const game: GameState = {
   ball: {
@@ -70,8 +59,8 @@ const game: GameState = {
     width: 20,
     height: 20,
     active: true,
-    type: powerUpType,
-    color: typeToColor[powerUpType]
+    type: "",
+    color: ""
   },
 
   scoreLeft: 0,
@@ -83,6 +72,10 @@ const game: GameState = {
   maxScore: 5,
   paddleSpeed: 1.5
 };
+
+randomizePowerUp(game);
+
+// === Eventi tastiera ===
 
 document.addEventListener("keydown", (e) => {
   switch (e.key) {

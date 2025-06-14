@@ -8,6 +8,9 @@ const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 const startBtn2 = document.getElementById("startBtn2") as HTMLButtonElement;
 const startBtn4 = document.getElementById("startBtn4") as HTMLButtonElement;
 
+const playerNameContainer = document.getElementById("playerNames")!;
+const player1Name = document.getElementById("player1Name")!;
+const player2Name = document.getElementById("player2Name")!;
 
 const preview1 = document.getElementById("Preview1") as HTMLDivElement;
 const preview2 = document.getElementById("Preview2") as HTMLDivElement;
@@ -136,6 +139,10 @@ startBtn2.addEventListener("click", () => {
 
   canvas.style.display = "block";
   
+  playerNameContainer.style.display = "flex";
+  player1Name.textContent = "Giocatore 1";
+  player2Name.textContent = "Giocatore 2";
+
   document.fonts.ready.then(() => {
     ctx.font = "80px Helvetica";
     startCountdown(2);

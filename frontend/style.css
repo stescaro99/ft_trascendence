@@ -111,3 +111,41 @@
   background: #4caf50;
   color: #fff;
 }
+
+.player-names {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-family: Arial, sans-serif;
+  color: white;
+}
+
+.player-name {
+  flex: 1;
+  text-align: center;
+}
+
+.game-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#playerNames {
+  width: 100%;
+  position: absolute;
+  top: 15px;
+  left: 0;
+  display: none;
+  justify-content: space-between;
+  padding: 0 30px;
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  z-index: 10;
+  pointer-events: none;
+}

@@ -1,5 +1,5 @@
 import { GameState } from "../common/types"; 
-import { update } from "./../common/GameUpdate";
+import { randomizePowerUp, update } from "./../common/GameUpdate";
 import { drawBall, drawRect, drawScore, drawPowerUp, drawField } from "../common/Draw";
 import { getBotActive, predictBallY, moveBot} from "../common/BotState";
 
@@ -8,19 +8,6 @@ const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
 const paddleHeight = canvas.height / 5;
 const paddleWidth = 10;
-
-const powerUpType = (() => {
-  const types = ["SizeIncrease", "SizeDecrease" ,"SpeedBoost"];
-  return types[Math.floor(Math.random() * types.length)];
-})();
-
-const typeToColor: { [key: string]: string } = {
-  SizeIncrease: "00ff00",
-  SizeDecrease: "ff0000",
-  SpeedBoost: "ffff00"
-};
-
-const powerType = powerUpType;
 
 const game: GameState = {
   ball: {
@@ -58,8 +45,8 @@ const game: GameState = {
     width: 20,
     height: 20,
     active: true,
-    type: powerType,
-    color: typeToColor[powerType]
+    type: "",
+    color: ""
   },
 
   scoreLeft: 0,
@@ -72,18 +59,26 @@ const game: GameState = {
   paddleSpeed: 6
 };
 
+randomizePowerUp(game);
+
 // === Eventi tastiera ===
 
 document.addEventListener("keydown", (e) => {
-    if (e.key === "w") game.leftPaddle[0].dy = -game.leftPaddle[0].speed;
-    if (e.key === "s") game.leftPaddle[0].dy = game.leftPaddle[0].speed;
-    if (!getBotActive(0) && e.key === "ArrowUp") game.rightPaddle[0].dy = -game.rightPaddle[0].speed;
-    if (!getBotActive(0) && e.key === "ArrowDown") game.rightPaddle[0].dy = game.rightPaddle[0].speed;
+    if (e.key === "w")
+      game.leftPaddle[0].dy = -game.leftPaddle[0].speed;
+    if (e.key === "s")
+      game.leftPaddle[0].dy = game.leftPaddle[0].speed;
+    if (!getBotActive(0) && e.key === "ArrowUp")
+      game.rightPaddle[0].dy = -game.rightPaddle[0].speed;
+    if (!getBotActive(0) && e.key === "ArrowDown")
+      game.rightPaddle[0].dy = game.rightPaddle[0].speed;
   });
   
 document.addEventListener("keyup", (e) => {
-    if (e.key === "w" || e.key === "s") game.leftPaddle[0].dy = 0;
-    if (!getBotActive(0) && (e.key === "ArrowUp" || e.key === "ArrowDown")) game.rightPaddle[0].dy = 0;
+    if (e.key === "w" || e.key === "s")
+      game.leftPaddle[0].dy = 0;
+    if (!getBotActive(0) && (e.key === "ArrowUp" || e.key === "ArrowDown"))
+      game.rightPaddle[0].dy = 0;
   });
 
 // === Funzioni di disegno ===
@@ -103,7 +98,8 @@ function render(paddleColor1: string, paddleColor2: string)
 
 let botInterval: number | undefined = undefined;
 
-function moveBotPaddle() {
+function moveBotPaddle()
+{
   if (!getBotActive(0)) return;
   const bot = game.rightPaddle[0];
 
@@ -132,9 +128,6 @@ export function TwoGameLoop(paddleColor1: string, paddleColor2: string)
 
       return;
   }
-
-    // --- muovo il bot fino all'ultima prediction---
-    
     if (getBotActive(0) && predictedY !== null) {
       moveBot(game.rightPaddle[0], predictedY);
   }
