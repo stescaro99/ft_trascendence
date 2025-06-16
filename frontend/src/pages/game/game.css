@@ -4,7 +4,7 @@
     font-display: block;
   }
   
-  body {
+  .bb {
     margin: 0;
     background-color: black;
     color: white;
@@ -32,7 +32,7 @@
   .screen.visible {
     display: flex !important;
   }
-  
+   
   
   .column-screen {
     flex-direction: column;
