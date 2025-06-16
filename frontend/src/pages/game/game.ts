@@ -1,70 +1,48 @@
+import gameTwoHtml from './game_two.html?raw';
+import gameFourHtml from './game_four.html?raw';
+import './game.css'
 import { TwoGameLoop } from "./TwoPlayers/TwoController";
 import { FourGameLoop } from "./FourPlayers/FourController";
 import { setBotActive, getBotActive } from "./common/BotState";
 
-export class PongApp {
-  private colors = ["#ff0000", "#00ff00", "#ffff00", "#800080", "#007bff", "#ffffff"];
-  private Team1Color = "#ffffff";
-  private Team2Color = "#ffffff";
+export class GamePage {
+
+   Team1Color = "#ffffff";
+  Team2Color = "#ffffff";
+  colors = ["#ff0000", "#00ff00", "#ffff00", "#800080", "#007bff", "#ffffff"];
 
   constructor() {
-    document.addEventListener("DOMContentLoaded", () => this.init());
+    
+    this.render();
   }
+  
+  render() {
 
-  private init() {
-    this.setupScreenButtons();
-    this.setupBotButtons();
-    this.setupPalettes();
-    this.setupStartButtons();
-  }
-
-  private setupScreenButtons() {
-    // Sposta la logica di showScreen qui
-    document.querySelectorAll(".btn-large[onclick]").forEach(btn => {
-      const screenId = (btn as HTMLButtonElement).getAttribute("onclick")?.match(/'([^']+)'/)?.[1];
-      if (screenId) {
-        btn.addEventListener("click", () => this.showScreen(screenId));
-        btn.removeAttribute("onclick");
-      }
-    });
-  }
-
-  private showScreen(screenId: string) {
-    document.querySelectorAll(".screen").forEach(el => el.classList.remove("visible"));
-    const canvas = document.getElementById("pong") as HTMLCanvasElement;
-    canvas.style.display = "none";
-    const target = document.getElementById(screenId);
-    if (target) {
-      if (target.tagName === "CANVAS") {
-        target.style.display = "block";
+    const canvas = this.createCanvas();
+    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    const params = new URLSearchParams(window.location.hash.split('?')[1]);
+    const players = params.get('players');
+    const container = document.getElementById('app');
+    console.log("Rendering GamePage with players:", players);
+    if (!container) 
+      return;
+    if (players === '4') {
+        container.innerHTML = gameFourHtml;
       } else {
-        target.classList.add("visible");
+        container.innerHTML = gameTwoHtml;
       }
-    }
-  }
 
-  private setupBotButtons() {
-    for (let i = 0; i < 4; i++) {
-      const btn = document.getElementById(`addBotBtn${i}`) as HTMLButtonElement;
-      if (btn) {
-        btn.addEventListener("click", () => {
-          const newState = !getBotActive(i);
-          setBotActive(i, newState);
-          btn.classList.toggle("active-bot", newState);
-          btn.textContent = newState ? "BOT ATTIVO" : "Add Bot";
-        });
-      }
-    }
-  }
+  const screen = container.querySelector('.screen');
+    if (screen) screen.classList.add('visible');
 
-  private setupPalettes() {
-    const previews = [
-      document.getElementById("Preview1") as HTMLDivElement,
-      document.getElementById("Preview2") as HTMLDivElement,
-      document.getElementById("Preview3") as HTMLDivElement,
-      document.getElementById("Preview4") as HTMLDivElement,
-    ];
-    document.querySelectorAll(".palette").forEach((palette) => {
+    // Palette colori
+    const preview1 = document.getElementById("Preview1") as HTMLDivElement;
+    const preview2 = document.getElementById("Preview2") as HTMLDivElement;
+    const preview3 = document.getElementById("Preview3") as HTMLDivElement;
+    const preview4 = document.getElementById("Preview4") as HTMLDivElement;
+
+    const paletteContainers = container.querySelectorAll(".palette");
+    paletteContainers.forEach((palette) => {
       palette.innerHTML = "";
       const player = (palette as HTMLElement).dataset.player!;
       this.colors.forEach((color) => {
@@ -74,12 +52,12 @@ export class PongApp {
         btn.addEventListener("click", () => {
           if (player === "1" || player === "3") {
             this.Team1Color = color;
-            previews[0].style.backgroundColor = color;
-            previews[2].style.backgroundColor = color;
+            if (preview1) preview1.style.backgroundColor = color;
+            if (preview3) preview3.style.backgroundColor = color;
           } else {
             this.Team2Color = color;
-            previews[1].style.backgroundColor = color;
-            previews[3].style.backgroundColor = color;
+            if (preview2) preview2.style.backgroundColor = color;
+            if (preview4) preview4.style.backgroundColor = color;
           }
           (palette as HTMLElement)
             .querySelectorAll("button")
@@ -89,33 +67,55 @@ export class PongApp {
         palette.appendChild(btn);
       });
     });
-  }
 
-  private setupStartButtons() {
+    // Bot buttons
+    for (let i = 0; i < 4; i++) {
+      const btn = document.getElementById(`addBotBtn${i}`);
+      if (btn) {
+        btn.addEventListener("click", () => {
+          const newState = !getBotActive(i);
+          setBotActive(i, newState);
+          btn.classList.toggle("active-bot", newState);
+          btn.textContent = newState ? "BOT ATTIVO" : "Add Bot";
+        });
+      }
+    }
+
+    // Start buttons
     const canvas = document.getElementById("pong") as HTMLCanvasElement;
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
-    const startBtn2 = document.getElementById("startBtn2") as HTMLButtonElement;
-    const startBtn4 = document.getElementById("startBtn4") as HTMLButtonElement;
-
-    startBtn2?.addEventListener("click", () => {
-      this.showScreen("pong");
-      document.fonts.ready.then(() => {
-        ctx.font = "80px Helvetica";
-        this.startCountdown(2, ctx, canvas);
+    const startBtn2 = document.getElementById("startBtn2");
+    if (startBtn2) {
+      startBtn2.addEventListener("click", () => {
+        this.hideScreens();
+        canvas.style.display = "block";
+        document.fonts.ready.then(() => {
+          ctx.font = "80px Helvetica";
+          this.startCountdown(2, ctx, canvas);
+        });
       });
-    });
+    }
 
-    startBtn4?.addEventListener("click", () => {
-      this.showScreen("pong");
-      document.fonts.ready.then(() => {
-        ctx.font = "80px Helvetica";
-        this.startCountdown(4, ctx, canvas);
+    const startBtn4 = document.getElementById("startBtn4");
+    if (startBtn4) {
+      startBtn4.addEventListener("click", () => {
+        this.hideScreens();
+        canvas.style.display = "block";
+        document.fonts.ready.then(() => {
+          ctx.font = "80px Helvetica";
+          this.startCountdown(4, ctx, canvas);
+        });
       });
-    });
+    }
+    
   }
 
-  private startCountdown(x: number, ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
+   hideScreens() {
+    document.querySelectorAll(".screen").forEach(el => el.classList.remove("visible"));
+  }
+
+  startCountdown(x: number, ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
     let countdown = 3;
     const interval = setInterval(() => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -138,4 +138,20 @@ export class PongApp {
   }
 }
 
-new PongApp();
+createCanvas() {
+  let canvas = document.getElementById("pong") as HTMLCanvasElement | null;
+  if (!canvas) {
+    canvas = document.createElement("canvas");
+    canvas.id = "pong";
+    canvas.width = 1200;
+    canvas.height = 750;
+    canvas.style.display = "none";
+    document.body.appendChild(canvas);
+  }
+  return canvas;
+}
+
+removeCanvas() {
+  const canvas = document.getElementById("pong");
+  if (canvas) canvas.remove();
+}

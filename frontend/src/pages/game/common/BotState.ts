@@ -1,7 +1,3 @@
-const canvas = document.getElementById("pong") as HTMLCanvasElement;
-const paddleHeight = canvas.height / 5;
-const paddleWidth = 10;
-
 let bots = [false, false, false, false];
 
 export function setBotActive(index: number, val: boolean) {
@@ -17,7 +13,8 @@ export function getBotActive(index: number) {
   return false;
 }
 
-export function predictBallY(ball: any, paddleX: number): number {
+// Ora richiede il canvas come parametro!
+export function predictBallY(ball: any, paddleX: number, canvas: HTMLCanvasElement): number {
   let x = ball.x;
   let y = ball.y;
 
@@ -41,22 +38,16 @@ export function predictBallY(ball: any, paddleX: number): number {
 }
 
 export function moveBot(bot: any, predictedY: number) {
+  const centerY = bot.y + bot.height / 2;
+  const diff = predictedY - centerY;
+  const threshold = bot.speed * 2;
 
-    const centerY = bot.y + bot.height / 2;
-
-    const diff = predictedY - centerY;
-
-    const threshold = bot.speed * 2;
-
-    if (Math.abs(diff) <= threshold) {
- 
-      bot.dy = 0;
-      bot.y = predictedY - bot.height / 2;
-    } else if (diff < 0) {
-
-      bot.dy = -bot.speed;
-    } else {
-
-      bot.dy = bot.speed;
-    }
+  if (Math.abs(diff) <= threshold) {
+    bot.dy = 0;
+    bot.y = predictedY - bot.height / 2;
+  } else if (diff < 0) {
+    bot.dy = -bot.speed;
+  } else {
+    bot.dy = bot.speed;
+  }
 }

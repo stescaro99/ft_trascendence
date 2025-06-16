@@ -4,7 +4,7 @@ import {IdentificationPage} from './pages/identification/identification';
 import {StatsPage} from './pages/stats/stats';
 import {LogInPage} from './pages/login/login';
 import {ProfilePage} from './pages/profile/profile';
-import { PongApp } from './pages/game/game';
+import { GamePage } from './pages/game/game';
 
 
 console.log("Script caricato");
@@ -48,13 +48,14 @@ const routes: Record<string, () => string> = {
     return "";
   },
   '/game': () => {
-    new PongApp();
+    new GamePage();
     return "";
   }
 };
 
 function router() {
-  const path = location.hash.slice(1) || '/';
+  const hash = location.hash.slice(1) || '/';
+  const path = hash.split('?')[0]; 
   console.log("Navigazione verso:", path);
   const render = routes[path];
 

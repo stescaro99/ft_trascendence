@@ -52,7 +52,7 @@ export class HomePage {
             btn2.onclick = (e) => {
                 e.stopPropagation();
                 console.log("2 Giocatori premuto!");
-                window.location.hash = '#/game';
+                window.location.hash = '#/game?players=2'; // Reindirizza alla pagina del gioco con 2 giocatori
             };
 
             // Bottone 4 Giocatori
@@ -61,7 +61,8 @@ export class HomePage {
             btn4.textContent = "4 Giocatori";
             btn4.onclick = (e) => {
                 e.stopPropagation();
-                alert("4 Giocatori premuto!");
+                console.log("4 Giocatori premuto!");
+                window.location.hash = '#/game?players=4'; // Reindirizza alla pagina del gioco con 4 giocatori
             };
 
             rowDiv.appendChild(btn2);
