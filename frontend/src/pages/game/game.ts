@@ -18,8 +18,6 @@ export class GamePage {
   
   render() {
 
-    const canvas = this.createCanvas();
-    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
     const params = new URLSearchParams(window.location.hash.split('?')[1]);
     const players = params.get('players');
     const container = document.getElementById('app');
@@ -136,22 +134,22 @@ export class GamePage {
       countdown--;
     }, 1000);
   }
-}
-
-createCanvas() {
-  let canvas = document.getElementById("pong") as HTMLCanvasElement | null;
-  if (!canvas) {
-    canvas = document.createElement("canvas");
-    canvas.id = "pong";
-    canvas.width = 1200;
-    canvas.height = 750;
-    canvas.style.display = "none";
-    document.body.appendChild(canvas);
-  }
-  return canvas;
-}
-
-removeCanvas() {
-  const canvas = document.getElementById("pong");
-  if (canvas) canvas.remove();
+    
+    createCanvas() {
+      let canvas = document.getElementById("pong") as HTMLCanvasElement | null;
+      if (!canvas) {
+        canvas = document.createElement("canvas");
+        canvas.id = "pong";
+        canvas.width = 1200;
+        canvas.height = 750;
+        canvas.style.display = "none";
+        document.body.appendChild(canvas);
+      }
+      return canvas;
+    }
+    
+    removeCanvas() {
+      const canvas = document.getElementById("pong");
+      if (canvas) canvas.remove();
+    }
 }
