@@ -73,8 +73,20 @@ export class GamePage {
         btn.addEventListener("click", () => {
           const newState = !getBotActive(i);
           setBotActive(i, newState);
-          btn.classList.toggle("active-bot", newState);
+          
+          // Gestione classi Tailwind per bot attivo
+          if (newState) {
+            btn.classList.remove("bg-black", "text-white", "hover:bg-gray-900", "hover:text-cyan-400");
+            btn.classList.add("bg-green-500", "text-white");
+          } else {
+            btn.classList.remove("bg-green-500");
+            btn.classList.add("bg-black", "text-white", "hover:bg-gray-900", "hover:text-cyan-400");
+          }
+          
           btn.textContent = newState ? "BOT ATTIVO" : "Add Bot";
+          
+          // Aggiorna i nomi dei giocatori
+          this.updatePlayerNames();
         });
       }
     }
@@ -114,6 +126,29 @@ export class GamePage {
   }
 
   startCountdown(x: number, ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
+    // Mostra i nomi dei giocatori
+    const playerNameContainer = document.getElementById("playerNames");
+    if (playerNameContainer) {
+      playerNameContainer.style.display = "flex";
+      
+      if (x === 2) {
+        const player1Name = document.getElementById("player1Name");
+        const player2Name = document.getElementById("player2Name");
+        if (player1Name) player1Name.textContent = "Giocatore 1";
+        if (player2Name) player2Name.textContent = "Giocatore 2";
+      } else if (x === 4) {
+        const player1Name = document.getElementById("player1Name");
+        const player2Name = document.getElementById("player2Name");
+        const player3Name = document.getElementById("player3Name");
+        const player4Name = document.getElementById("player4Name");
+        
+        if (player1Name) player1Name.textContent = "Team 1 - P1";
+        if (player2Name) player2Name.textContent = "Team 1 - P2";
+        if (player3Name) player3Name.textContent = "Team 2 - P1";
+        if (player4Name) player4Name.textContent = "Team 2 - P2";
+      }
+    }
+
     let countdown = 3;
     const interval = setInterval(() => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -151,5 +186,69 @@ export class GamePage {
     removeCanvas() {
       const canvas = document.getElementById("pong");
       if (canvas) canvas.remove();
+    }
+
+    // Aggiungi metodo per aggiornare i nomi dei giocatori
+    updatePlayerNames() {
+      // Aggiorna i nomi durante il setup
+      const team1Player1 = document.getElementById("team1Player1");
+      const team1Player2 = document.getElementById("team1Player2");
+      const team2Player1 = document.getElementById("team2Player1");
+      const team2Player2 = document.getElementById("team2Player2");
+
+      if (team1Player1) {
+        team1Player1.textContent = getBotActive(0) ? "BOT" : "Player 1";
+        if (getBotActive(0)) {
+          team1Player1.classList.add("text-green-500");
+          team1Player1.classList.remove("text-cyan-400");
+        } else {
+          team1Player1.classList.add("text-cyan-400");
+          team1Player1.classList.remove("text-green-500");
+        }
+      }
+      
+      if (team1Player2) {
+        team1Player2.textContent = getBotActive(1) ? "BOT" : "Player 2";
+        if (getBotActive(1)) {
+          team1Player2.classList.add("text-green-500");
+          team1Player2.classList.remove("text-cyan-400");
+        } else {
+          team1Player2.classList.add("text-cyan-400");
+          team1Player2.classList.remove("text-green-500");
+        }
+      }
+      
+      if (team2Player1) {
+        team2Player1.textContent = getBotActive(2) ? "BOT" : "Player 1";
+        if (getBotActive(2)) {
+          team2Player1.classList.add("text-green-500");
+          team2Player1.classList.remove("text-cyan-400");
+        } else {
+          team2Player1.classList.add("text-cyan-400");
+          team2Player1.classList.remove("text-green-500");
+        }
+      }
+      
+      if (team2Player2) {
+        team2Player2.textContent = getBotActive(3) ? "BOT" : "Player 2";
+        if (getBotActive(3)) {
+          team2Player2.classList.add("text-green-500");
+          team2Player2.classList.remove("text-cyan-400");
+        } else {
+          team2Player2.classList.add("text-cyan-400");
+          team2Player2.classList.remove("text-green-500");
+        }
+      }
+
+      // Aggiorna anche i nomi nel canvas overlay
+      const player1Name = document.getElementById("player1Name");
+      const player2Name = document.getElementById("player2Name");
+      const player3Name = document.getElementById("player3Name");
+      const player4Name = document.getElementById("player4Name");
+
+      if (player1Name) player1Name.textContent = getBotActive(0) ? "Team 1 - BOT" : "Team 1 - Player 1";
+      if (player2Name) player2Name.textContent = getBotActive(1) ? "Team 1 - BOT" : "Team 1 - Player 2";
+      if (player3Name) player3Name.textContent = getBotActive(2) ? "Team 2 - BOT" : "Team 2 - Player 1";
+      if (player4Name) player4Name.textContent = getBotActive(3) ? "Team 2 - BOT" : "Team 2 - Player 2";
     }
 }

@@ -279,10 +279,16 @@ function resetAfterPoint(x: number, game: GameState)
   game.ball.dx *= -1;
 }
 
-function randomizePowerUp(game: GameState)
+export function randomizePowerUp(game: GameState)
 {
-  game.powerUp.x = Math.random() * (game.canvas.width - 200) + 10;
-  game.powerUp.y = Math.random() * (game.canvas.height - 200) + 10;
+  const rectWidth = game.canvas.width / 2;
+  const rectHeight = game.canvas.height / 2;
+  const rectX = game.canvas.width / 4;
+  const rectY = game.canvas.height / 4; 
+
+  game.powerUp.x = Math.random() * rectWidth + rectX;
+  game.powerUp.y = Math.random() * rectHeight + rectY;
+
   const types = ["SizeIncrease", "SizeDecrease", "SpeedBoost"];
   const index = Math.floor(Math.random() * types.length);
   game.powerUp.type = types[index];
