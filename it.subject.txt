@@ -1060,4 +1060,3 @@ Per questo progetto, la sezione bonus è progettata per essere semplice. È rich
 
 La parte bonus sarà valutata solo se la parte obbligatoria è
 PERFETTA. "Perfetta" significa che la parte obbligatoria è stata completata completamente e funziona senza alcun problema. Se non soddisfi TUTTI i requisiti obbligatori, la tua parte bonus non sarà valutata affatto.
-
