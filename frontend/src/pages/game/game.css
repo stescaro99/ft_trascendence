@@ -111,3 +111,74 @@
   background: #4caf50;
   color: #fff;
 }
+
+.player-names {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-family: Arial, sans-serif;
+  color: white;
+}
+
+.player-name {
+  flex: 0; /* Adatta la larghezza al contenuto */
+  text-align: center;
+}
+
+.game-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#playerNames {
+  width: 100%;
+  position: absolute;
+  top: 15px;
+  left: 0;
+  display: flex; /* Cambia da "none" a "flex" per mostrare sempre */
+  justify-content: space-between;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Nascondi i nomi quando è visibile la schermata di setup */
+.screen.visible ~ .game-wrapper #playerNames {
+  display: none;
+}
+
+/* Mostra i nomi quando il canvas è visibile */
+canvas:not([style*="display: none"]) ~ #playerNames,
+canvas[style*="display: block"] ~ #playerNames {
+  display: flex !important;
+}
+
+.player-info {
+  margin: 10px 0;
+  text-align: center;
+}
+
+.player-info h3 {
+  font-size: 18px;
+  color: #00ffff;
+  margin: 5px 0;
+  font-weight: normal;
+}
+
+/* Stile per i nomi dei bot */
+.player-info h3.bot-active {
+  color: #4caf50;
+}
+
+.player-info h3.bot-active::after {
+  content: " (BOT)";
+  font-size: 14px;
+  color: #4caf50;
+}
