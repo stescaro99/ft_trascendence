@@ -15,7 +15,7 @@ const dbDir = path.join(__dirname, 'db');
 const dbPath = path.join(dbDir, 'database.db');
 
 if (!fs.existsSync(dbDir)) {
-    fs.mkdirSync(dbDir);
+	fs.mkdirSync(dbDir);
 }
 
 const dbExists = fs.existsSync(dbPath);
@@ -25,102 +25,107 @@ import swaggerUI from '@fastify/swagger-ui';
 
 // Carica i certificati SSL
 const httpsOptions = {
-    key: fs.readFileSync(path.join(__dirname, 'cert', 'key.pem')),
-    cert: fs.readFileSync(path.join(__dirname, 'cert', 'cert.pem'))
+	key: fs.readFileSync(path.join(__dirname, 'cert', 'key.pem')),
+	cert: fs.readFileSync(path.join(__dirname, 'cert', 'cert.pem'))
 };
 
-const server = Fastify({ 
-    logger: true,
-    https: httpsOptions
+const server = Fastify({
+  logger: true,
+  https: httpsOptions,
+  bodyLimit: 20 * 1024 * 1024
 });
 
 server.register(fastifyCookie); 
 
 const start = async (sequelize: any) => {
-    try {
-        await server.register(fastifyCors, {
-            origin: true,
-            credentials: true,
-            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        });
-        await server.register(swagger, {
-            openapi: {
-                info: {
-                    title: 'API ft_trascendence',
-                    description: 'Documentazione API Pong',
-                    version: '1.0.0'
-                },
-                components: {
-                    securitySchemes: {
-                        bearerAuth: {
-                            type: 'http',
-                            scheme: 'bearer',
-                            bearerFormat: 'JWT',
-                            description: 'Inserisci il token JWT come: Bearer <token>'
-                        }
-                    }
-                },
-                security: [{ bearerAuth: [] }]
-            },
-        });
-        await server.register(swaggerUI, {
-            routePrefix: '/swagger'
-        });
+	try {
+		await server.register(fastifyCors, {
+			origin: true,
+			credentials: true,
+			methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+		});
+		await server.register(swagger, {
+			openapi: {
+				info: {
+					title: 'API ft_trascendence',
+					description: 'Documentazione API Pong',
+					version: '1.0.0'
+				},
+				components: {
+					securitySchemes: {
+						bearerAuth: {
+							type: 'http',
+							scheme: 'bearer',
+							bearerFormat: 'JWT',
+							description: 'Inserisci il token JWT come: Bearer <token>'
+						}
+					}
+				},
+				security: [{ bearerAuth: [] }]
+			},
+		});
+		await server.register(swaggerUI, {
+			routePrefix: '/swagger'
+		});
 
-        await server.register(fastifyMultipart);
-        await server.register(fastifyStatic, {
-            root: path.join(__dirname, '../uploads'),
-            prefix: '/uploads/',
-        });
+		await server.register(fastifyMultipart, {
+			limits: {
+				fileSize: 20 * 1024 * 1024
+			}
+		});
+		await server.register(fastifyStatic, {
+			root: path.join(__dirname, '../uploads'),
+			prefix: '/uploads/',
+		});
 
-        await server.register(fastifyOauth2 as any, {
-            name: 'googleOAuth2',
-            scope: ['profile', 'email', 'openid'],
-            credentials: {
-                client: {
-                    id: process.env.GOOGLE_CLIENT_ID!,
-                    secret: process.env.GOOGLE_CLIENT_SECRET!
-                },
-                auth: fastifyOauth2.GOOGLE_CONFIGURATION,
-            },
-            startRedirectPath: '/api/google_login',
-            callbackUri: process.env.GOOGLE_REDIRECT_URI!
-        });
-    
+		await server.register(fastifyOauth2 as any, {
+			name: 'googleOAuth2',
+			scope: ['profile', 'email', 'openid'],
+			credentials: {
+				client: {
+					id: process.env.GOOGLE_CLIENT_ID!,
+					secret: process.env.GOOGLE_CLIENT_SECRET!
+				},
+				auth: fastifyOauth2.GOOGLE_CONFIGURATION,
+			},
+			startRedirectPath: '/api/google_login',
+			callbackUri: process.env.GOOGLE_REDIRECT_URI!
+		});
+	
 
-        const routes_path = path.join(__dirname, 'routes');
-        fs.readdirSync(routes_path).forEach((file) => {
-            if (file.endsWith('.js')) {
-                const route = require(path.join(routes_path, file));
-                server.register(route, { prefix: '/api' });
-            }
-        });
+		const routes_path = path.join(__dirname, 'routes');
+		fs.readdirSync(routes_path).forEach((file) => {
+			if (file.endsWith('.js')) {
+				const route = require(path.join(routes_path, file));
+				server.register(route, { prefix: '/api' });
+			}
+		});
 
-        await sequelize.authenticate();
-        console.log('Database connection has been established successfully.');
-        console.log('Database synchronized successfully.');
-        await server.listen({ port: 2807, host: '0.0.0.0' });
-        console.log('Server is running on https://localhost:2807');
-        console.log('Swagger UI is available at https://localhost:2807/swagger');
-    } catch (err) {
-        server.log.error(err);
-        process.exit(1);
-    }
+		await sequelize.authenticate();
+		console.log('Database connection has been established successfully.');
+		console.log('Database synchronized successfully.');
+		await server.listen({ port: 2807, host: '0.0.0.0' });
+		console.log('Server is running on https://localhost:2807');
+		console.log('Swagger UI is available at https://localhost:2807/swagger');
+	} catch (err) {
+		server.log.error(err);
+		process.exit(1);
+	}
 };
 
 (async () => {
-    const { default: sequelize } = await import('./db');
-    await import('./models/game');
-    await import('./models/stats');
-    await import('./models/user');
-    await import('./models/tournament');
-    // ...altri modelli se servono
+	const { default: sequelize } = await import('./db');
+	await import('./models/game');
+	await import('./models/stats');
+	await import('./models/user');
+	await import('./models/tournament');
+	// ...altri modelli se servono
 
-    await sequelize.sync({ force: !dbExists, alter: dbExists });
-    if (!dbExists) {
-        console.log('Database created successfully.');
-    } else {
-        console.log('Database already exists, no changes made.');
-    }
-    await start(sequelize);
+	await sequelize.sync({ force: !dbExists, alter: dbExists });
+	if (!dbExists) {
+		console.log('Database created successfully.');
+	} else {
+		console.log('Database already exists, no changes made.');
+	}
+	await start(sequelize);
 })();

@@ -22,34 +22,34 @@ if (token && nickname) {
 
 const routes: Record<string, () => string> = {
   '/': () => {
-    /* Uncomment to make redirection work */
-    if (localStorage.getItem('user')) {
-      new HomePage();
+	/* Uncomment to make redirection work */
+	if (localStorage.getItem('user')) {
+	  new HomePage();
 	  return "";
-    } else {
-      window.location.hash = '/login';
-      return "";
-    }
+	} else {
+	  window.location.hash = '/login';
+	  return "";
+	}
   },
   '/identification': () => {
-    new IdentificationPage();
-    return "";
+	new IdentificationPage();
+	return "";
   },
   '/login': () => {
-    new LogInPage();
-    return "";
+	new LogInPage();
+	return "";
   },
   '/stats': () => {
-    new StatsPage();
-    return "";
+	new StatsPage();
+	return "";
   },
   '/profile': () => {
-    new ProfilePage();
-    return "";
+	new ProfilePage();
+	return "";
   },
   '/game': () => {
-    new GamePage();
-    return "";
+	new GamePage();
+	return "";
   }
 };
 
@@ -60,23 +60,23 @@ function router() {
   const render = routes[path];
 
   if (render) {
-    const content = render(); 
-    if (content) {
-      appDiv.innerHTML = content;
-    }
+	const content = render(); 
+	if (content) {
+	  appDiv.innerHTML = content;
+	}
   } else {
 
-    appDiv.innerHTML = `<h1>404</h1><p>Pagina non trovata</p>`;
+	appDiv.innerHTML = `<h1>404</h1><p>Pagina non trovata</p>`;
   }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   const powerBtn = document.getElementById('powerBtn');
   if (powerBtn) {
-    powerBtn.addEventListener('click', () => {
-      localStorage.removeItem('user');
-      window.location.hash = '/login';
-    });
+	powerBtn.addEventListener('click', () => {
+	  localStorage.removeItem('user');
+	  window.location.hash = '/login';
+	});
   }
 });
 
@@ -87,7 +87,7 @@ window.addEventListener('load', router);
 //   const content = render(); // This calls new HomePage() or new IdentificationPage()
 //   // Don't set innerHTML if content is empty (let the classes handle rendering)
 //   if (content) {
-//     appDiv.innerHTML = content;
+//	 appDiv.innerHTML = content;
 //   }
 // } else {
 //   // Only set innerHTML for 404 pages
