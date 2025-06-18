@@ -12,15 +12,15 @@ export class IdentificationPage {
 	qrCode: string = '';
 
 	constructor() {
-    this.render();
-    this.addEventListeners();
+	this.render();
+	this.addEventListeners();
   }
 
   private render() {
-    const appDiv = document.getElementById('app');
-    if (appDiv) {
-        appDiv.innerHTML = autentificationHtml;
-    }
+	const appDiv = document.getElementById('app');
+	if (appDiv) {
+		appDiv.innerHTML = autentificationHtml;
+	}
   }
 
 private handleSubmit(event: Event) {
@@ -28,7 +28,7 @@ private handleSubmit(event: Event) {
 	event.preventDefault();
 	this.userService.postUserToApi(this.user)
 	.then((response) => {
-    	console.log('User saved successfully:', response);
+		console.log('User saved successfully:', response);
 		this.authenticationService.takeQrCodeFromApi(this.user.nickname, this.user.password) 
 		.then((qrResponse) => {
 			this.qrCode = qrResponse.qrCode;
@@ -88,18 +88,18 @@ private handleSubmit(event: Event) {
 			});
 		});
 
-    })
-    .catch((error) => {
-      console.error('Error saving user:', error);
-    });
+	})
+	.catch((error) => {
+	  console.error('Error saving user:', error);
+	});
 
   }
 
   private addEventListeners() {
-    const form = document.querySelector('#loginForm');
-    if (form) {
-      form.addEventListener('submit', this.handleSubmit.bind(this));
-    }
+	const form = document.querySelector('#loginForm');
+	if (form) {
+	  form.addEventListener('submit', this.handleSubmit.bind(this));
+	}
 	const nameInput = document.getElementById('nameInput') as HTMLInputElement;
 	if (nameInput) {
 	nameInput.addEventListener('blur', () => {
@@ -172,20 +172,15 @@ private handleSubmit(event: Event) {
 		imageInput.addEventListener('change', () => {
 			const file = imageInput.files?.[0];
 			if (file) {
-					const reader = new FileReader();
-					reader.onload =  (e) =>{
-					const base64String = (e.target?.result as string) || '';
-					this.userService.UpdateImageUrl(base64String)
-					.then((response) => {
-						console.log('Image URL updated successfully:', response);
-						this.user.image_url = response.imageUrl;
-					})
-					.catch((error) => {
-						console.error('Error updating image URL:', error);
-						alert('Failed to update image URL. Please try again.');
-					});
-				}
-				reader.readAsDataURL(file);
+					this.userService.UpdateImageUrl(file)
+						.then((response) => {
+							console.log('Image URL updated successfully:', response);
+							this.user.image_url = response.imageUrl;
+						})
+						.catch((error) => {
+							console.error('Error updating image URL:', error);
+							alert('Failed to update image URL. Please try again.');
+						});
 			}
 		});
 	}
