@@ -1,5 +1,5 @@
-import { GameState, Paddle } from "./../common/types"; 
-import { update } from "./../common/GameUpdate";
+import { GameState } from "./../common/types"; 
+import { update, randomizePowerUp } from "./../common/GameUpdate";
 import { drawBall, drawRect, drawScore, drawPowerUp, drawField } from "../common/Draw";
 import { getBotActive, predictBallY, moveBot } from "../common/BotState";
 import { updateGameField, createGame } from "../services/gameService";
@@ -17,21 +17,9 @@ function getPlayerNick(index: number, side: "left" | "right") {
   return window.localStorage.getItem(`${side}Player${index + 1}`) || `${side === "left" ? "L" : "R"}${index + 1}`;
 }
 
-const typeToColor: { [key: string]: string } = {
-  IncreaseSize: "green",
-  DecreaseSize: "red",
-  SpeedBoost: "yellow"
-};
-
-function getPowerUpType() {
-  const types = ["IncreaseSize", "SpeedBoost"];
-  return types[Math.floor(Math.random() * types.length)];
-}
-
 function createInitialGameState(canvas: HTMLCanvasElement): GameState {
   const paddleHeight = canvas.height / 6;
   const paddleWidth = 10;
-  const powerUpType = getPowerUpType();
 
   return {
     ball: {
@@ -84,8 +72,8 @@ function createInitialGameState(canvas: HTMLCanvasElement): GameState {
       width: 20,
       height: 20,
       active: true,
-      type: powerUpType,
-      color: typeToColor[powerUpType]
+      type: "",
+      color: ""
     },
     scoreLeft: 0,
     scoreRight: 0,
@@ -98,63 +86,79 @@ function createInitialGameState(canvas: HTMLCanvasElement): GameState {
   };
 }
 
+// === Sistema di tracking dei tasti ===
+
+const keys: { [key: string]: boolean } = {};
+let keyboardSetup = false; // Flag per evitare duplicazioni degli event listener
+
 // === Eventi tastiera ===
 function setupKeyboard(game: GameState) {
+  // Evita di aggiungere più volte gli stessi event listener
+  if (keyboardSetup) return;
+  
   document.addEventListener("keydown", (e) => {
-    switch (e.key) {
-      case "w":
-        game.leftPaddle[0].dy = -game.leftPaddle[0].speed;
-        break;
-      case "s":
-        game.leftPaddle[0].dy = game.leftPaddle[0].speed;
-        break;
-      case "a":
-        if (getBotActive(1)) break;
-        game.leftPaddle[1].dy = -game.leftPaddle[1].speed;
-        break;
-      case "z":
-        if (getBotActive(1)) break;
-        game.leftPaddle[1].dy = game.leftPaddle[1].speed;
-        break;
-      case "ArrowUp":
-        if (getBotActive(2)) break;
-        game.rightPaddle[0].dy = -game.rightPaddle[0].speed;
-        break;
-      case "ArrowDown":
-        if (getBotActive(2)) break;
-        game.rightPaddle[0].dy = game.rightPaddle[0].speed;
-        break;
-      case "i":
-        if (getBotActive(3)) break;
-        game.rightPaddle[1].dy = -game.rightPaddle[1].speed;
-        break;
-      case "k":
-        if (getBotActive(3)) break;
-        game.rightPaddle[1].dy = game.rightPaddle[1].speed;
-        break;
-    }
+    keys[e.key] = true;
+    updatePaddleMovement(game);
   });
 
   document.addEventListener("keyup", (e) => {
-    switch (e.key) {
-      case "w":
-      case "s":
-        game.leftPaddle[0].dy = 0;
-        break;
-      case "a":
-      case "z":
-        if (!getBotActive(1)) game.leftPaddle[1].dy = 0;
-        break;
-      case "ArrowUp":
-      case "ArrowDown":
-        if (!getBotActive(2)) game.rightPaddle[0].dy = 0;
-        break;
-      case "i":
-      case "k":
-        if (!getBotActive(3)) game.rightPaddle[1].dy = 0;
-        break;
-    }
+    keys[e.key] = false;
+    updatePaddleMovement(game);
   });
+  
+  keyboardSetup = true;
+}
+
+function updatePaddleMovement(game: GameState) {
+  // Player 1 (leftPaddle[0]) - W/S keys
+  if (keys["w"] && keys["s"]) {
+    game.leftPaddle[0].dy = 0;
+  } else if (keys["w"]) {
+    game.leftPaddle[0].dy = -game.leftPaddle[0].speed;
+  } else if (keys["s"]) {
+    game.leftPaddle[0].dy = game.leftPaddle[0].speed;
+  } else {
+    game.leftPaddle[0].dy = 0;
+  }
+
+  // Player 2 (leftPaddle[1]) - A/Z keys
+  if (!getBotActive(1)) {
+    if (keys["a"] && keys["z"]) {
+      game.leftPaddle[1].dy = 0;
+    } else if (keys["a"]) {
+      game.leftPaddle[1].dy = -game.leftPaddle[1].speed;
+    } else if (keys["z"]) {
+      game.leftPaddle[1].dy = game.leftPaddle[1].speed;
+    } else {
+      game.leftPaddle[1].dy = 0;
+    }
+  }
+
+  // Player 3 (rightPaddle[0]) - Arrow keys
+  if (!getBotActive(2)) {
+    if (keys["ArrowUp"] && keys["ArrowDown"]) {
+      game.rightPaddle[0].dy = 0;
+    } else if (keys["ArrowUp"]) {
+      game.rightPaddle[0].dy = -game.rightPaddle[0].speed;
+    } else if (keys["ArrowDown"]) {
+      game.rightPaddle[0].dy = game.rightPaddle[0].speed;
+    } else {
+      game.rightPaddle[0].dy = 0;
+    }
+  }
+
+  // Player 4 (rightPaddle[1]) - I/K keys
+  if (!getBotActive(3)) {
+    if (keys["i"] && keys["k"]) {
+      game.rightPaddle[1].dy = 0;
+    } else if (keys["i"]) {
+      game.rightPaddle[1].dy = -game.rightPaddle[1].speed;
+    } else if (keys["k"]) {
+      game.rightPaddle[1].dy = game.rightPaddle[1].speed;
+    } else {
+      game.rightPaddle[1].dy = 0;
+    }
+  }
 }
 
 // === Funzioni di disegno ===
@@ -202,7 +206,8 @@ const originalResetAfterPoint = (window as any).resetAfterPoint;
   if (originalResetAfterPoint) originalResetAfterPoint(x, game);
 };
 
-export async function FourGameLoop(TeamLeft: string, TeamRight: string) {
+export async function FourGameLoop(TeamLeft: string, TeamRight: string)
+{
   const { canvas, ctx } = getCanvasAndCtx();
 
   // Crea stato di gioco solo la prima volta
@@ -221,7 +226,9 @@ export async function FourGameLoop(TeamLeft: string, TeamRight: string) {
   const game: GameState = (window as any).game4;
 
   // Crea partita su backend solo la prima volta
-  if (!gameCreated) {
+  if (!gameCreated)
+  {
+    randomizePowerUp(game);
     const players = [
       game.leftPaddle[0].nickname,
       game.leftPaddle[1].nickname,
