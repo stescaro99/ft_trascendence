@@ -1,5 +1,5 @@
-import { GameState, Paddle } from "../common/types"; 
-import { update } from "./../common/GameUpdate";
+import { GameState } from "../common/types"; 
+import { randomizePowerUp, update } from "./../common/GameUpdate";
 import { drawBall, drawRect, drawScore, drawPowerUp, drawField } from "../common/Draw";
 import { getBotActive, predictBallY, moveBot } from "../common/BotState";
 import { updateGameField, createGame } from "../services/gameService";
@@ -17,21 +17,9 @@ function getPlayerNick(index: number, side: "left" | "right") {
   return window.localStorage.getItem(`${side}Player${index + 1}`) || `${side === "left" ? "L" : "R"}${index + 1}`;
 }
 
-const typeToColor: { [key: string]: string } = {
-  IncreaseSize: "00ff00",
-  DecreaseSize: "ff0000",
-  SpeedBoost: "ffff00"
-};
-
-function getPowerUpType() {
-  const types = ["IncreaseSize", "SpeedBoost"];
-  return types[Math.floor(Math.random() * types.length)];
-}
-
 function createInitialGameState(canvas: HTMLCanvasElement): GameState {
   const paddleHeight = canvas.height / 5;
   const paddleWidth = 10;
-  const powerUpType = getPowerUpType();
 
   return {
     ball: {
@@ -63,13 +51,13 @@ function createInitialGameState(canvas: HTMLCanvasElement): GameState {
       }
     ],
     powerUp: {
-      x: Math.random() * (canvas.width - 200) + 10,
-      y: Math.random() * (canvas.height - 200) + 10,
+      x: Math.random() * canvas.width / 2 + canvas.width / 4,
+      y: Math.random() * canvas.height / 2 + canvas.height / 4,
       width: 20,
       height: 20,
       active: true,
-      type: powerUpType,
-      color: typeToColor[powerUpType]
+      type: "",
+      color: ""
     },
     scoreLeft: 0,
     scoreRight: 0,
@@ -83,17 +71,51 @@ function createInitialGameState(canvas: HTMLCanvasElement): GameState {
 }
 
 // === Eventi tastiera ===
-function setupKeyboard(game: GameState) {
+
+const keys: { [key: string]: boolean } = {};
+let keyboardSetup = false;
+
+// === Eventi tastiera ===
+function setupKeyboard(game: GameState)
+{
+  if (keyboardSetup) return;
+  
   document.addEventListener("keydown", (e) => {
-    if (e.key === "w") game.leftPaddle[0].dy = -game.leftPaddle[0].speed;
-    if (e.key === "s") game.leftPaddle[0].dy = game.leftPaddle[0].speed;
-    if (!getBotActive(0) && e.key === "ArrowUp") game.rightPaddle[0].dy = -game.rightPaddle[0].speed;
-    if (!getBotActive(0) && e.key === "ArrowDown") game.rightPaddle[0].dy = game.rightPaddle[0].speed;
+    keys[e.key] = true;
+    updatePaddleMovement(game);
   });
+
   document.addEventListener("keyup", (e) => {
-    if (e.key === "w" || e.key === "s") game.leftPaddle[0].dy = 0;
-    if (!getBotActive(0) && (e.key === "ArrowUp" || e.key === "ArrowDown")) game.rightPaddle[0].dy = 0;
+    keys[e.key] = false;
+    updatePaddleMovement(game);
   });
+  
+  keyboardSetup = true;
+}
+
+function updatePaddleMovement(game: GameState)
+{
+  if (keys["w"] && keys["s"]) {
+    game.leftPaddle[0].dy = 0;
+  } else if (keys["w"]) {
+    game.leftPaddle[0].dy = -game.leftPaddle[0].speed;
+  } else if (keys["s"]) {
+    game.leftPaddle[0].dy = game.leftPaddle[0].speed;
+  } else {
+    game.leftPaddle[0].dy = 0;
+  }
+
+  if (!getBotActive(1)) {
+    if (keys["ArrowUp"] && keys["ArrowDown"]) {
+      game.rightPaddle[0].dy = 0;
+    } else if (keys["ArrowUp"]) {
+      game.rightPaddle[0].dy = -game.rightPaddle[0].speed;
+    } else if (keys["ArrowDown"]) {
+      game.rightPaddle[0].dy = game.rightPaddle[0].speed;
+    } else {
+      game.rightPaddle[0].dy = 0;
+    }
+  }
 }
 
 // === Funzioni di disegno ===
@@ -150,7 +172,9 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
   const game: GameState = (window as any).game;
 
   // Crea partita su backend solo la prima volta
-  if (!gameCreated) {
+  if (!gameCreated)
+  {
+    randomizePowerUp(game);
     const players = [
       game.leftPaddle[0].nickname,
       game.rightPaddle[0].nickname
