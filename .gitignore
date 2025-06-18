@@ -1,3 +1,5 @@
 /backend/db/
 .env
-/uploads/
+/backend/uploads/
+/backend/cert
+/frontend/cert
