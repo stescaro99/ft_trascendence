@@ -1,20 +1,18 @@
-FROM node:20-alpine
+FROM alpine:3.20
 
 WORKDIR /app
+
+RUN apk add --no-cache nodejs npm openssl
 
 COPY package*.json ./
 RUN npm install
 
 COPY . .
 
-RUN mkdir -p cert && \
-    apk add --no-cache openssl && \
-    openssl req -x509 -newkey rsa:4096 -sha256 -days 365 \
-    -nodes -keyout cert/key.pem -out cert/cert.pem \
-    -subj "/CN=localhost"
+COPY cert ./cert
 
 RUN npm run build
 
 EXPOSE 5173
 
-CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0"]
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "5173"]
