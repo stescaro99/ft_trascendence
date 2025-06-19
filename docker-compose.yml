@@ -22,5 +22,3 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
-    volumes:
-      - ./frontend/cert:/app/cert
