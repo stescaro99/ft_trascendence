@@ -9,6 +9,8 @@ import { GamePage } from './pages/game/game';
 
 console.log("Script caricato");
 
+let currentLang = 'it';
+
 const appDiv = document.getElementById('app')!;
 const params = new URLSearchParams(window.location.search);
 const token = params.get('token');
@@ -23,20 +25,22 @@ if (token && nickname) {
 const routes: Record<string, () => string> = {
   '/': () => {
 	/* Uncomment to make redirection work */
-	if (localStorage.getItem('user')) {
-	  new HomePage();
-	  return "";
-	} else {
-	  window.location.hash = '/login';
-	  return "";
-	}
+    if (localStorage.getItem('user')) {
+      new HomePage(currentLang);
+      return "";
+    } else {
+      window.location.hash = '/login';
+      return "";
+    }
+    // new HomePage(currentLang);
+    // return "";
   },
   '/identification': () => {
 	new IdentificationPage();
 	return "";
   },
   '/login': () => {
-	new LogInPage();
+	new LogInPage(currentLang);
 	return "";
   },
   '/stats': () => {
@@ -44,7 +48,7 @@ const routes: Record<string, () => string> = {
 	return "";
   },
   '/profile': () => {
-	new ProfilePage();
+	new ProfilePage(currentLang);
 	return "";
   },
   '/game': () => {
@@ -61,12 +65,11 @@ function router() {
 
   if (render) {
 	const content = render(); 
-	if (content) {
-	  appDiv.innerHTML = content;
-	}
+    if (content) {
+      appDiv.innerHTML = content;
+    }
   } else {
-
-	appDiv.innerHTML = `<h1>404</h1><p>Pagina non trovata</p>`;
+	  appDiv.innerHTML = `<h1>404</h1><p>Pagina non trovata</p>`;
   }
 }
 

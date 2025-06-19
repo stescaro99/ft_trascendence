@@ -1,6 +1,7 @@
 
 import { UserService } from '../../service/user.service';
 import { AuthenticationService } from '../../service/authentication.service';
+import { TranslationService } from '../../service/translation.service';
 import '../../style.css';
 import './login.css';
 import loginHtml from './login.html?raw';
@@ -11,8 +12,10 @@ export class LogInPage{
 	qrCode: string = '';
 	userService: UserService = new UserService();
 	authenticationService: AuthenticationService = new AuthenticationService();
+	private currentLang: string;
 	
-	constructor() {
+	constructor(lang: string) {
+		this.currentLang = lang;
 		this.render();
 		this.addEventListeners();
 		this.setTheme('green');
@@ -20,7 +23,9 @@ export class LogInPage{
 	private render() {
 		const appDiv = document.getElementById('app');
 		if (appDiv) {
-			appDiv.innerHTML = loginHtml;
+			const translation = new TranslationService(this.currentLang);
+			const translatedHtml = translation.translateTemplate(loginHtml);
+			appDiv.innerHTML = translatedHtml;
 		}
 	}
 
