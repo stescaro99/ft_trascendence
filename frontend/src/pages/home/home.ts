@@ -2,13 +2,16 @@ import homeHtml from './home.html?raw';
 import '../../style.css';
 import { User } from '../../model/user.model';
 import { UserService } from '../../service/user.service';
+import { TranslationService } from '../../service/translation.service';
 import './home.css';
 
 export class HomePage {
 	user: User | null;
 	userService: UserService = new UserService();
+	private currentLang: string;
 
-	constructor() {
+	constructor(lang: string) {
+		this.currentLang = lang;
 		this.user = this.userService.getUser();
 		this.render();
 		this.setTheme('blue');
@@ -79,7 +82,9 @@ export class HomePage {
 	private render() {
 		const appDiv = document.getElementById('app');
 		if (appDiv) {
-			appDiv.innerHTML = homeHtml;
+			const translation = new TranslationService(this.currentLang);
+			const translatedHtml = translation.translateTemplate(homeHtml);
+			appDiv.innerHTML = translatedHtml;
 		}
 	}
 

@@ -1,13 +1,16 @@
 import profileHtml from './profile.html?raw';
 import { Stats } from '../../model/stats.model';
 import { User } from '../../model/user.model';
+import { TranslationService } from '../../service/translation.service';
 import './profile.css';
 
 export class ProfilePage {
 	private stats: Stats;
 	private user: User;
+	private currentLang: string;
 	
-	constructor() {
+	constructor(lang: string) {
+		this.currentLang = lang;
 		this.stats = {
 			stat_index: 5,
 			nickname: 'Ulli',
@@ -40,13 +43,14 @@ export class ProfilePage {
 		const appDiv = document.getElementById('app');
 
 		if (appDiv) {
-			appDiv.innerHTML = profileHtml;
-
+			const translation = new TranslationService(this.currentLang);
+			const translatedHtml = translation.translateTemplate(profileHtml);
+			
 			this.showValueProfile("name");
 			this.showValueProfile("nickname");
 			this.showValueProfile("surname");
 			this.showValueProfile("email");
-
+			
 			this.showValueStats("number_of_games")
 			this.showValueStats("number_of_wins")
 			this.showValueStats("number_of_losses")
@@ -56,6 +60,8 @@ export class ProfilePage {
 			this.showValueStats("percentage_wins")
 			this.showValueStats("percentage_losses")
 			this.showValueStats("percentage_draws")
+			
+			appDiv.innerHTML = translatedHtml;
 
 			setTimeout(() => {
 				const imgElement = document.getElementById('profile_image') as HTMLImageElement;
