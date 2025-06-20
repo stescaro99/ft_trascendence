@@ -1,7 +1,7 @@
 <section id="profile" class="@container bg-body flex justify-center p-4 w-screen h-screen ps-20">
 
     <div class="profile-div w-[50vw] h-full">
-        <h2 class="text-white arcade-font font-[500] text-5xl text-center pb-5">Profile</h1>
+        <h2 class="text-white arcade-font font-[500] text-5xl text-center pb-5">{{profilepage.profile}}</h1>
 
         <div class="flex-col justify-items-center h-full text-white w-full">
             <div class="py-6">
@@ -10,17 +10,17 @@
 
             <div class="profile-container container-shadow">
                 <div class="profile-element">
-                    <p>Name:</p>
+                    <p>{{profilepage.name}}:</p>
                     <p id="profile_name"></p>
                 </div>
 
                 <div class="profile-element">
-                    <p>Nickname:</p>
+                    <p>{{profilepage.nickname}}:</p>
                     <p id="profile_nickname"></p>
                 </div>
 
                 <div class="profile-element">
-                    <p>Last Name:</p>
+                    <p>{{profilepage.lastname}}:</p>
                     <p id="profile_surname"></p>
                 </div>
 
@@ -33,7 +33,7 @@
     </div>
     
     <div class="stats-div w-[50vw]">
-        <h2 class="text-white arcade-font font-[500] text-5xl text-center pb-5">Statistics</h1>
+        <h2 class="text-white arcade-font font-[500] text-5xl text-center pb-5">{{profilepage.statistics}}</h1>
        
         <div class="stats-container container-shadow">
             <div class="stats-element">

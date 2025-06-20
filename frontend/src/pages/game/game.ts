@@ -4,15 +4,16 @@ import './game.css'
 import { TwoGameLoop } from "./TwoPlayers/TwoController";
 import { FourGameLoop } from "./FourPlayers/FourController";
 import { setBotActive, getBotActive } from "./common/BotState";
+import { TranslationService } from '../../service/translation.service';
 
 export class GamePage {
-
+	private currentLang: string;
    Team1Color = "#ffffff";
   Team2Color = "#ffffff";
   colors = ["#ff0000", "#00ff00", "#ffff00", "#800080", "#007bff", "#ffffff"];
 
-  constructor() {
-	
+  constructor(lang: string) {
+	this.currentLang = lang;
 	this.render();
   }
   
@@ -25,9 +26,13 @@ export class GamePage {
 	if (!container) 
 	  return;
 	if (players === '4') {
-		container.innerHTML = gameFourHtml;
+		const translation = new TranslationService(this.currentLang);
+		const translatedHtml = translation.translateTemplate(gameFourHtml);
+		container.innerHTML = translatedHtml;
 	  } else {
-		container.innerHTML = gameTwoHtml;
+		const translation = new TranslationService(this.currentLang);
+		const translatedHtml = translation.translateTemplate(gameTwoHtml);
+		container.innerHTML = translatedHtml;
 	  }
 
   const screen = container.querySelector('.screen');

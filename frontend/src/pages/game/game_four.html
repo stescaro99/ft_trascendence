@@ -1,47 +1,47 @@
 <div class="bb" id="app">
   <div id="setup4-screen" class="screen row-screen">
     <div class="column">
-      <h2>TEAM 1</h2>
+      <h2>{{team}} 1</h2>
       <div class="player-info">
-        <h3 id="team1Player1">Player 1</h3>
-        <h3 id="team1Player2">Player 2</h3>
+        <h3 id="team1Player1">{{player}} 1</h3>
+        <h3 id="team1Player2">{{player}} 2</h3>
       </div>
-      <p>SELEZIONA COLORE</p>
+      <p>{{choose_color}}</p>
       <div class="palette" data-player="3"></div>
       <div id="Preview3" class="paddle-preview"></div>
-      <button id="addBotBtn1" class="btn-large">Add Bot</button>
+      <button id="addBotBtn1" class="btn-large">{{add_bot}}</button>
     </div>
 
     <div class="spacer"></div>
 
     <div class="column">
       <h1 class="title">PONG</h1>
-      <button id="startBtn4" class="btn-large">START</button>
+      <button id="startBtn4" class="btn-large">{{start}}</button>
     </div>
 
     <div class="spacer"></div>
 
     <div class="column">
-      <h2>TEAM 2</h2>
+      <h2>{{team}} 2</h2>
       <div class="player-info">
-        <h3 id="team2Player1">Player 1</h3>
-        <h3 id="team2Player2">Player 2</h3>
+        <h3 id="team2Player1">{{player}} 1</h3>
+        <h3 id="team2Player2">{{player}} 2</h3>
       </div>
-      <p>SELEZIONA COLORE</p>
+      <p>{{choose_color}}</p>
       <div class="palette" data-player="4"></div>
       <div id="Preview4" class="paddle-preview"></div>
-      <button id="addBotBtn2" class="btn-large">Add Bot</button>
-      <button id="addBotBtn3" class="btn-large">Add Bot</button>
+      <button id="addBotBtn2" class="btn-large">{{add_bot}}</button>
+      <button id="addBotBtn3" class="btn-large">{{add_bot}}</button>
     </div>
   </div>
 
   <!-- Nomi dei giocatori per 4 giocatori -->
   <div class="game-wrapper">
     <div id="playerNames">
-      <div id="player1Name">Team 1 - Player 1</div>
-      <div id="player2Name">Team 1 - Player 2</div>
-      <div id="player3Name">Team 2 - Player 1</div>
-      <div id="player4Name">Team 2 - Player 2</div>
+      <div id="player1Name">{{team}} 1 - {{player}} 1</div>
+      <div id="player2Name">{{team}} 1 - {{player}} 2</div>
+      <div id="player3Name">{{team}} 2 - {{player}} 1</div>
+      <div id="player4Name">{{team}} 2 - {{player}} 2</div>
     </div>
     <canvas id="pong" width="1200" height="750" style="display: none;"></canvas>
   </div>
