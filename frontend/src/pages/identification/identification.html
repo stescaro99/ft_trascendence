@@ -3,21 +3,21 @@
     <div class="w-full flex flex-col items-center ">
 
       <br>
-      <h1 class="text-white text-3xl flex justify-center items-center">SIGN UP</h1>
+        <h1 class="text-white text-3xl flex justify-center items-center">{{sign_up}}</h1>
       <br>
 
       <label class="flex items-center gap-4 w-full mb-4">
-        <span class="span_tail">Name:</span>
+        <span class="span_tail">{{name}}</span>
         <input type="text" class="display" placeholder="Enter your name" id="nameInput" />
       </label>
 
       <label class="flex items-center gap-4 w-full mb-4">
-        <span class="span_tail">Surname:</span>
+        <span class="span_tail">{{lastname}}</span>
         <input type="text" class="display" placeholder="Enter your surname" id="surnameInput" />
       </label>
 
       <label class="flex items-center gap-4 w-full mb-4">
-        <span class="span_tail">Nickname:</span>
+        <span class="span_tail">{{nickname}}</span>
         <input type="text" class="display " placeholder="Enter your nickname" id="nicknameInput" />
       </label>
       <span id="nicknameSpan" class="text-red-500"></span>
@@ -34,13 +34,13 @@
       </label>
 
       <label class="flex items-center gap-4 w-full mb-4 ">
-        <span class="span_tail">Image:</span>
+        <span class="span_tail">{{image}}</span>
         <input type="file" id="imageInput" accept="image/*" class="display" />
       </label>
 
     </div>
     
-    <button id="submitButton" class="button" type="submit">SUBMIT</button>
+    <button id="submitButton" class="button" type="submit">{{submit}}</button>
   </form>
 
   <label for="qrCode"></label>

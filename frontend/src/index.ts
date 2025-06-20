@@ -9,7 +9,7 @@ import { GamePage } from './pages/game/game';
 
 console.log("Script caricato");
 
-let currentLang = 'it';
+let currentLang = 'fr';
 
 const appDiv = document.getElementById('app')!;
 const params = new URLSearchParams(window.location.search);
@@ -36,7 +36,7 @@ const routes: Record<string, () => string> = {
     // return "";
   },
   '/identification': () => {
-	new IdentificationPage();
+	new IdentificationPage(currentLang);
 	return "";
   },
   '/login': () => {
@@ -52,7 +52,7 @@ const routes: Record<string, () => string> = {
 	return "";
   },
   '/game': () => {
-	new GamePage();
+	new GamePage(currentLang);
 	return "";
   }
 };

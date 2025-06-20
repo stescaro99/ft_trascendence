@@ -2,6 +2,7 @@ import autentificationHtml from './identification.html?raw';
 import { User } from '../../model/user.model';
 import { UserService } from '../../service/user.service';
 import { AuthenticationService } from '../../service/authentication.service';
+import { TranslationService } from '../../service/translation.service';
 import '../../style.css';
 import './identification.css'
 
@@ -10,16 +11,20 @@ export class IdentificationPage {
 	userService: UserService = new UserService();
 	authenticationService: AuthenticationService = new AuthenticationService();
 	qrCode: string = '';
+	private currentLang: string;
 
-	constructor() {
-	this.render();
-	this.addEventListeners();
-  }
+	constructor(lang: string) {
+		this.currentLang = lang;
+		this.render();
+		this.addEventListeners();
+  	}
 
   private render() {
 	const appDiv = document.getElementById('app');
 	if (appDiv) {
-		appDiv.innerHTML = autentificationHtml;
+		const translation = new TranslationService(this.currentLang);
+		const translatedHtml = translation.translateTemplate(autentificationHtml);
+		appDiv.innerHTML = translatedHtml;
 	}
   }
 

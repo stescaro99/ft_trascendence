@@ -1,8 +1,8 @@
 <div class='bb' id="app">
     <div id="setup2-screen" class="screen row-screen">
         <div class="column">
-        <h2>GIOCATORE 1</h2>
-        <p>SELEZIONA COLORE</p>
+        <h2>{{player}} 1</h2>
+        <p>{{choose_color}}</p>
         <div class="palette" data-player="1"></div>
         <div id="Preview1" class="paddle-preview"></div>
       </div>
@@ -11,25 +11,25 @@
 
       <div class="column">
         <h1 class="title">PONG</h1>
-        <button id="startBtn2" class="btn-large">START</button>
+        <button id="startBtn2" class="btn-large">{{start}}</button>
       </div>
 
       <div class="spacer"></div>
 
       <div class="column">
-        <h2>GIOCATORE 2</h2>
-        <p>SELEZIONA COLORE</p>
+        <h2>{{player}} 2</h2>
+        <p>{{choose_color}}</p>
         <div class="palette" data-player="2"></div>
         <div id="Preview2" class="paddle-preview"></div>
-        <button id="addBotBtn0" class="btn-large">Add Bot</button>
+        <button id="addBotBtn0" class="btn-large">{{add_bot}}</button>
       </div>
     </div>
 
     <!-- Nomi dei giocatori -->
     <div class="game-wrapper">
       <div id="playerNames">
-        <div id="player1Name">Giocatore 1</div>
-        <div id="player2Name">Giocatore 2</div>
+        <div id="player1Name">{{player}} 1</div>
+        <div id="player2Name">{{player}} 2</div>
       </div>
       <canvas id="pong" width="1200" height="750" style="display: none;"></canvas>
     </div>
