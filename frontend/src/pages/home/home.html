@@ -27,108 +27,11 @@
 
 </div>
 
-<div class="starting-screen" id="welcomeSplash">
-    <h1 class="text-white arcade-font font-[900] text-7xl rushblade-font neon-sign pt-20 z-2">TRASCENDENCE</h1>
+<div class="starting-screen" id="homeScreen">
+    <div class="flex-col items-center">
+        <h1 class="text-white font-[900] text-7xl rushblade-font neon-sign pt-20 z-2">TRASCENDENCE</h1>
+        <h3 class="text-white font-[400] text-7xl arcade-font pt-20 z-2 text-center" id="homeScreen_h3">Ready to play!</h3>
+    </div>
 </div>
 
 <div class="ball" id="ball"></div>
-
-<script>
-    class BouncingBall {
-        constructor() {
-            this.ball = document.getElementById('ball');
-            this.container = document.getElementById('animation_container');
-
-            this.x = 50;
-            this.y = 50;
-            this.vx = 3;
-            this.vy = 2;
-            this.ballSize = 40;
-
-            this.isRunning = false;
-            this.animationId = null;
-            
-            this.updatePosition();
-        }
-        
-        updatePosition() {
-            this.ball.style.left = this.x + 'px';
-            this.ball.style.top = this.y + 'px';
-        }
-        
-        checkCollisions() {
-            const containerWidth = this.container.clientWidth;
-            const containerHeight = this.container.clientHeight;
-
-            if (this.x <= 0 || this.x >= containerWidth - this.ballSize) {
-                this.vx = -this.vx;
-                
-                if (this.x <= 0) this.x = 0;
-                if (this.x >= containerWidth - this.ballSize) {
-                    this.x = containerWidth - this.ballSize;
-                }
-            }
-            
-            if (this.y <= 0 || this.y >= containerHeight - this.ballSize) {
-                this.vy = -this.vy;
-
-                if (this.y <= 0) this.y = 0;
-                if (this.y >= containerHeight - this.ballSize) {
-                    this.y = containerHeight - this.ballSize;
-                }
-            }
-        }
-        
-        animate() {
-            if (!this.isRunning) return;
-
-            this.x += this.vx;
-            this.y += this.vy;
-            
-            this.checkCollisions();
-            this.updatePosition();
-
-            this.animationId = requestAnimationFrame(() => this.animate());
-        }
-        
-        start() {
-            if (!this.isRunning) {
-                this.isRunning = true;
-                this.animate();
-            }
-        }
-        
-        reset() {
-            this.stop();
-            this.x = 50;
-            this.y = 50;
-            this.vx = 3;
-            this.vy = 2;
-            this.updatePosition();
-        }
-    }
-
-    window.BouncingBall = BouncingBall;
-    
-    function resetBall() {
-        bouncingBall.reset();
-    }
-
-    window.addEventListener('resize', () => {
-        // Ball will automatically adjust to new boundaries on next collision
-    });
-
-    function initializeBall() {
-        console.log("Animation started")
-        const ballElement = document.getElementById('ball');
-        if (ballElement) {
-            const bouncingBall = new BouncingBall();
-            bouncingBall.start();
-            window.bouncingBallInstance = bouncingBall;
-        } else {
-            setTimeout(initializeBall, 100);
-        }
-    }
-    initializeBall();
-
-</script>

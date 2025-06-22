@@ -28,15 +28,15 @@ if (token && nickname) {
 const routes: Record<string, () => string> = {
   '/': () => {
 	/* Uncomment to make redirection work */
-    // if (localStorage.getItem('user')) {
-    //   new HomePage(currentLang);
-    //   return "";
-    // } else {
-    //   window.location.hash = '/login';
-    //   return "";
-    // }
-    new HomePage(currentLang);
-    return "";
+    if (localStorage.getItem('user')) {
+      new HomePage(currentLang);
+      return "";
+    } else {
+      window.location.hash = '/login';
+      return "";
+    }
+    // new HomePage(currentLang);
+    // return "";
   },
   '/identification': () => {
 	new IdentificationPage(currentLang);
