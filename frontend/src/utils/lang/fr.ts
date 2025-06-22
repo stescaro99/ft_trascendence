@@ -21,22 +21,25 @@ export default {
     profilepage: {
         "profile": "profil",
         "statistics": "Statistiques",
-        "name": "prénom",
-        "nickname": "surnom",
-        "lastname": "nom de famille",
+        "name": "Prénom",
+        "nickname": "Surnom",
+        "lastname": "Nom de famille",
+
+        "choose_lang": "Langue",
         
         "number_of_games": "Nombre de parties",
         "number_of_wins": "Nombre de victoires",
-        "number_of_losses": "Nombre de défaites",
+        "number_of_losses": "Nombre de defaites",
         "number_of_draws": "Nombre de matchs nuls",
         "number_of_points": "Nombre de points",
         "average_score": "Score moyen",
         "percentage_wins": "Pourcentage de victoires",
-        "percentage_losses": "Pourcentage de défaites",
+        "percentage_losses": "Pourcentage de defaites",
         "percentage_draws": "Pourcentage de matchs nuls"
     },
     game: {
         "player": "Joueur",
+        "players": "Joueurs",
         "choose_color": "choisir couleur",
         "start": "commencer",
         "add_bot": "ajouter bot",

@@ -9,7 +9,10 @@ import { GamePage } from './pages/game/game';
 
 console.log("Script caricato");
 
-let currentLang = 'fr';
+export let currentLang = 'it';
+export function setLang(lang: string) {
+  currentLang = lang;
+}
 
 const appDiv = document.getElementById('app')!;
 const params = new URLSearchParams(window.location.search);
@@ -25,15 +28,15 @@ if (token && nickname) {
 const routes: Record<string, () => string> = {
   '/': () => {
 	/* Uncomment to make redirection work */
-    if (localStorage.getItem('user')) {
-      new HomePage(currentLang);
-      return "";
-    } else {
-      window.location.hash = '/login';
-      return "";
-    }
-    // new HomePage(currentLang);
-    // return "";
+    // if (localStorage.getItem('user')) {
+    //   new HomePage(currentLang);
+    //   return "";
+    // } else {
+    //   window.location.hash = '/login';
+    //   return "";
+    // }
+    new HomePage(currentLang);
+    return "";
   },
   '/identification': () => {
 	new IdentificationPage(currentLang);
@@ -85,14 +88,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.addEventListener('hashchange', router);
 window.addEventListener('load', router);
-
-// if (render) {
-//   const content = render(); // This calls new HomePage() or new IdentificationPage()
-//   // Don't set innerHTML if content is empty (let the classes handle rendering)
-//   if (content) {
-//	 appDiv.innerHTML = content;
-//   }
-// } else {
-//   // Only set innerHTML for 404 pages
-//   appDiv.innerHTML = `<h1>404</h1><p>Pagina non trovata</p>`;
-// }

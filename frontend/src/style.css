@@ -102,6 +102,14 @@
   --shadow-lateral: 0 0 35px var(--primary);
 }
 
+[data-theme="cyan"] {
+  --primary: #0e7490;
+  --secondary: #22d3ee;
+  --hover: #06b6d4;
+  --shadow-glow: 0 0 20px var(--secondary);
+  --shadow-lateral: 0 0 35px var(--secondary);
+}
+
 body {
   overflow-x: hidden;
 }

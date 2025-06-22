@@ -88,4 +88,63 @@
     z-index: 1;
 }
 
+/* STARTING SCREEN */
+.starting-screen {
+    @apply w-screen h-screen z-9999;
+}
+
+.arcade-button {
+    position: relative;
+    background: linear-gradient(145deg, #ff4757, #c44569);
+    height: 300px;
+    width: 300px;
+    border: none;
+    border-radius: 50%;
+    padding: 40px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    cursor: pointer;
+    box-shadow: 
+        0 8px 0 #a5334a,
+        0 12px 20px rgba(0,0,0,0.4),
+        inset 0 4px 0 rgba(255,255,255,0.3),
+        inset 0 -4px 0 rgba(0,0,0,0.2);
+    transition: all 0.1s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    user-select: none;
+    transform: translateY(0);
+}
+
+.arcade-button:hover {
+    background: linear-gradient(145deg, #ff6b7a, #d63384);
+    transform: translateY(-2px);
+    box-shadow: 
+        0 10px 0 #a5334a,
+        0 15px 25px rgba(0,0,0,0.5),
+        inset 0 4px 0 rgba(255,255,255,0.4),
+        inset 0 -4px 0 rgba(0,0,0,0.2);
+}
+
+.arcade-button:active {
+    transform: translateY(6px);
+    box-shadow: 
+        0 2px 0 #a5334a,
+        0 4px 10px rgba(0,0,0,0.3),
+        inset 0 2px 0 rgba(255,255,255,0.2),
+        inset 0 -2px 0 rgba(0,0,0,0.3);
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 0 5px currentColor; }
+    50% { box-shadow: 0 0 20px currentColor, 0 0 30px currentColor; }
+    100% { box-shadow: 0 0 5px currentColor; }
+}
+
+.arcade-button.glow {
+    animation: glow 0.3s ease-in-out;
+}
+
 

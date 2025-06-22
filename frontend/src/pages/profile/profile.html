@@ -1,87 +1,98 @@
-<section id="profile" class="@container bg-body flex justify-center p-4 w-screen h-screen ps-20">
+<section id="profile" class="@container bg-body flex-col justify-center p-4 w-screen h-screen ps-20">
 
-    <div class="profile-div w-[50vw] h-full">
-        <h2 class="text-white arcade-font font-[500] text-5xl text-center pb-5">{{profilepage.profile}}</h1>
+    <div class="flex justify-center">
 
-        <div class="flex-col justify-items-center h-full text-white w-full">
-            <div class="py-6">
-                <img src="./src/utils/default.png" alt="" class="bg-c-400 h-[100px] w-full circle-image p-1" id="profile_image">
-            </div>
-
-            <div class="profile-container container-shadow">
-                <div class="profile-element">
-                    <p>{{profilepage.name}}:</p>
-                    <p id="profile_name"></p>
-                </div>
-
-                <div class="profile-element">
-                    <p>{{profilepage.nickname}}:</p>
-                    <p id="profile_nickname"></p>
-                </div>
-
-                <div class="profile-element">
-                    <p>{{profilepage.lastname}}:</p>
-                    <p id="profile_surname"></p>
-                </div>
-
-                <div class="profile-element">
-                    <p>Email:</p>
-                    <p id="profile_email"></p>
-                </div>
-            </div>
-        </div>
-    </div>
+        <div class="profile-div w-[50vw] h-full">
+            <h2 class="text-white arcade-font font-[500] text-5xl text-center pb-5">{{profilepage.profile}}</h1>
     
-    <div class="stats-div w-[50vw]">
-        <h2 class="text-white arcade-font font-[500] text-5xl text-center pb-5">{{profilepage.statistics}}</h1>
-       
-        <div class="stats-container container-shadow">
-            <div class="stats-element">
-                <p>{{profilepage.number_of_games}}</p>
-                <p id="number_of_games"></p>
-            </div>
-
-            <div class="stats-element">
-                <p>{{profilepage.number_of_wins}}</p>
-                <p id="number_of_wins"></p>
-            </div>
-
-            <div class="stats-element">
-                <p>{{profilepage.number_of_losses}}</p>
-                <p id="number_of_losses"></p>
-            </div>
-
-            <div class="stats-element">
-                <p>{{profilepage.number_of_draws}}</p>
-                <p id="number_of_draws"></p>
-            </div>
-
-            <div class="stats-element">
-                <p>{{profilepage.number_of_points}}</p>
-                <p id="number_of_points"></p>
-            </div>
-
-            <div class="stats-element">
-                <p>{{profilepage.average_score}}</p>
-                <p id="average_score"></p>
-            </div>
-
-            <div class="stats-element">
-                <p>{{profilepage.percentage_wins}}</p>
-                <p id="percentage_wins"></p>
-            </div>
-
-            <div class="stats-element">
-                <p>{{profilepage.percentage_losses}}</p>
-                <p id="percentage_losses"></p>
-            </div>
-
-            <div class="stats-element">
-                <p>{{profilepage.percentage_draws}}</p>
-                <p id="percentage_draws"></p>
+            <div class="flex-col justify-items-center h-full text-white w-full">
+                <div class="py-6">
+                    <img src="./src/utils/default.png" alt="" class="bg-c-400 h-[100px] w-full circle-image p-1" id="profile_image">
+                </div>
+    
+                <div class="profile-container container-shadow">
+                    <div class="profile-element">
+                        <p>{{profilepage.name}}:</p>
+                        <p id="profile_name"></p>
+                    </div>
+    
+                    <div class="profile-element">
+                        <p>{{profilepage.nickname}}:</p>
+                        <p id="profile_nickname"></p>
+                    </div>
+    
+                    <div class="profile-element">
+                        <p>{{profilepage.lastname}}:</p>
+                        <p id="profile_surname"></p>
+                    </div>
+    
+                    <div class="profile-element">
+                        <p>Email:</p>
+                        <p id="profile_email"></p>
+                    </div>
+                </div>
             </div>
         </div>
         
+        <div class="stats-div w-[50vw]">
+            <h2 class="text-white arcade-font font-[500] text-5xl text-center pb-5">{{profilepage.statistics}}</h1>
+           
+            <div class="stats-container container-shadow">
+                <div class="stats-element">
+                    <p>{{profilepage.number_of_games}}</p>
+                    <p id="number_of_games"></p>
+                </div>
+    
+                <div class="stats-element">
+                    <p>{{profilepage.number_of_wins}}</p>
+                    <p id="number_of_wins"></p>
+                </div>
+    
+                <div class="stats-element">
+                    <p>{{profilepage.number_of_losses}}</p>
+                    <p id="number_of_losses"></p>
+                </div>
+    
+                <div class="stats-element">
+                    <p>{{profilepage.number_of_draws}}</p>
+                    <p id="number_of_draws"></p>
+                </div>
+    
+                <div class="stats-element">
+                    <p>{{profilepage.number_of_points}}</p>
+                    <p id="number_of_points"></p>
+                </div>
+    
+                <div class="stats-element">
+                    <p>{{profilepage.average_score}}</p>
+                    <p id="average_score"></p>
+                </div>
+    
+                <div class="stats-element">
+                    <p>{{profilepage.percentage_wins}}</p>
+                    <p id="percentage_wins"></p>
+                </div>
+    
+                <div class="stats-element">
+                    <p>{{profilepage.percentage_losses}}</p>
+                    <p id="percentage_losses"></p>
+                </div>
+    
+                <div class="stats-element">
+                    <p>{{profilepage.percentage_draws}}</p>
+                    <p id="percentage_draws"></p>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <h2 class="text-white arcade-font font-[500] text-5xl text-center py-5">{{profilepage.choose_lang}}</h2>
+        
+    <div class="lang-container digital-font">
+        <button class="lang-btn" data-lang="it">🇮🇹 IT</button>
+        <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
+        <button class="lang-btn" data-lang="fr">🇫🇷 FR</button>
     </div>
 
 </section>
