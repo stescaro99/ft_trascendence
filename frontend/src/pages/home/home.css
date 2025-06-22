@@ -89,8 +89,15 @@
 }
 
 /* STARTING SCREEN */
+
 .starting-screen {
-    @apply w-screen h-screen z-9999;
+    @apply w-screen h-screen z-[9999] bg-body flex justify-center items-center 
+            fixed top-0 left-0
+            opacity-100 transition-opacity duration-1000 ease-out;
+}
+
+.starting-screen.fade-out {
+    @apply opacity-0 pointer-events-none;
 }
 
 .arcade-button {
