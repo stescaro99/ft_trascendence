@@ -23,6 +23,8 @@ export default {
         "name": "Nome",
         "nickname": "Soprannome",
         "lastname": "Cognome",
+
+        "choose_lang": "Lingua",
         
         "number_of_games": "Numero di partite",
         "number_of_wins": "Numero di vittorie",
@@ -36,6 +38,7 @@ export default {
     },
     game: {
         "player": "Giocatore",
+        "players": "Giocatori",
         "choose_color": "seleziona colore",
         "start": "inizia",
         "add_bot": "aggiungi bot",

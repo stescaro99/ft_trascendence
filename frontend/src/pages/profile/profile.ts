@@ -3,6 +3,7 @@ import { Stats } from '../../model/stats.model';
 import { User } from '../../model/user.model';
 import { TranslationService } from '../../service/translation.service';
 import './profile.css';
+import { setLang } from '../..';
 
 export class ProfilePage {
 	private stats: Stats;
@@ -46,6 +47,10 @@ export class ProfilePage {
 			const translation = new TranslationService(this.currentLang);
 			const translatedHtml = translation.translateTemplate(profileHtml);
 			
+			appDiv.innerHTML = translatedHtml;
+			
+			this.setNewLang()
+			
 			this.showValueProfile("name");
 			this.showValueProfile("nickname");
 			this.showValueProfile("surname");
@@ -61,7 +66,6 @@ export class ProfilePage {
 			this.showValueStats("percentage_losses")
 			this.showValueStats("percentage_draws")
 			
-			appDiv.innerHTML = translatedHtml;
 
 			setTimeout(() => {
 				const imgElement = document.getElementById('profile_image') as HTMLImageElement;
@@ -69,6 +73,20 @@ export class ProfilePage {
 			}, 0);
 
 		}
+	}
+
+	private setNewLang() {
+		const langBtns = document.querySelectorAll('[data-lang]');
+			langBtns.forEach((btn) => {
+				const lang = btn.getAttribute('data-lang');
+				if (lang) {
+					btn.addEventListener('click', () => {
+						setLang(lang);
+						this.currentLang = lang;
+						this.render();
+					})
+				}
+			})
 	}
 
 	private showValueStats(property: string) {

@@ -24,6 +24,8 @@ export default {
         "name": "Name",
         "nickname": "Nickname",
         "lastname": "Last Name",
+
+        "choose_lang": "Language",
         
         "number_of_games": "Games",
         "number_of_wins": "Wins",
@@ -37,6 +39,7 @@ export default {
     },
     game: {
         "player": "Player",
+        "players": "Players",
         "choose_color": "Choose Color",
         "start": "Start",
         "add_bot": "Add Bot",
