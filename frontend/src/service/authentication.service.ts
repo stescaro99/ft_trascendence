@@ -45,6 +45,7 @@ export class AuthenticationService {
 		if (!response.ok) {
 			throw new Error('Network response was not ok');
 		}
+		console.log('Response from loginUserToApi:', response);
 		return response.json();
 	}
 
