@@ -32,45 +32,47 @@ export class LogInPage{
 	handleSubmit() {
 		this.authenticationService.loginUserToApi(this.nickname, this.password)
 		.then((response) => {
-			console.log('Login successful:', response);
+		
 			this.authenticationService.takeQrCodeFromApi(this.nickname, this.password)
 			.then((qrResponse) => {
+				console.log('QR Code received:', qrResponse);
 				this.qrCode = qrResponse.qrCode;
-				const qrLabel = document.querySelector('label[for="qrCode"]');
-			if (qrLabel) { 
-			  qrLabel.innerHTML = `  <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
-			<img src="${this.qrCode}" alt="QR Code" style="width: 200px; height: 200px;" />
-			<div id="token2FA" style="display: flex; gap: 8px; justify-content: center;">
-				<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
-				<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
-				<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
-				-
-				<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
-				<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
-				<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
-			</div>
-				<button id="verify2FA" class="button">Verify</button>
-			</div>`;
-			}
-			const inputs = document.querySelectorAll('#token2FA input');
-			inputs.forEach((input, idx) => {
-				input.addEventListener('input', () => {
-					if ((input as HTMLInputElement).value.length === 1 && idx < inputs.length - 1) {
-						(inputs[idx + 1] as HTMLInputElement).focus();
-					}	
-				});
-			});
-			})
-			const verifyBtn = document.getElementById('verify2FA');
-			if (verifyBtn) {
-				verifyBtn.addEventListener('click', () => {
-					const inputs = document.querySelectorAll('#token2FA input');
-					let code = '';
-					inputs.forEach(input => {
-					code += (input as HTMLInputElement).value;
+				const qrDiv = document.getElementById('qrCode');
+				if (qrDiv) {
+				qrDiv.innerHTML = `
+					<div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+					<img src="${this.qrCode}" alt="QR Code" style="width: 200px; height: 200px;" />
+					<div id="token2FA" style="display: flex; gap: 8px; justify-content: center;">
+						<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
+						<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
+						<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
+						-
+						<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
+						<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
+						<input maxlength="1" type="text" class="bg-gray-200 rounded text-center text-black" style="width: 32px; height: 40px; font-size: 2rem;" />
+					</div>
+					<button id="verify2FA" class="button">Verify</button>
+					</div>
+				`;
+				}
+				const inputs = document.querySelectorAll('#token2FA input');
+				inputs.forEach((input, idx) => {
+					input.addEventListener('input', () => {
+						if ((input as HTMLInputElement).value.length === 1 && idx < inputs.length - 1) {
+							(inputs[idx + 1] as HTMLInputElement).focus();
+						}	
 					});
-					this.authenticationService.verifyQrCodeFromApi(this.nickname, code)
-					.then((verifyResponse) => {
+				});
+				const verifyBtn = document.getElementById('verify2FA');
+				if (verifyBtn) {
+					verifyBtn.addEventListener('click', () => {
+						const inputs = document.querySelectorAll('#token2FA input');
+						let code = '';
+						inputs.forEach(input => {
+							code += (input as HTMLInputElement).value;
+						});
+						this.authenticationService.verifyQrCodeFromApi(this.nickname, code)
+						.then((verifyResponse) => {
 						console.log('2FA verified successfully:', verifyResponse);
 						localStorage.setItem('user', JSON.stringify(verifyResponse.user));
 						window.location.hash = '#/';
@@ -82,6 +84,7 @@ export class LogInPage{
 				});
 			}
 		})
+	})
 		.catch((error) => {
 			console.error('Login failed:', error);
 			alert('Login failed. Please check your credentials and try again.');
