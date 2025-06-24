@@ -17,8 +17,8 @@ export class LogInPage{
 	constructor(lang: string) {
 		this.currentLang = lang;
 		this.render();
-		this.addEventListeners();
 		this.setTheme('green');
+		this.addEventListeners();
 	}
 	private render() {
 		const appDiv = document.getElementById('app');
@@ -75,7 +75,7 @@ export class LogInPage{
 						.then((verifyResponse) => {
 						console.log('2FA verified successfully:', verifyResponse);
 						localStorage.setItem('user', JSON.stringify(verifyResponse.user));
-						window.location.hash = '#/';
+						window.location.hash = '/';
 				})
 					.catch((verifyError) => {
 						console.error('Error verifying 2FA:', verifyError);
@@ -123,6 +123,14 @@ export class LogInPage{
 					console.error('Google login failed:', error);
 					alert('Google login failed. Please try again.');
 				});
+			});
+		}
+		const debugButton = document.getElementById('debugLogin');
+		if (debugButton) {
+			debugButton.addEventListener('click', () => {
+				localStorage.setItem('user', 'debug');
+				localStorage.setItem('nickname', 'fgori');
+				window.location.hash = '#/';
 			});
 		}
 	}

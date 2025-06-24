@@ -15,7 +15,7 @@ export class HomePage {
 
 	constructor(lang: string) {
 		this.currentLang = lang;
-		this.user = this.userService.getUser();
+
 
 		// if (this.user) {
 		// 	this.welcomeText = "Welcome back " + this.user.name;
