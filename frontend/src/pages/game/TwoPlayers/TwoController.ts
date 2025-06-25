@@ -160,27 +160,41 @@ const originalResetAfterPoint = (window as any).resetAfterPoint;
 };
 
 export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
+
   const { canvas, ctx } = getCanvasAndCtx();
+  
   // Crea stato di gioco solo la prima volta
   if (!(window as any).game || (window as any).game.canvas !== canvas) {
 	(window as any).game = createInitialGameState(canvas);
 	setupKeyboard((window as any).game);
 	predictedY = predictBallY((window as any).game.ball, (window as any).game.rightPaddle[0].x, canvas);
+
 	gameCreated = false;
 	currentGameId = null;
   }
   const game: GameState = (window as any).game;
+  console.log("Using game state:", game);
 
   // Crea partita su backend solo la prima volta
   if (!gameCreated)
   {
+	console.log("Creating game on backend...");
 	randomizePowerUp(game);
 	const players = [
 	  game.leftPaddle[0].nickname,
 	  game.rightPaddle[0].nickname
 	];
-	const res = await createGame(players);
-	currentGameId = res.id;
+	console.log("Players:", players);
+	
+	try {
+	  const res = await createGame(players);
+	  console.log("Game created on backend:", res);
+	  currentGameId = res.id;
+	} catch (error) {
+	  console.error("Failed to create game on backend:", error);
+	  // Continua il gioco anche se il backend non risponde
+	  currentGameId = null;
+	}
 	gameCreated = true;
   }
 
@@ -240,5 +254,6 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
 
   update(game);
   render(ctx, canvas, game, paddleColor1, paddleColor2);
+  console.log("Frame rendered, requesting next frame");
   requestAnimationFrame(() => TwoGameLoop(paddleColor1, paddleColor2));
 }
