@@ -101,6 +101,11 @@ const start = async (sequelize: any) => {
 			}
 		});
 
+		// Registra le route WebSocket
+		const websocketRoutes = require('./routes/websocketRoutes');
+		server.register(websocketRoutes.default, { prefix: '/ws' });
+
+
 		await sequelize.authenticate();
 		console.log('Database connection has been established successfully.');
 		console.log('Database synchronized successfully.');

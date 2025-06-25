@@ -102,9 +102,6 @@ export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
 				case 'image_url':
 					user.image_url = new_value;
 					break;
-				case 'active':
-					user.active = false;
-					break;
 				default:
 					reply.code(400).send({ error: 'Invalid field' });
 					return;
@@ -194,6 +191,36 @@ export async function addFriend(request: FastifyRequest, reply: FastifyReply) {
 	} catch (err) {
 		console.error(err);
 		return reply.code(500).send({ error: 'Internal server error' });
+	}
+}
+
+export async function getOnlineUsers(request: FastifyRequest, reply: FastifyReply) {
+	try {
+		const users = await User.findAll({
+			where: { online: true },
+			attributes: ['nickname', 'online', 'last_seen', 'current_room', 'image_url'],
+		});
+		reply.code(200).send({ online_users: users });
+	} catch (error) {
+		reply.code(500).send({ error: 'Failed to get online users', details: error });
+	}
+}
+
+export async function getUserWithOnlineStatus(request: FastifyRequest, reply: FastifyReply) {
+	const { nickname } = request.query as { nickname: string };
+	try {
+		const user = await User.findOne({
+			where: { nickname: nickname },
+			include: [{ model: Stats, as: 'stats' }],
+			attributes: { exclude: ['password', 'email'] }
+		});
+		if (user) {
+			reply.code(200).send(user);
+		} else {
+			reply.code(404).send({ error: 'User not found' });
+		}
+	} catch (error) {
+		reply.code(500).send({ error: 'Failed to get user', details: error });
 	}
 }
 

@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { addUser, deleteUser, getUser, updateUser, uploadImage, addFriend } from "../controllers/userController";
+import { addUser, deleteUser, getUser, updateUser, uploadImage, addFriend, getOnlineUsers, getUserWithOnlineStatus } from "../controllers/userController";
 import { userSchema } from "../schemas/userSchema";
 import { verifyJWT } from "../utils/jwt";
 
@@ -108,7 +108,7 @@ export default async function (server: FastifyInstance) {
 				},
 				404: {
 					type: 'object',
-					properties: {
+				properties: {
 						error: { type: 'string' }
 					}
 				}
@@ -159,5 +159,55 @@ export default async function (server: FastifyInstance) {
 			},
 			tags: ['User']
 		}
-	}, addFriend)
+	}, addFriend);
+
+	server.get('/online_users', {
+		preHandler: verifyJWT,
+		schema: {
+			response: {
+				200: {
+					type: 'object',
+					properties: {
+						online_users: {
+							type: 'array',
+							items: {
+								type: 'object',
+								properties: {
+									nickname: { type: 'string' },
+									online: { type: 'boolean' },
+									last_seen: { type: 'string', format: 'date-time' },
+									current_room: { type: 'string' },
+									image_url: { type: 'string' }
+								}
+							}
+						}
+					}
+				}
+			},
+			tags: ['User']
+		}
+	}, getOnlineUsers);
+
+	server.get('/get_user_with_status', {
+		preHandler: verifyJWT,
+		schema: {
+			querystring: {
+				type: 'object',
+				required: ['nickname'],
+				properties: {
+					nickname: { type: 'string' }
+				}
+			},
+			response: {
+				200: userSchema,
+				404: {
+					type: 'object',
+					properties: {
+						error: { type: 'string' }
+					}
+				}
+			},
+			tags: ['User']
+		}
+	}, getUserWithOnlineStatus);
 }
