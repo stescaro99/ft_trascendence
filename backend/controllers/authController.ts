@@ -135,7 +135,7 @@ export async function GoogleOAuthCallback(request: FastifyRequest, reply: Fastif
 		}
 		const jwtToken = createJWT({ id: user.id, nickname: user.nickname });
 
-		const frontendUrl = 'https://localhost:5173'; // Cambia con il tuo IP se serve (10.0.2.15)
+		const frontendUrl = 'https://localhost:5173';
 		return reply.redirect(`${frontendUrl}/?token=${jwtToken}&nickname=${encodeURIComponent(user.nickname)}`);
 	} catch (error) {
 		return reply.status(500).send({
