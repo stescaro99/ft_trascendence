@@ -41,6 +41,7 @@ export class HomePage {
 				window.location.hash = '/identification'; // o dove vuoi reindirizzare
 			});
 		}
+		this.addlisteners();
 	}
 
 	private addGlow(button: HTMLElement) {
@@ -50,6 +51,20 @@ export class HomePage {
             button.classList.remove('glow');
         }, 300);
     }
+	private addlisteners() {
+		const playButton = document.getElementById('playButton');
+		if (playButton) {
+			playButton.addEventListener('click', () => {
+				window.location.hash = '#/game?players=2'; // Reindirizza alla pagina del gioco con 2 giocatore
+			});
+		}
+		const playButton4 = document.getElementById('playButton4');
+		if (playButton4) {
+			playButton4.addEventListener('click', () => {
+				window.location.hash = '#/game?players=4'; // Reindirizza alla pagina del gioco con 4 giocatori
+			});
+		}
+	}
 
 	private btnGlow() {
 		const playButtons = document.querySelectorAll('.arcade-button');
