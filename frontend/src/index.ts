@@ -18,14 +18,50 @@ const appDiv = document.getElementById('app')!;
 const params = new URLSearchParams(window.location.search);
 const token = params.get('token');
 const nickname = params.get('nickname');
+const error = params.get('error');
 
-if (token && nickname) {
-  localStorage.setItem('user', JSON.stringify({ token }));
-  localStorage.setItem('nickname', nickname);
-  window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
-}
-
-const routes: Record<string, () => string> = {
+// Gestione errore di autenticazione Google
+if (error && window.opener) {
+  try {
+    window.opener.postMessage({
+      type: 'GOOGLE_AUTH_ERROR',
+      error: error
+    }, window.location.origin);
+    window.close();
+  } catch (postMessageError) {
+    console.error('Error sending error message to opener:', postMessageError);
+    window.close();
+  }
+} else if (token && nickname) {
+  // Se siamo in una finestra popup, invia i dati alla finestra principale
+  if (window.opener) {
+    try {
+      // Invia i dati di autenticazione alla finestra principale
+      window.opener.postMessage({
+        type: 'GOOGLE_AUTH_SUCCESS',
+        user: { token },
+        nickname: nickname
+      }, window.location.origin);
+      
+      // Chiudi la finestra popup
+      window.close();
+    } catch (error) {
+      console.error('Error sending message to opener:', error);
+      // Fallback: salva in localStorage e chiudi
+      localStorage.setItem('user', JSON.stringify({ token }));
+      localStorage.setItem('nickname', nickname);
+      window.close();
+    }
+  } else {
+    // Se non siamo in una popup, salva in localStorage e reindirizza
+    localStorage.setItem('user', JSON.stringify({ token }));
+    localStorage.setItem('nickname', nickname);
+    window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+    window.location.hash = '/';
+  }
+} else {
+  // Continua con il normale caricamento della pagina
+  const routes: Record<string, () => string> = {
   '/': () => {
 	/* Uncomment to make redirection work */
     if (localStorage.getItem('user')) {
@@ -88,3 +124,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.addEventListener('hashchange', router);
 window.addEventListener('load', router);
+}

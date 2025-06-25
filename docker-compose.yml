@@ -11,7 +11,6 @@ services:
     volumes:
       - ./backend/db:/app/db
       - ./backend/uploads:/app/uploads
-      - ./backend/cert:/app/dist/cert
     environment:
       - NODE_ENV=production
       - PORT=2807

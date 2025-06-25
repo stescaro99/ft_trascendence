@@ -30,6 +30,20 @@ export class LogInPage{
 	}
 
 	handleSubmit() {
+		// Cattura i valori direttamente dal form al momento del submit
+		const takeName = document.getElementById('username') as HTMLInputElement;
+		const takePassword = document.getElementById('password') as HTMLInputElement;
+		
+		this.nickname = takeName?.value || '';
+		this.password = takePassword?.value || '';
+		
+		console.log('Submit - Nickname:', this.nickname, 'Password:', this.password);
+		
+		if (!this.nickname || !this.password) {
+			alert('Please enter both nickname and password');
+			return;
+		}
+		
 		this.authenticationService.loginUserToApi(this.nickname, this.password)
 		.then((response) => {
 			console.log('Login successful:', response);
@@ -113,12 +127,13 @@ export class LogInPage{
 				this.authenticationService.loginUserWithGoogleToApi()
 				.then((response) => {
 					console.log('Google login successful:', response);
-					localStorage.setItem('user', JSON.stringify(response.user));
-					location.hash = '/';
+					// L'utente è già stato salvato nel localStorage dal popup
+					// Reindirizza alla home page
+					window.location.hash = '/';
 				})
 				.catch((error) => {
 					console.error('Google login failed:', error);
-					alert('Google login failed. Please try again.');
+					alert('Google login failed: ' + error.message);
 				});
 			});
 		}
