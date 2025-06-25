@@ -9,7 +9,6 @@ RUN npm install
 
 COPY . .
 
-# Genera i certificati in /app/cert
 RUN mkdir -p cert && \
     openssl req -x509 -newkey rsa:4096 -sha256 -days 365 \
     -nodes -keyout cert/key.pem -out cert/cert.pem \
