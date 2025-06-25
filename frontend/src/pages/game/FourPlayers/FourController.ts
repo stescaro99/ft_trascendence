@@ -235,8 +235,15 @@ export async function FourGameLoop(TeamLeft: string, TeamRight: string)
 	  game.rightPaddle[0].nickname,
 	  game.rightPaddle[1].nickname
 	];
-	const res = await createGame(players);
-	currentGameId = res.id;
+	
+	try {
+	  const res = await createGame(players);
+	  currentGameId = res.id;
+	} catch (error) {
+	  console.error("Failed to create game on backend:", error);
+	  // Continua il gioco anche se il backend non risponde
+	  currentGameId = null;
+	}
 	gameCreated = true;
   }
 

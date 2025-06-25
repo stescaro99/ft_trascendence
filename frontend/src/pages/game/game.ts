@@ -155,6 +155,7 @@ export class GamePage {
 	}
 
 	let countdown = 3;
+	console.log("Starting countdown for", x, "players");
 	const interval = setInterval(() => {
 	  ctx.clearRect(0, 0, canvas.width, canvas.height);
 	  ctx.fillStyle = "white";
@@ -165,9 +166,12 @@ export class GamePage {
 		ctx.fillText("GO!", canvas.width / 2, canvas.height / 2);
 	  if (countdown < 0) {
 		clearInterval(interval);
+		console.log("Starting game with", x, "players");
 		if (x === 2) {
+		  console.log("Calling TwoGameLoop");
 		  TwoGameLoop(this.Team1Color, this.Team2Color);
 		} else if (x === 4) {
+		  console.log("Calling FourGameLoop");
 		  FourGameLoop(this.Team1Color, this.Team2Color);
 		}
 	  }
