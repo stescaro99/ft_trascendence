@@ -63,7 +63,6 @@ class GameManager {
   private rooms: Map<string, GameRoom> = new Map();
   private waitingPlayers: Player[] = [];
 
-  // Crea una nuova stanza di gioco
   createRoom(type: 'two' | 'four' = 'two'): string {
     const roomId = this.generateRoomId();
     const room: GameRoom = {
@@ -78,7 +77,6 @@ class GameManager {
     return roomId;
   }
 
-  // Aggiungi un giocatore a una stanza
   addPlayerToRoom(roomId: string, player: Player): boolean {
     const room = this.rooms.get(roomId);
     if (!room || room.players.length >= room.maxPlayers) {
@@ -96,16 +94,13 @@ class GameManager {
     return true;
   }
 
-  // Trova una partita automaticamente
   findMatch(player: Player, gameType: 'two' | 'four' = 'two'): string | null {
-    // Cerca una stanza esistente con spazio
     for (const [roomId, room] of this.rooms) {
       if (room.type === gameType && 
           room.players.length < room.maxPlayers && 
           !room.isActive) {
         this.addPlayerToRoom(roomId, player);
         
-        // Se la stanza è piena, inizia la partita
         if (room.players.length === room.maxPlayers) {
           this.startGame(roomId);
         }
@@ -114,13 +109,11 @@ class GameManager {
       }
     }
 
-    // Crea una nuova stanza
     const roomId = this.createRoom(gameType);
     this.addPlayerToRoom(roomId, player);
     return roomId;
   }
 
-  // Rimuovi un giocatore da una stanza
   removePlayerFromRoom(roomId: string, playerId: string): void {
     const room = this.rooms.get(roomId);
     if (!room) return;
@@ -136,7 +129,6 @@ class GameManager {
         totalPlayers: room.players.length
       });
       
-      // Se la partita era attiva, mettila in pausa o termina
       if (room.isActive) {
         room.isActive = false;
         this.broadcastToRoom(roomId, {
@@ -147,7 +139,6 @@ class GameManager {
     }
   }
 
-  // Inizia una partita
   startGame(roomId: string): void {
     const room = this.rooms.get(roomId);
     if (!room || room.players.length !== room.maxPlayers) return;
@@ -155,7 +146,6 @@ class GameManager {
     room.isActive = true;
     room.gameState = this.createInitialGameState(room.type);
     
-    // Assegna i giocatori alle paddle
     this.assignPlayersToPositions(room);
 
     this.broadcastToRoom(roomId, {
@@ -163,11 +153,9 @@ class GameManager {
       gameState: room.gameState
     });
 
-    // Inizia il game loop
     this.startGameLoop(roomId);
   }
 
-  // Gestisci input del giocatore
   handlePlayerInput(roomId: string, playerId: string, input: any): void {
     const room = this.rooms.get(roomId);
     if (!room || !room.isActive) return;
@@ -175,11 +163,9 @@ class GameManager {
     const player = room.players.find(p => p.id === playerId);
     if (!player) return;
 
-    // Aggiorna il movimento della paddle in base all'input
     this.updatePaddleMovement(room, player, input);
   }
 
-  // Broadcast messaggio a tutti i giocatori in una stanza
   private broadcastToRoom(roomId: string, message: any): void {
     const room = this.rooms.get(roomId);
     if (!room) return;
@@ -192,12 +178,10 @@ class GameManager {
     });
   }
 
-  // Genera ID stanza univoco
   private generateRoomId(): string {
     return Math.random().toString(36).substring(2) + Date.now().toString(36);
   }
 
-  // Crea stato iniziale del gioco
   private createInitialGameState(type: 'two' | 'four'): GameState {
     const canvasWidth = 1200;
     const canvasHeight = 750;
@@ -251,7 +235,6 @@ class GameManager {
         nickname: ''
       }];
     } else {
-      // Per 4 giocatori, 2 paddle per lato
       baseState.leftPaddle = [
         {
           x: 30,
@@ -293,7 +276,6 @@ class GameManager {
     return baseState;
   }
 
-  // Assegna giocatori alle posizioni
   private assignPlayersToPositions(room: GameRoom): void {
     room.players.forEach((player, index) => {
       if (room.type === 'two') {
@@ -303,7 +285,6 @@ class GameManager {
           room.gameState.rightPaddle[0].nickname = player.nickname;
         }
       } else {
-        // Per 4 giocatori
         if (index < 2) {
           room.gameState.leftPaddle[index].nickname = player.nickname;
         } else {
@@ -313,20 +294,16 @@ class GameManager {
     });
   }
 
-  // Aggiorna movimento paddle
   private updatePaddleMovement(room: GameRoom, player: Player, input: any): void {
     const playerIndex = room.players.indexOf(player);
     
     if (room.type === 'two') {
       if (playerIndex === 0) {
-        // Giocatore sinistro
         room.gameState.leftPaddle[0].dy = input.direction * room.gameState.paddleSpeed;
       } else if (playerIndex === 1) {
-        // Giocatore destro
         room.gameState.rightPaddle[0].dy = input.direction * room.gameState.paddleSpeed;
       }
     } else {
-      // Per 4 giocatori
       if (playerIndex < 2) {
         room.gameState.leftPaddle[playerIndex].dy = input.direction * room.gameState.paddleSpeed;
       } else {
@@ -335,7 +312,6 @@ class GameManager {
     }
   }
 
-  // Game loop
   private startGameLoop(roomId: string): void {
     const room = this.rooms.get(roomId);
     if (!room || !room.isActive) return;
@@ -343,16 +319,13 @@ class GameManager {
     const gameLoop = () => {
       if (!room.isActive) return;
 
-      // Aggiorna lo stato del gioco (logica dal frontend)
       this.updateGameState(room.gameState);
 
-      // Broadcast dello stato aggiornato
       this.broadcastToRoom(roomId, {
         type: 'gameUpdate',
         gameState: room.gameState
       });
 
-      // Controlla se la partita è finita
       if (room.gameState.scoreLeft >= room.gameState.maxScore || 
           room.gameState.scoreRight >= room.gameState.maxScore) {
         room.isActive = false;
@@ -373,35 +346,27 @@ class GameManager {
     gameLoop();
   }
 
-  // Aggiorna stato del gioco (implementa la logica dal frontend)
   private updateGameState(gameState: GameState): void {
-    // Movimento della palla
     gameState.ball.x += gameState.ball.dx * gameState.ball.speed;
     gameState.ball.y += gameState.ball.dy * gameState.ball.speed;
 
-    // Aggiorna posizioni paddle
     gameState.leftPaddle.forEach(paddle => {
       paddle.y += paddle.dy;
-      // Limiti del campo
       paddle.y = Math.max(0, Math.min(750 - paddle.height, paddle.y));
     });
 
     gameState.rightPaddle.forEach(paddle => {
       paddle.y += paddle.dy;
-      // Limiti del campo
       paddle.y = Math.max(0, Math.min(750 - paddle.height, paddle.y));
     });
 
-    // Rimbalzi sui bordi superiore e inferiore
     if (gameState.ball.y <= gameState.ball.radius || 
         gameState.ball.y >= 750 - gameState.ball.radius) {
       gameState.ball.dy = -gameState.ball.dy;
     }
 
-    // Collision detection con le paddle (semplificata)
     this.checkPaddleCollisions(gameState);
 
-    // Reset se la palla esce dai lati
     if (gameState.ball.x <= 0) {
       gameState.scoreRight++;
       this.resetBall(gameState);
@@ -412,7 +377,6 @@ class GameManager {
   }
 
   private checkPaddleCollisions(gameState: GameState): void {
-    // Collision con paddle sinistre
     gameState.leftPaddle.forEach(paddle => {
       if (gameState.ball.x - gameState.ball.radius <= paddle.x + gameState.paddleWidth &&
           gameState.ball.x + gameState.ball.radius >= paddle.x &&
@@ -422,7 +386,6 @@ class GameManager {
       }
     });
 
-    // Collision con paddle destre
     gameState.rightPaddle.forEach(paddle => {
       if (gameState.ball.x + gameState.ball.radius >= paddle.x &&
           gameState.ball.x - gameState.ball.radius <= paddle.x + gameState.paddleWidth &&
@@ -440,12 +403,10 @@ class GameManager {
     gameState.ball.dy = Math.random() > 0.5 ? 5 : -5;
   }
 
-  // Ottieni info stanza
   getRoomInfo(roomId: string): GameRoom | null {
     return this.rooms.get(roomId) || null;
   }
 
-  // Lista stanze attive
   getActiveRooms(): GameRoom[] {
     return Array.from(this.rooms.values());
   }
