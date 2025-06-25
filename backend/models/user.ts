@@ -14,7 +14,9 @@ class User extends Model {
 	public setStats!: (stats: Stats[] | number[]) => Promise<void>;
 	public stats?: Stats[];
 	public tfa_code?: string;
-	public active!: boolean;
+	public online!: boolean;
+	public last_seen?: Date;
+	public current_room?: string;
 	public friends?: string[];
 	public fr_request?: string[];
 }
@@ -61,11 +63,6 @@ User.init(
 			type: DataTypes.STRING,
 			allowNull: true,
 		},
-		active: {
-			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			defaultValue: false,
-		},
 		friends: {
 			type: DataTypes.JSON,
 			allowNull: true,
@@ -75,6 +72,19 @@ User.init(
 			type: DataTypes.JSON,
 			allowNull: true,
 			defaultValue: [],
+		},
+		online: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			defaultValue: false,
+		},
+		last_seen: {
+			type: DataTypes.DATE,
+			allowNull: true,
+		},
+		current_room: {
+			type: DataTypes.STRING,
+			allowNull: true,
 		}
 	},
 	{

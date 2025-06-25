@@ -10,7 +10,9 @@ export const userSchema = {
 		//email: { type: 'string' },
 		language: { type: 'string' },
 		image_url: { type: 'string' },
-		active: { type: 'boolean' },
+		online: { type: 'boolean' },
+		last_seen: { type: 'string', format: 'date-time' },
+		current_room: { type: 'string' },
 		friends: {
 			type: 'array',
 			items: { type: 'string' }

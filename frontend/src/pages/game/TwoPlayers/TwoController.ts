@@ -14,7 +14,21 @@ function getCanvasAndCtx() {
 }
 
 function getPlayerNick(index: number, side: "left" | "right") {
-  return window.localStorage.getItem(`${side}Player${index + 1}`) || `${side === "left" ? "L" : "R"}${index + 1}`;
+  // Prova prima a prendere dall'utente loggato
+  const userStr = localStorage.getItem('user');
+  if (userStr) {
+    try {
+      const user = JSON.parse(userStr);
+      if (side === "left" && index === 0 && user.nickname) {
+        return user.nickname;
+      }
+    } catch (e) {
+      console.error('Error parsing user data:', e);
+    }
+  }
+  
+  return window.localStorage.getItem(`${side}Player${index + 1}`) || 
+         (side === "left" ? "Giocatore 1" : "Giocatore 2");
 }
 
 function createInitialGameState(canvas: HTMLCanvasElement): GameState {

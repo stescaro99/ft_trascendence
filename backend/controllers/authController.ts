@@ -56,7 +56,6 @@ export async function verify2FA(request: FastifyRequest, reply: FastifyReply) {
 		if (verified) {
 			const payload = { id: user.id, nickname: user.nickname };
 			const jwtToken = createJWT(payload);
-			user.active = true;
 			await user.save();
 			reply.code(200).send({ message: '2FA verified successfully, you are now logged in', token: jwtToken, user });
 		} else {
@@ -131,7 +130,6 @@ export async function GoogleOAuthCallback(request: FastifyRequest, reply: Fastif
 				nickname: userInfo.name || userInfo.email.split('@')[0],
 				email: userInfo.email,
 				image_url: userInfo.picture,
-				active: true,
 				tfa_code: null, // 2FA not set up for OAuth users
 			});
 		}
