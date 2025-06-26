@@ -32,7 +32,7 @@ export class LogInPage{
 	handleSubmit() {
 		this.authenticationService.loginUserToApi(this.nickname, this.password)
 		.then((response) => {
-		
+			console.log('Login successful:', response);
 			this.authenticationService.takeQrCodeFromApi(this.nickname, this.password)
 			.then((qrResponse) => {
 				console.log('QR Code received:', qrResponse);
@@ -75,6 +75,7 @@ export class LogInPage{
 						.then((verifyResponse) => {
 						console.log('2FA verified successfully:', verifyResponse);
 						localStorage.setItem('user', JSON.stringify(verifyResponse.user));
+						localStorage.setItem('nickname', this.nickname);
 						window.location.hash = '/';
 				})
 					.catch((verifyError) => {

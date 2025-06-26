@@ -14,7 +14,8 @@ function getCanvasAndCtx() {
 }
 
 function getPlayerNick(index: number, side: "left" | "right") {
-  return window.localStorage.getItem(`${side}Player${index + 1}`) || `${side === "left" ? "L" : "R"}${index + 1}`;
+  return window.localStorage.getItem(`${side}Player${index + 1}`) || 
+         (side === "left" ? "Giocatore 1" : "Giocatore 2");
 }
 
 function createInitialGameState(canvas: HTMLCanvasElement): GameState {
@@ -105,7 +106,7 @@ function updatePaddleMovement(game: GameState)
 	game.leftPaddle[0].dy = 0;
   }
 
-  if (!getBotActive(1)) {
+  if (!getBotActive(0)) {
 	if (keys["ArrowUp"] && keys["ArrowDown"]) {
 	  game.rightPaddle[0].dy = 0;
 	} else if (keys["ArrowUp"]) {
@@ -135,13 +136,6 @@ let predictedY: number | null = null;
 let currentGameId: number | null = null;
 let gameCreated = false;
 
-// Funzione da chiamare ogni volta che una squadra segna
-async function updateScoreOnBackend() {
-  if (!currentGameId) return;
-  await updateGameField(currentGameId, "1_scores", (window as any).game.scoreLeft.toString());
-  await updateGameField(currentGameId, "2_scores", (window as any).game.scoreRight.toString());
-}
-
 // Sovrascrivi la funzione resetAfterPoint (o chiamala dove aggiorni i punteggi)
 const originalResetAfterPoint = (window as any).resetAfterPoint;
 (window as any).resetAfterPoint = async function(x: number, game: GameState) {
@@ -160,25 +154,21 @@ const originalResetAfterPoint = (window as any).resetAfterPoint;
 };
 
 export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
-
   const { canvas, ctx } = getCanvasAndCtx();
-  
   // Crea stato di gioco solo la prima volta
+  
   if (!(window as any).game || (window as any).game.canvas !== canvas) {
 	(window as any).game = createInitialGameState(canvas);
 	setupKeyboard((window as any).game);
 	predictedY = predictBallY((window as any).game.ball, (window as any).game.rightPaddle[0].x, canvas);
-
 	gameCreated = false;
 	currentGameId = null;
   }
   const game: GameState = (window as any).game;
-  console.log("Using game state:", game);
 
   // Crea partita su backend solo la prima volta
   if (!gameCreated)
   {
-	console.log("Creating game on backend...");
 	randomizePowerUp(game);
 	const players = [
 	  game.leftPaddle[0].nickname,
@@ -187,9 +177,8 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
 	console.log("Players:", players);
 	
 	try {
-	  const res = await createGame(players);
-	  console.log("Game created on backend:", res);
-	  currentGameId = res.id;
+	const res = await createGame(players);
+	currentGameId = res.id;
 	} catch (error) {
 	  console.error("Failed to create game on backend:", error);
 	  // Continua il gioco anche se il backend non risponde
@@ -254,6 +243,5 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
 
   update(game);
   render(ctx, canvas, game, paddleColor1, paddleColor2);
-  console.log("Frame rendered, requesting next frame");
   requestAnimationFrame(() => TwoGameLoop(paddleColor1, paddleColor2));
 }
