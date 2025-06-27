@@ -5,6 +5,8 @@ import { createJWT } from '../utils/jwt';
 import speakeasy from 'speakeasy';
 import qrcode from 'qrcode';
 import jwt from 'jsonwebtoken';
+import { gameManager } from '../services/gameManager';
+import { notifyUserStatusChange } from './websocketController';
 
 export async function generate2FA(request: FastifyRequest, reply: FastifyReply) {
 	const { nickname, password } = request.body as { nickname?: string; password?: string };
@@ -141,6 +143,35 @@ export async function GoogleOAuthCallback(request: FastifyRequest, reply: Fastif
 		return reply.status(500).send({
 			error: 'Google OAuth failed',
 			details: error instanceof Error ? { message: error.message, stack: error.stack } : error
+		});
+	}
+}
+
+export async function logout(request: FastifyRequest, reply: FastifyReply) {
+	try {
+		const user = (request as any).user;
+		if (!user || !user.nickname) {
+			return reply.code(400).send({ error: 'Invalid user data' });
+		}
+		gameManager.disconnectUserFromAllRooms(user.nickname);
+		const dbUser = await (User as any).findOne({ where: { nickname: user.nickname } });
+		if (dbUser) {
+			dbUser.online = false;
+			dbUser.last_seen = new Date();
+			dbUser.current_room = null;
+			await dbUser.save();
+		}
+		notifyUserStatusChange(user.nickname, false);
+		console.log(`User ${user.nickname} logged out successfully`);
+		reply.code(200).send({ 
+			message: 'Logout successful',
+			timestamp: new Date().toISOString()
+		});
+	} catch (error) {
+		console.error('Logout error:', error);
+		reply.code(500).send({ 
+			error: 'Failed to logout', 
+			details: error instanceof Error ? error.message : 'Unknown error'
 		});
 	}
 }

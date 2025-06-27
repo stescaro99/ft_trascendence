@@ -406,6 +406,22 @@ class GameManager {
   getRoomInfo(roomId: string): GameRoom | null {
     return this.rooms.get(roomId) || null;
   }
+  disconnectUserFromAllRooms(nickname: string): void {
+    const roomsToUpdate: string[] = [];
+    for (const [roomId, room] of this.rooms) {
+      const playerIndex = room.players.findIndex(p => p.nickname === nickname);
+      if (playerIndex !== -1) {
+        const player = room.players[playerIndex];
+        roomsToUpdate.push(roomId);
+        if (player.socket.readyState === 1) {
+          player.socket.close(1000, 'User logged out');
+        }
+        this.removePlayerFromRoom(roomId, player.id);
+      }
+    }
+    
+    console.log(`User ${nickname} disconnected from ${roomsToUpdate.length} rooms due to logout`);
+  }
 
   getActiveRooms(): GameRoom[] {
     return Array.from(this.rooms.values());
