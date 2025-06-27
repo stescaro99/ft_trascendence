@@ -246,6 +246,25 @@ async function updateUserCurrentRoom(nickname: string, roomId: string | null): P
   }
 }
 
+export function notifyUserStatusChange(nickname: string, online: boolean): void {
+  const activeRooms = gameManager.getActiveRooms();
+  
+  activeRooms.forEach(room => {
+    room.players.forEach(player => {
+      if (player.socket.readyState === 1) {
+        sendToPlayer(player, {
+          type: 'userStatusChanged',
+          nickname: nickname,
+          online: online,
+          timestamp: new Date().toISOString()
+        });
+      }
+    });
+  });
+  
+  console.log(`Notified all connected users about ${nickname} going ${online ? 'online' : 'offline'}`);
+}
+
 function sendToPlayer(player: Player, message: any) {
   if (player.socket.readyState === 1) {
     player.socket.send(JSON.stringify(message));
