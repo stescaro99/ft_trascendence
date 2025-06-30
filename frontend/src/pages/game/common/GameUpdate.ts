@@ -275,8 +275,6 @@ function resetAfterPoint(x: number, game: GameState)
 	game.ball.dy = 5;
 	game.waitingForStart = false;
   }, 1000);
-
-  game.ball.dx *= -1;
 }
 
 export function randomizePowerUp(game: GameState)

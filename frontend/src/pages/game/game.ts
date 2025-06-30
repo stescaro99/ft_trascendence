@@ -1,75 +1,82 @@
 import gameTwoHtml from './game_two.html?raw';
 import gameFourHtml from './game_four.html?raw';
 import './game.css'
+import { Lobby } from '../../model/lobby.model';
 import { TwoGameLoop } from "./TwoPlayers/TwoController";
 import { FourGameLoop } from "./FourPlayers/FourController";
 import { setBotActive, getBotActive } from "./common/BotState";
 import { TranslationService } from '../../service/translation.service';
+import { User } from '../../model/user.model';
+import { UserService } from '../../service/user.service';
 
 export class GamePage {
 	private currentLang: string;
-   Team1Color = "#ffffff";
-  Team2Color = "#ffffff";
-  colors = ["#ff0000", "#00ff00", "#ffff00", "#800080", "#007bff", "#ffffff"];
-
-  constructor(lang: string) {
-	this.currentLang = lang;
-	this.render();
+	userService: UserService = new UserService();
+	lobby?: Lobby;
+	user : User = this.userService.getUser() || new User();
+	Team1Color = "#ffffff";
+	Team2Color = "#ffffff";
+	colors = ["#ff0000", "#00ff00", "#ffff00", "#800080", "#007bff", "#ffffff"];
+	
+	constructor(lang: string) {
+		this.currentLang = lang;
+		this.render();
+		console.log ("Rendering GamePage for user:", this.user.nickname);
   }
   
-  render() {
+	render() {
 
-	const params = new URLSearchParams(window.location.hash.split('?')[1]);
-	const players = params.get('players');
-	const container = document.getElementById('app');
-	console.log("Rendering GamePage with players:", players);
-	if (!container) 
-	  return;
-	if (players === '4') {
-		const translation = new TranslationService(this.currentLang);
-		const translatedHtml = translation.translateTemplate(gameFourHtml);
-		container.innerHTML = translatedHtml;
-	  } else {
-		const translation = new TranslationService(this.currentLang);
-		const translatedHtml = translation.translateTemplate(gameTwoHtml);
-		container.innerHTML = translatedHtml;
-	  }
+		const params = new URLSearchParams(window.location.hash.split('?')[1]);
+		const players = params.get('players');
+		const container = document.getElementById('app');
+		console.log("Rendering GamePage with players:", players);
+		if (!container) 
+		  return;
+		if (players === '4') {
+			const translation = new TranslationService(this.currentLang);
+			const translatedHtml = translation.translateTemplate(gameFourHtml);
+			container.innerHTML = translatedHtml;
+		} else {
+			const translation = new TranslationService(this.currentLang);
+			const translatedHtml = translation.translateTemplate(gameTwoHtml);
+			container.innerHTML = translatedHtml;
+		}
 
-  const screen = container.querySelector('.screen');
-	if (screen) screen.classList.add('visible');
+  		const screen = container.querySelector('.screen');
+		if (screen) screen.classList.add('visible');
 
-	// Palette colori
-	const preview1 = document.getElementById("Preview1") as HTMLDivElement;
-	const preview2 = document.getElementById("Preview2") as HTMLDivElement;
-	const preview3 = document.getElementById("Preview3") as HTMLDivElement;
-	const preview4 = document.getElementById("Preview4") as HTMLDivElement;
+		// Palette colori
+		const preview1 = document.getElementById("Preview1") as HTMLDivElement;
+		const preview2 = document.getElementById("Preview2") as HTMLDivElement;
+		const preview3 = document.getElementById("Preview3") as HTMLDivElement;
+		const preview4 = document.getElementById("Preview4") as HTMLDivElement;
 
-	const paletteContainers = container.querySelectorAll(".palette");
-	paletteContainers.forEach((palette) => {
-	  palette.innerHTML = "";
-	  const player = (palette as HTMLElement).dataset.player!;
-	  this.colors.forEach((color) => {
-		const btn = document.createElement("button");
-		btn.style.backgroundColor = color;
-		btn.setAttribute("data-color", color);
-		btn.addEventListener("click", () => {
-		  if (player === "1" || player === "3") {
-			this.Team1Color = color;
-			if (preview1) preview1.style.backgroundColor = color;
-			if (preview3) preview3.style.backgroundColor = color;
-		  } else {
-			this.Team2Color = color;
-			if (preview2) preview2.style.backgroundColor = color;
-			if (preview4) preview4.style.backgroundColor = color;
-		  }
-		  (palette as HTMLElement)
-			.querySelectorAll("button")
-			.forEach((b) => b.classList.remove("selected"));
-		  btn.classList.add("selected");
+		const paletteContainers = container.querySelectorAll(".palette");
+		paletteContainers.forEach((palette) => {
+		  palette.innerHTML = "";
+		  const player = (palette as HTMLElement).dataset.player!;
+		  this.colors.forEach((color) => {
+			const btn = document.createElement("button");
+			btn.style.backgroundColor = color;
+			btn.setAttribute("data-color", color);
+			btn.addEventListener("click", () => {
+			  if (player === "1" || player === "3") {
+				this.Team1Color = color;
+				if (preview1) preview1.style.backgroundColor = color;
+				if (preview3) preview3.style.backgroundColor = color;
+			  } else {
+				this.Team2Color = color;
+				if (preview2) preview2.style.backgroundColor = color;
+				if (preview4) preview4.style.backgroundColor = color;
+			  }
+			  (palette as HTMLElement)
+				.querySelectorAll("button")
+				.forEach((b) => b.classList.remove("selected"));
+			  btn.classList.add("selected");
+			});
+			palette.appendChild(btn);
+		  });
 		});
-		palette.appendChild(btn);
-	  });
-	});
 
 	// Bot buttons
 	for (let i = 0; i < 4; i++) {
