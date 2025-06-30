@@ -80,8 +80,8 @@ III.4 Preoccupazioni sulla sicurezza
 Per creare un sito web funzionale, ci sono diverse preoccupazioni sulla sicurezza che devi affrontare:
 
 • Qualsiasi password memorizzata nel tuo database, se applicabile, deve essere hashata.
-• Il tuo sito web deve essere protetto contro attacchi SQL injection/XSS.   ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
-• Se hai un backend o altre funzionalità, è obbligatorio abilitare una connessione HTTPS per tutti gli aspetti (usa wss invece di ws, ad esempio). ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️v
+• Il tuo sito web deve essere protetto contro attacchi SQL injection/XSS.
+• Se hai un backend o altre funzionalità, è obbligatorio abilitare una connessione HTTPS per tutti gli aspetti (usa wss invece di ws, ad esempio). 
 • Devi implementare meccanismi di validazione per i form e qualsiasi input utente, sia sulla pagina base se non viene utilizzato un backend, sia lato server se viene impiegato un backend.
 • Indipendentemente dal fatto che tu scelga di implementare il modulo di sicurezza JWT con 2FA, è essenziale dare priorità alla sicurezza del tuo sito web. Ad esempio, se scegli di creare un'API, assicurati che le tue route siano protette. Anche se decidi di non utilizzare i token JWT, la sicurezza del sito rimane fondamentale.
 
