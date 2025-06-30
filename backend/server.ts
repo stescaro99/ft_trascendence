@@ -120,7 +120,6 @@ const start = async (sequelize: any) => {
 		console.log('Database synchronized successfully.');
 		await server.listen({ port: 2807, host: '0.0.0.0' });
 		console.log('Server is running on https://localhost:2807');
-		console.log('Swagger UI is available at https://localhost:2807/swagger');
 	} catch (err) {
 		server.log.error(err);
 		process.exit(1);
