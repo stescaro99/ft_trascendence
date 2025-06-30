@@ -21,6 +21,7 @@ export class GamePage {
 	constructor(lang: string) {
 		this.currentLang = lang;
 		this.render();
+		this.setTheme('game');
 		console.log ("Rendering GamePage for user:", this.user.nickname);
   }
   
@@ -262,5 +263,11 @@ export class GamePage {
 	  if (player2Name) player2Name.textContent = getBotActive(1) ? "Team 1 - BOT" : "Team 1 - Player 2";
 	  if (player3Name) player3Name.textContent = getBotActive(2) ? "Team 2 - BOT" : "Team 2 - Player 1";
 	  if (player4Name) player4Name.textContent = getBotActive(3) ? "Team 2 - BOT" : "Team 2 - Player 2";
+	}
+
+	private setTheme(theme: string) {
+		const element = document.querySelector('[data-theme]') as HTMLElement;
+
+		element.dataset.theme = theme;
 	}
 }
