@@ -406,6 +406,7 @@ class GameManager {
   getRoomInfo(roomId: string): GameRoom | null {
     return this.rooms.get(roomId) || null;
   }
+  
   disconnectUserFromAllRooms(nickname: string): void {
     const roomsToUpdate: string[] = [];
     for (const [roomId, room] of this.rooms) {
