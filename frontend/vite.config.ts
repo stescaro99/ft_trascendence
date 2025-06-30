@@ -15,8 +15,16 @@ export default defineConfig({
             cert: fs.readFileSync(path.resolve(__dirname, 'cert/cert.pem')),
         },
         hmr: {
+            port: 5173,
             host: hmrHost,
             protocol: 'wss',
         },
+        proxy: {
+        '/api': {
+            target: 'https://backend:2807',
+            changeOrigin: true,
+            secure: false
+        }
+    }
     },
 });
