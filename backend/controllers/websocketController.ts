@@ -29,22 +29,18 @@ export async function handleWebSocketConnection(connection: any, req: FastifyReq
   };
 
   console.log(`Player ${player.id} connected with nickname: ${player.nickname}`);
-
   connection.socket.send(JSON.stringify({
     type: 'connected',
     playerId: player.id,
     nickname: player.nickname,
     message: 'Connected to game server'
   }));
-
   connection.socket.on('message', (message: any) => {
     handlePlayerMessage(player, message);
   });
-
   connection.socket.on('close', async () => {
     await handlePlayerDisconnection(player, authenticatedUser);
   });
-
   connection.socket.on('error', (error: any) => {
     console.error(`WebSocket error for player ${player.id}:`, error);
   });
@@ -190,7 +186,6 @@ function handleGetRoomInfo(player: Player, data: any) {
 
 function handleLeaveRoom(player: Player, data: any) {
   gameManager.removePlayerFromRoom(data.roomId, player.id);
-  
   if (player.nickname) {
     updateUserCurrentRoom(player.nickname, null).catch(console.error);
   }
@@ -203,7 +198,6 @@ function handleLeaveRoom(player: Player, data: any) {
 
 async function handlePlayerDisconnection(player: Player, authenticatedUser?: any) {
   console.log(`Player ${player.id} (${player.nickname}) disconnected`);
-  
   if (authenticatedUser?.nickname) {
     await updateUserOnlineStatus(authenticatedUser.nickname, false);
     await updateUserCurrentRoom(authenticatedUser.nickname, null);
@@ -257,7 +251,6 @@ export function notifyUserStatusChange(nickname: string, online: boolean): void 
       }
     });
   });
-  
   console.log(`Notified all connected users about ${nickname} going ${online ? 'online' : 'offline'}`);
 }
 
@@ -271,7 +264,6 @@ function handlePlayerInputWithValidation(player: Player, data: any) {
   if (!data.input.timestamp) {
     data.input.timestamp = Date.now();
   }
-  
   gameManager.handlePlayerInput(data.roomId, player.id, data.input);
 }
 

@@ -40,7 +40,15 @@ server.register(fastifyCookie);
 const start = async (sequelize: any) => {
 	try {
 		await server.register(fastifyCors, {
-			origin: true,
+			origin: [
+				'https://localhost:5173',
+				'http://localhost:5173',
+				'https://localhost:3000',
+				'http://localhost:3000',
+				/^https?:\/\/10\.\d+\.\d+\.\d+:\d+$/,        // IP 10.x.x.x (rete privata classe A)
+				/^https?:\/\/192\.168\.\d+\.\d+:\d+$/,       // IP 192.168.x.x (rete privata classe C)
+				/^https?:\/\/172\.(1[6-9]|2\d|3[01])\.\d+\.\d+:\d+$/, // IP 172.16-31.x.x (rete privata classe B)
+			],
 			credentials: true,
 			methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 		});
