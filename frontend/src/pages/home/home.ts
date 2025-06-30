@@ -12,6 +12,7 @@ export class HomePage {
 	private currentLang: string;
 	private homeScreen: HomeScreen;
 	private welcomeText: string = "Ready to play!";
+	onlineStatus: boolean = false;
 
 	constructor(lang: string) {
 		this.currentLang = lang;
@@ -55,13 +56,50 @@ export class HomePage {
 		const playButton = document.getElementById('playButton');
 		if (playButton) {
 			playButton.addEventListener('click', () => {
-				window.location.hash = '#/game?players=2'; // Reindirizza alla pagina del gioco con 2 giocatore
+				window.location.hash = `#/game?players=2&online=${this.onlineStatus}`; // Reindirizza alla pagina del gioco con 2 giocatori e status online
 			});
 		}
 		const playButton4 = document.getElementById('playButton4');
 		if (playButton4) {
 			playButton4.addEventListener('click', () => {
-				window.location.hash = '#/game?players=4'; // Reindirizza alla pagina del gioco con 4 giocatori
+				window.location.hash = `#/game?players=4&online=${this.onlineStatus}`; // Reindirizza alla pagina del gioco con 4 giocatori e status online
+			});
+		}
+		const onlineButton = document.getElementById('onlineButton');
+		if (onlineButton) { 
+			onlineButton.addEventListener('click', () => {
+				this.onlineStatus = !this.onlineStatus;
+				const playButton = document.getElementById('playButton');
+				const playButton4 = document.getElementById('playButton4');
+				
+				if (this.onlineStatus) {
+					onlineButton.textContent = 'Online';
+					console.log('Online mode activated', this.onlineStatus);
+					
+					// Cambia colori dei bottoni in modalità online (verde)
+					if (playButton) {
+						(playButton as HTMLElement).style.background = 'linear-gradient(145deg, #22c55e, #16a34a)';
+						(playButton as HTMLElement).style.boxShadow = '0 8px 0 #15803d, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2)';
+					}
+					if (playButton4) {
+						(playButton4 as HTMLElement).style.background = 'linear-gradient(145deg, #22c55e, #16a34a)';
+						(playButton4 as HTMLElement).style.boxShadow = '0 8px 0 #15803d, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2)';
+					}
+				}
+				else {
+					onlineButton.textContent = 'Offline';
+					console.log('Offline mode activated', this.onlineStatus);
+					
+					// Ripristina colori originali dei bottoni (rosso)
+					if (playButton) {
+						(playButton as HTMLElement).style.background = 'linear-gradient(145deg, #ff4757, #c44569)';
+						(playButton as HTMLElement).style.boxShadow = '0 8px 0 #a5334a, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2)';
+					}
+					if (playButton4) {
+						(playButton4 as HTMLElement).style.background = 'linear-gradient(145deg, #ff4757, #c44569)';
+						(playButton4 as HTMLElement).style.boxShadow = '0 8px 0 #a5334a, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2)';
+					}
+				}
 			});
 		}
 	}
