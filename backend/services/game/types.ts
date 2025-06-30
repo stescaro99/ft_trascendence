@@ -1,0 +1,86 @@
+import { WebSocket } from 'ws';
+
+export interface Player {
+  id: string;
+  nickname: string;
+  socket: WebSocket;
+  ready: boolean;
+}
+
+export interface GameRoom {
+  id: string;
+  players: Player[];
+  gameState: GameState;
+  isActive: boolean;
+  maxPlayers: number;
+  type: 'two' | 'four';
+}
+
+export interface GameState {
+  ball: {
+    x: number;
+    y: number;
+    dx: number;
+    dy: number;
+    radius: number;
+    speed: number;
+  };
+  leftPaddle: Array<{
+    x: number;
+    y: number;
+    dy: number;
+    speed: number;
+    height: number;
+    nickname: string;
+  }>;
+  rightPaddle: Array<{
+    x: number;
+    y: number;
+    dy: number;
+    speed: number;
+    height: number;
+    nickname: string;
+  }>;
+  powerUp: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    active: boolean;
+    type: string;
+    color: string;
+  };
+  scoreLeft: number;
+  scoreRight: number;
+  paddleHeight: number;
+  paddleWidth: number;
+  waitingForStart: boolean;
+  maxScore: number;
+  paddleSpeed: number;
+}
+
+export interface GameConstants {
+  CANVAS_WIDTH: number;
+  CANVAS_HEIGHT: number;
+  PADDLE_WIDTH: number;
+  BALL_RADIUS: number;
+  TARGET_FPS: number;
+  MAX_BALL_SPEED: number;
+  SPEED_INCREASE_FACTOR: number;
+  INPUT_RATE_LIMIT: number;
+  HEARTBEAT_INTERVAL: number;
+  HEARTBEAT_TIMEOUT: number;
+}
+
+export const GAME_CONSTANTS: GameConstants = {
+  CANVAS_WIDTH: 1200,
+  CANVAS_HEIGHT: 750,
+  PADDLE_WIDTH: 10,
+  BALL_RADIUS: 10,
+  TARGET_FPS: 60,
+  MAX_BALL_SPEED: 12,
+  SPEED_INCREASE_FACTOR: 1.02,
+  INPUT_RATE_LIMIT: 16,
+  HEARTBEAT_INTERVAL: 5000,
+  HEARTBEAT_TIMEOUT: 15000
+};

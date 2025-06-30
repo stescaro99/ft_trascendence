@@ -54,39 +54,38 @@ function handlePlayerMessage(player: Player, message: any) {
   try {
     const data = JSON.parse(message.toString());
     
+    gameManager.updatePlayerHeartbeat(player.id);
     switch (data.type) {
       case 'setNickname':
         handleSetNickname(player, data);
         break;
-
       case 'joinRoom':
         handleJoinRoom(player, data);
         break;
-
       case 'findMatch':
         handleFindMatch(player, data);
         break;
-
       case 'createRoom':
         handleCreateRoom(player, data);
         break;
-
       case 'playerInput':
-        handlePlayerInput(player, data);
+        handlePlayerInputWithValidation(player, data);
         break;
-
       case 'playerReady':
         handlePlayerReady(player, data);
         break;
-
       case 'getRoomInfo':
         handleGetRoomInfo(player, data);
         break;
-
       case 'leaveRoom':
         handleLeaveRoom(player, data);
         break;
-
+      case 'ping':
+        handlePing(player, data);
+        break;
+      case 'requestSync':
+        handleRequestSync(player, data);
+        break;
       default:
         console.log('Unknown message type:', data.type);
         sendToPlayer(player, {
@@ -118,7 +117,6 @@ function handleJoinRoom(player: Player, data: any) {
   if (player.nickname && success) {
     updateUserCurrentRoom(player.nickname, data.roomId).catch(console.error);
   }
-  
   sendToPlayer(player, {
     type: 'joinResult',
     success,
@@ -141,7 +139,6 @@ function handleCreateRoom(player: Player, data: any) {
   if (player.nickname) {
     updateUserCurrentRoom(player.nickname, newRoomId).catch(console.error);
   }
-  
   sendToPlayer(player, {
     type: 'roomCreated',
     roomId: newRoomId
@@ -166,7 +163,6 @@ function handlePlayerReady(player: Player, data: any) {
         });
       }
     });
-
     const allReady = room.players.every(p => p.ready);
     if (allReady && room.players.length === room.maxPlayers && !room.isActive) {
       gameManager.startGame(data.roomId);
@@ -269,4 +265,24 @@ function sendToPlayer(player: Player, message: any) {
   if (player.socket.readyState === 1) {
     player.socket.send(JSON.stringify(message));
   }
+}
+
+function handlePlayerInputWithValidation(player: Player, data: any) {
+  if (!data.input.timestamp) {
+    data.input.timestamp = Date.now();
+  }
+  
+  gameManager.handlePlayerInput(data.roomId, player.id, data.input);
+}
+
+function handlePing(player: Player, data: any) {
+  sendToPlayer(player, {
+    type: 'pong',
+    timestamp: data.timestamp,
+    serverTime: Date.now()
+  });
+}
+
+function handleRequestSync(player: Player, data: any) {
+  gameManager.syncClientState(data.roomId, player.id);
 }
