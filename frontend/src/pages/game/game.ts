@@ -6,11 +6,15 @@ import { TwoGameLoop } from "./TwoPlayers/TwoController";
 import { FourGameLoop } from "./FourPlayers/FourController";
 import { setBotActive, getBotActive } from "./common/BotState";
 import { TranslationService } from '../../service/translation.service';
+import en from '../../utils/lang/en';
+import fr from '../../utils/lang/fr';
+import it from '../../utils/lang/it';
 import { User } from '../../model/user.model';
 import { UserService } from '../../service/user.service';
 
 export class GamePage {
 	private currentLang: string;
+	private langMap = { en, fr, it };
 	userService: UserService = new UserService();
 	lobby?: Lobby;
 	user : User = this.userService.getUser() || new User();
@@ -23,22 +27,28 @@ export class GamePage {
 		this.render();
 		this.setTheme('game');
 		console.log ("Rendering GamePage for user:", this.user.nickname);
-  }
+  	}
+
+	private getLang() {
+		return this.langMap[this.currentLang as keyof typeof this.langMap];
+	}
   
-	render() {
+	private render() {
 
 		const params = new URLSearchParams(window.location.hash.split('?')[1]);
 		const players = params.get('players');
 		const container = document.getElementById('app');
+
 		console.log("Rendering GamePage with players:", players);
 		if (!container) 
 		  return;
+
+		const translation = new TranslationService(this.currentLang);
+		console.log("Language is: ", this.currentLang);
 		if (players === '4') {
-			const translation = new TranslationService(this.currentLang);
 			const translatedHtml = translation.translateTemplate(gameFourHtml);
 			container.innerHTML = translatedHtml;
 		} else {
-			const translation = new TranslationService(this.currentLang);
 			const translatedHtml = translation.translateTemplate(gameTwoHtml);
 			container.innerHTML = translatedHtml;
 		}
@@ -79,29 +89,30 @@ export class GamePage {
 		  });
 		});
 
-	// Bot buttons
-	for (let i = 0; i < 4; i++) {
-	  const btn = document.getElementById(`addBotBtn${i}`);
-	  if (btn) {
-		btn.addEventListener("click", () => {
-		  const newState = !getBotActive(i);
-		  setBotActive(i, newState);
-		  
-		  // Gestione classi Tailwind per bot attivo
-		  if (newState) {
-			btn.classList.remove("bg-black", "text-white", "hover:bg-gray-900", "hover:text-cyan-400");
-			btn.classList.add("bg-green-500", "text-white");
-		  } else {
-			btn.classList.remove("bg-green-500");
-			btn.classList.add("bg-black", "text-white", "hover:bg-gray-900", "hover:text-cyan-400");
-		  }
-		  
-		  btn.textContent = newState ? "BOT ATTIVO" : "Add Bot";
-		  
-		  // Aggiorna i nomi dei giocatori
-		  this.updatePlayerNames();
-		});
-	  }
+		// Bot buttons
+		for (let i = 0; i < 4; i++) {
+		const btn = document.getElementById(`addBotBtn${i}`);
+		if (btn) {
+			btn.addEventListener("click", () => {
+				const newState = !getBotActive(i);
+				setBotActive(i, newState);
+				
+				// Gestione classi Tailwind per bot attivo
+				if (newState) {
+					btn.classList.remove("bg-black", "text-white", "hover:bg-gray-900", "hover:text-cyan-400");
+					btn.classList.add("bg-green-500", "text-white");
+				} else {
+					btn.classList.remove("bg-green-500");
+					btn.classList.add("bg-black", "text-white", "hover:bg-gray-900", "hover:text-cyan-400");
+				}
+
+				btn.textContent = newState ? this.getLang().game.bot_active : this.getLang().game.add_bot;
+				// btn.textContent = newState ? "add bot" : "bot active";
+				
+				// Aggiorna i nomi dei giocatori
+				this.updatePlayerNames();
+			});
+		}
 	}
 
 	// Start buttons

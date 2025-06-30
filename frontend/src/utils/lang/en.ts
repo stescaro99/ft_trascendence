@@ -43,6 +43,7 @@ export default {
         "choose_color": "Choose Color",
         "start": "Start",
         "add_bot": "Add Bot",
-        "team": "Team"
+        "team": "Team",
+        "bot_active": "BOT ACTIVE"
     }
 }
