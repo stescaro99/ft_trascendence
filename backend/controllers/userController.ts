@@ -223,5 +223,3 @@ export async function getUserWithOnlineStatus(request: FastifyRequest, reply: Fa
 		reply.code(500).send({ error: 'Failed to get user', details: error });
 	}
 }
-
-
