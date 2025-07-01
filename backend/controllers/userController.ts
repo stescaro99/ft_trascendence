@@ -55,6 +55,7 @@ export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {
 }
 
 export async function getUser(request: FastifyRequest, reply: FastifyReply) {
+
 	const { nickname } = request.query as { nickname: string };
 	try {
 		const user = await User.findOne({

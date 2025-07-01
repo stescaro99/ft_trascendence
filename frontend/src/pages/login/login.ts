@@ -89,6 +89,7 @@ export class LogInPage{
 						.then((verifyResponse) => {
 						console.log('2FA verified successfully:', verifyResponse);
 						localStorage.setItem('user', JSON.stringify(verifyResponse.user));
+						localStorage.setItem('token', verifyResponse.token);
 						localStorage.setItem('nickname', this.nickname);
 						window.location.hash = '/';
 				})
