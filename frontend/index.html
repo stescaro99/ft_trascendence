@@ -8,10 +8,14 @@
 </head>
 
   <body data-theme="blue">
-  <div class="flex h-screen">
-    <!-- Sidebar (visibile solo se loggato) -->
-    <nav class="flex flex-col text-center shadow-lg bg-body w-20 z-10" id="navbar">
-      
+
+    <div id="app" class="h-screen"></div>
+    <script type="module" src="./src/index.ts"></script>
+
+    <nav class="flex flex-col text-center
+              shadow-lg bg-body
+              top-0 fixed left-0 h-screen w-20 z-10" id="navbar">
+
       <i class="sidebar-icon">
         <a href="#/">
           <img class="h-6 text-white hover:text-black" src="./src/utils/icons/puzzle-alt.svg" alt="">
@@ -51,20 +55,16 @@
         </div>
       </div>
 
-    </nav>
-    
-    <!-- Contenuto dinamico che si adatta automaticamente -->
-    <div id="app" class="flex-1 overflow-auto"></div>
-  </div>
+      </nav>
+      
+  </body>
 
-  <script type="module" src="./src/index.ts"></script>
-  
   <script> 
     var navbar = document.getElementById('navbar')
     if (localStorage.getItem('user')) {
-      navbar.style.display = 'flex'
+      navbar.style.display = 'block'
     } else {
       navbar.style.display = 'none'
     }
   </script>
-</body>
+</html>

@@ -3,8 +3,6 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    ports:
-      - "2807:2807"
     restart: unless-stopped
     env_file:
       - .env
@@ -14,15 +12,38 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=2807
+    networks:
+      - transcendence-network
 
-  frontend:
+  frontend-builder:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    volumes:
+      - frontend-dist:/tmp
+    command: sh -c "cp -r /usr/share/nginx/html/* /tmp/ && echo 'Frontend files copied' && sleep infinity"
+    networks:
+      - transcendence-network
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
     ports:
-      - "5173:5173"
+      - "8080:80"
+      - "8443:443"
     depends_on:
       - backend
+      - frontend-builder
     restart: unless-stopped
-    environment:
-      - NODE_ENV=production
+    volumes:
+      - frontend-dist:/usr/share/nginx/html
+    networks:
+      - transcendence-network
+
+volumes:
+  frontend-dist:
+
+networks:
+  transcendence-network:
+    driver: bridge

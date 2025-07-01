@@ -18,7 +18,7 @@ export default {
         "submit": "Invia"
     },
     profilepage: {
-        "profile": "profilo",
+        "profile": "Profilo",
         "statistics": "Statistiche",
         "name": "Nome",
         "nickname": "Soprannome",
@@ -39,9 +39,10 @@ export default {
     game: {
         "player": "Giocatore",
         "players": "Giocatori",
-        "choose_color": "seleziona colore",
-        "start": "inizia",
-        "add_bot": "aggiungi bot",
-        "team": "Squadra"
+        "choose_color": "Seleziona colore",
+        "start": "Inizia",
+        "add_bot": "Aggiungi Bot",
+        "team": "Squadra",
+        "bot_active": "BOT ATTIVO"
     }
 }

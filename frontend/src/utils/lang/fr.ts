@@ -40,9 +40,10 @@ export default {
     game: {
         "player": "Joueur",
         "players": "Joueurs",
-        "choose_color": "choisir couleur",
-        "start": "commencer",
-        "add_bot": "ajouter bot",
-        "team": "Équipe"
+        "choose_color": "Choisir couleur",
+        "start": "Commencer",
+        "add_bot": "Ajouter bot",
+        "team": "Équipe",
+        "bot_active": "BOT ACTIF"
     }
 }

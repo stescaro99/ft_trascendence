@@ -110,6 +110,16 @@
   --shadow-lateral: 0 0 35px var(--secondary);
 }
 
+[data-theme="game"] {
+  --primary: #00FFFF;
+  --secondary: #40E0D0;
+  --hover: #00CED1;
+  --shadow-glow: 0 0 20px var(--secondary);
+  --shadow-lateral: 0 0 35px var(--secondary);
+}
+
+#00FFFF
+
 body {
   overflow-x: hidden;
 }
