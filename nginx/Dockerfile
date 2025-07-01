@@ -11,10 +11,7 @@ RUN openssl req -x509 -newkey rsa:4096 -keyout /etc/nginx/ssl/key.pem -out /etc/
     -subj "/C=IT/ST=State/L=City/O=Organization/CN=trascendence.local" \
     -addext "subjectAltName=DNS:trascendence.be,DNS:trascendence.fe,DNS:localhost,IP:127.0.0.1"
 
-# Copia la configurazione di Nginx
-COPY nginx.conf /etc/nginx/nginx.conf
-
-# Crea il file di configurazione principale
+# Crea il file di configurazione principale di Nginx
 RUN echo 'user nginx;' > /etc/nginx/nginx.conf && \
     echo 'worker_processes auto;' >> /etc/nginx/nginx.conf && \
     echo 'error_log /var/log/nginx/error.log warn;' >> /etc/nginx/nginx.conf && \
@@ -35,7 +32,7 @@ RUN echo 'user nginx;' > /etc/nginx/nginx.conf && \
 # Crea la directory per le configurazioni
 RUN mkdir -p /etc/nginx/conf.d
 
-# Copia la configurazione del sito
+# Copia la configurazione del sito (che contiene i server blocks)
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Imposta i permessi
