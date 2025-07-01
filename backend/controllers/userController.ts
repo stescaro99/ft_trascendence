@@ -130,7 +130,7 @@ export async function uploadImage(request: FastifyRequest, reply: FastifyReply) 
 			const filepath = path.join(uploadDir, filename);
 			const writeStream = fs.createWriteStream(filepath);
 			await filePart.file.pipe(writeStream);
-			const imageUrl = `${request.protocol}://${request.hostname}:2807/uploads/${filename}`;
+			const imageUrl = `${request.protocol}://${request.hostname}/uploads/${filename}`;
 			return reply.code(200).send({ imageUrl });
 		}
 	}
