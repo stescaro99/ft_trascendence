@@ -6,15 +6,15 @@ export class UserService {
 	private user: User = new User();
 
 	private apiUrl = `${environment.apiUrl}`; 
-
+	
 	getUser(): User | null {
 		const nickname = localStorage.getItem('nickname');
 		if (localStorage.getItem('user') || nickname) {
 			if (nickname) {
 				this.takeUserFromApi(nickname)
-					.then((userData) => {
-						this.user.name = userData.name || '';
-						this.user.surname = userData.surname;
+				.then((userData) => {
+					this.user.name = userData.name || '';
+					this.user.surname = userData.surname;
 						this.user.nickname = userData.nickname;
 						this.user.email = userData.email;
 						this.user.image_url = userData.image_url;
@@ -35,16 +35,38 @@ export class UserService {
 
 	async takeUserFromApi(nick: string): Promise<any>{
 		const url = `${this.apiUrl}/get_user?nickname=${nick}`;
+		console.log('localStorage user:', localStorage.getItem('user'));
+		console.log('localStorage nickname:', nick);
+		console.log('UserService initialized with token:', localStorage.getItem('token'));
+		const token: string | null = localStorage.getItem('token') || '{}';
+		
 		const response = await fetch(url, {
 			method: 'GET',
 			headers: {
+				'Authorization': `Bearer ${token}`,
 				'Content-Type': 'application/json',
 			},
 		});
+		
+		// Log PRIMA di leggere il body
+		console.log('Response status:', response.status);
+		console.log('Response headers:', [...response.headers.entries()]);
+		
+		// Leggi il body UNA SOLA VOLTA
+		const responseText = await response.text();
+		console.log('Response body:', responseText);
+		
 		if(!response.ok){
-			throw new Error('Network response was not ok');
+			throw new Error(`Network response was not ok: ${response.status} - ${responseText}`);
 		}
-		return response.json();
+		
+		// Ora parsa il JSON dal testo che hai già letto
+		try {
+			return JSON.parse(responseText);
+		} catch (e) {
+			console.error('Failed to parse JSON:', responseText);
+			throw new Error('Invalid JSON response');
+		}
 	}
 
 	async postUserToApi(user: User): Promise<any> {

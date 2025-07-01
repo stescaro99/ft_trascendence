@@ -3,6 +3,9 @@
 Backend - stescaro-sfabi
 Frontend - aconciar(Pong)-ucolla-fgori
 
+<<<<<<< HEAD
+per compilare velocemente il backend aggiungere un alias permanente per "npx tsc && node server.js" (da eseguire dentro la cartella backend)
+=======
 ## Setup with Nginx
 
 Il progetto è ora configurato per utilizzare Nginx come reverse proxy con domini personalizzati.
@@ -72,4 +75,5 @@ Se riscontri problemi:
 1. Verifica che i domini siano nel file `/etc/hosts`
 2. Controlla che le porte 80 e 443 siano libere
 3. Verifica i log dei container: `docker-compose logs -f`
+>>>>>>> 661e963eb0e53f7c404a5d46d5f7d350ae442a57
 

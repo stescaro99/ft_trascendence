@@ -16,7 +16,8 @@ export class HomePage {
 
 	constructor(lang: string) {
 		this.currentLang = lang;
-		
+
+
 		// if (this.user) {
 		// 	this.welcomeText = "Welcome back " + this.user.name;
 		// }
@@ -55,52 +56,95 @@ export class HomePage {
 		const playButton = document.getElementById('playButton');
 		if (playButton) {
 			playButton.addEventListener('click', () => {
-				window.location.hash = `#/game?players=2&online=${this.onlineStatus}`; // Reindirizza alla pagina del gioco con 2 giocatori e status online
+				if (!this.onlineStatus)
+					window.location.hash = `#/game?players=2`;
+				else
+					window.location.hash = '#/online_game?players=2'
 			});
 		}
 		const playButton4 = document.getElementById('playButton4');
 		if (playButton4) {
 			playButton4.addEventListener('click', () => {
-				window.location.hash = `#/game?players=4&online=${this.onlineStatus}`; // Reindirizza alla pagina del gioco con 4 giocatori e status online
+				if (!this.onlineStatus)
+					window.location.hash = `#/game?players=4`;
+				else
+					window.location.hash = '#/online_game?players=4'
 			});
 		}
-		const onlineButton = document.getElementById('onlineButton');
-		if (onlineButton) { 
-			onlineButton.addEventListener('click', () => {
+		const joystickStick = document.getElementById('joystickStick');
+    const ledOffline = document.getElementById('ledOffline');
+    const ledOnline = document.getElementById('ledOnline');
+    
+    if (joystickStick && ledOffline && ledOnline) {
+			joystickStick.addEventListener('click', () => {
 				this.onlineStatus = !this.onlineStatus;
-				const playButton = document.getElementById('playButton');
-				const playButton4 = document.getElementById('playButton4');
 				
 				if (this.onlineStatus) {
-					onlineButton.textContent = 'Online';
-					console.log('Online mode activated', this.onlineStatus);
+					// Sposta a destra (online)
+					joystickStick.classList.remove('-translate-x-12');
+					joystickStick.classList.add('translate-x-12');
 					
-					// Cambia colori dei bottoni in modalità online (verde)
-					if (playButton) {
-						(playButton as HTMLElement).style.background = 'linear-gradient(145deg, #22c55e, #16a34a)';
-						(playButton as HTMLElement).style.boxShadow = '0 8px 0 #15803d, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2)';
-					}
-					if (playButton4) {
-						(playButton4 as HTMLElement).style.background = 'linear-gradient(145deg, #22c55e, #16a34a)';
-						(playButton4 as HTMLElement).style.boxShadow = '0 8px 0 #15803d, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2)';
-					}
-				}
-				else {
-					onlineButton.textContent = 'Offline';
-					console.log('Offline mode activated', this.onlineStatus);
+					// LED offline spento
+					ledOffline.classList.remove('animate-pulse', 'opacity-80');
+					ledOffline.classList.add('opacity-30');
+					ledOffline.children[0].classList.add('opacity-0');
+					ledOffline.children[1].classList.add('opacity-0');
 					
-					// Ripristina colori originali dei bottoni (rosso)
-					if (playButton) {
-						(playButton as HTMLElement).style.background = 'linear-gradient(145deg, #ff4757, #c44569)';
-						(playButton as HTMLElement).style.boxShadow = '0 8px 0 #a5334a, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2)';
-					}
-					if (playButton4) {
-						(playButton4 as HTMLElement).style.background = 'linear-gradient(145deg, #ff4757, #c44569)';
-						(playButton4 as HTMLElement).style.boxShadow = '0 8px 0 #a5334a, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2)';
-					}
+					// LED online acceso
+					ledOnline.classList.remove('opacity-30');
+					ledOnline.classList.add('animate-pulse', 'opacity-80');
+					ledOnline.children[0].classList.remove('opacity-0');
+					ledOnline.children[0].classList.add('animate-pulse', 'opacity-80');
+					ledOnline.children[1].classList.remove('opacity-0');
+					ledOnline.children[1].classList.add('opacity-50');
+					
+				} else {
+					// Sposta a sinistra (offline)
+					joystickStick.classList.remove('translate-x-12');
+					joystickStick.classList.add('-translate-x-12');
+					
+					// LED online spento
+					ledOnline.classList.remove('animate-pulse', 'opacity-80');
+					ledOnline.classList.add('opacity-30');
+					ledOnline.children[0].classList.add('opacity-0');
+					ledOnline.children[1].classList.add('opacity-0');
+					
+					// LED offline acceso
+					ledOffline.classList.remove('opacity-30');
+					ledOffline.classList.add('animate-pulse', 'opacity-80');
+					ledOffline.children[0].classList.remove('opacity-0');
+					ledOffline.children[0].classList.add('animate-pulse', 'opacity-80');
+					ledOffline.children[1].classList.remove('opacity-0');
+					ledOffline.children[1].classList.add('opacity-50');
 				}
+				
+				this.updatePlayButtonColors();
 			});
 		}
+	}
+	private updatePlayButtonColors() {
+		const playButton = document.getElementById('playButton');
+		const playButton4 = document.getElementById('playButton4');
+		
+		if (playButton && playButton4) {
+        if (this.onlineStatus) {
+            // Modalità Online - Bottoni verdi
+            console.log('🔍 Setting GREEN gradient');
+            playButton.style.setProperty('background', 'linear-gradient(145deg, #22c55e, #16a34a)', 'important');
+            playButton.style.setProperty('box-shadow', '0 8px 0 #15803d, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2), 0 0 20px rgba(34, 197, 94, 0.5)', 'important');
+            
+            playButton4.style.setProperty('background', 'linear-gradient(145deg, #22c55e, #16a34a)', 'important');
+            playButton4.style.setProperty('box-shadow', '0 8px 0 #15803d, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2), 0 0 20px rgba(34, 197, 94, 0.5)', 'important');
+        } else {
+            console.log('🔍 Setting RED gradient');
+            // Modalità Offline - Bottoni rossi (colori originali)
+            playButton.style.setProperty('background', 'linear-gradient(145deg, #ff4757, #c44569)', 'important');
+            playButton.style.setProperty('box-shadow', '0 8px 0 #a5334a, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2), 0 0 20px rgba(255, 71, 87, 0.5)', 'important');
+            
+            playButton4.style.setProperty('background', 'linear-gradient(145deg, #ff4757, #c44569)', 'important');
+            playButton4.style.setProperty('box-shadow', '0 8px 0 #a5334a, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2), 0 0 20px rgba(255, 71, 87, 0.5)', 'important');
+        }
+    }
 	}
 
 	private btnGlow() {

@@ -4,13 +4,6 @@ import { drawBall, drawRect, drawScore, drawPowerUp, drawField } from "../common
 import { getBotActive, predictBallY, moveBot } from "../common/BotState";
 import { updateGameField, createGame } from "../services/gameService";
 import { addGameToStats } from "../services/statsService";
-// import en from '../../../utils/lang/en';
-// import fr from '../../../utils/lang/fr';
-// import it from '../../../utils/lang/it';
-
-//Da fixare!!
-// let currentLang: string;
-// let langMap = { en, fr, it };
 
 // Helper per ottenere canvas e ctx in modo sicuro
 function getCanvasAndCtx() {
@@ -69,7 +62,7 @@ function createInitialGameState(canvas: HTMLCanvasElement): GameState {
 		speed: 6,
 		height: paddleHeight,
 		nickname: getPlayerNick(0, "right")
-	}
+	  }
 	],
 	powerUp: {
 	  x: Math.random() * canvas.width / 2 + canvas.width / 4,

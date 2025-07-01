@@ -4,40 +4,34 @@ import { User } from '../../model/user.model';
 import { TranslationService } from '../../service/translation.service';
 import './profile.css';
 import { setLang } from '../..';
+import { UserService } from '../../service/user.service';
 
 export class ProfilePage {
-	private stats: Stats;
-	private user: User;
+	private stats: Stats = new Stats();
+	private userService: UserService = new UserService();
+	private user: User = new User();
 	private currentLang: string;
 	
 	constructor(lang: string) {
 		this.currentLang = lang;
-		this.stats = {
-			stat_index: 5,
-			nickname: 'Ulli',
-			number_of_games: 3,
-			number_of_wins: 2,
-			number_of_losses: 5,
-			number_of_draws: 6,
-			number_of_points: 7,
-			average_score: 3,
-			percentage_wins: 4,
-			percentage_losses: 50,
-			percentage_draws: 8
-		}
-		this.user = {
-			id: 1,
-			name: "Bulli",
-			nickname: "The Boolers",
-			email: "una@email.com",
-			password: 'cccp',
-			surname: "Alloc",
-			language: 'it',
-			image_url: './src/utils/images/mr_mime.png',
-			stats: this.stats
-		}
 
-		this.render();
+		this.userService.takeUserFromApi(localStorage.getItem('nickname') || '') 
+			.then((userData) => {
+				this.user.name = userData.name || '';
+				this.user.surname = userData.surname || '';
+				this.user.nickname = userData.nickname;
+				this.user.email = userData.email;
+				this.user.image_url = userData.image_url;
+				this.user.stats = userData.stats[0];
+				this.user.id = userData.id;
+				this.stats = this.user.stats || new Stats();
+				this.render();
+			})
+			.catch((error) => {
+				console.error('Error fetching user data:', error);
+			});
+		
+
 	}
 
 	private render() {
@@ -46,7 +40,7 @@ export class ProfilePage {
 		if (appDiv) {
 			const translation = new TranslationService(this.currentLang);
 			const translatedHtml = translation.translateTemplate(profileHtml);
-			
+			console.log("uer", this.user);
 			appDiv.innerHTML = translatedHtml;
 			
 			this.setNewLang()
@@ -71,7 +65,7 @@ export class ProfilePage {
 				const imgElement = document.getElementById('profile_image') as HTMLImageElement;
 				imgElement.src = this.user.image_url;
 			}, 0);
-
+			this.setProfileImage();
 		}
 	}
 
@@ -101,6 +95,17 @@ export class ProfilePage {
 		const element = document.getElementById(id);
 		if (element) {
 			element.textContent = this.user[property as keyof User]?.toString() || '-';
+		}
+	}
+
+	private setProfileImage() {
+    const profileImage = document.getElementById('profile_image') as HTMLImageElement;
+    if (profileImage && this.user.image_url) {
+			profileImage.src = this.user.image_url;
+			profileImage.onerror = () => {
+				// Fallback se l'immagine non carica
+				profileImage.src = './src/utils/default.png';
+			};
 		}
 	}
 }

@@ -72,7 +72,10 @@ private handleSubmit(event: Event) {
 					this.authenticationService.verifyQrCodeFromApi(this.user.nickname, code)
 					.then((verifyResponse) => {
 						console.log('2FA verified successfully:', verifyResponse);
+						console.log('User:', verifyResponse.user);
+						console.log('Token:', verifyResponse.token);
 						localStorage.setItem('user', JSON.stringify(verifyResponse.user));
+						localStorage.setItem('token', verifyResponse.token);
 						localStorage.setItem('nickname', this.user.nickname);
 						window.location.hash = '#/';
 				})
