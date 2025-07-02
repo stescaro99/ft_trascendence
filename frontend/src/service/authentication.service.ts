@@ -51,11 +51,12 @@ export class AuthenticationService {
 
 	loginUserWithGoogleToApi(): Promise<any> {
 		return new Promise((resolve, reject) => {
-			const api = `${environment.apiUrl}/google_login`;
+			const authUrl = `${this.apiUrl}/google_login`;
+			console.log('Opening Google auth popup with URL:', authUrl);
 			
 			// Apre una finestra popup per il login Google
 			const popup = window.open(
-				api,
+				authUrl,
 				'googleLogin',
 				'width=500,height=600,scrollbars=yes,resizable=yes'
 			);
@@ -65,46 +66,63 @@ export class AuthenticationService {
 				return;
 			}
 
-			// Listener per i messaggi dal popup
-			const messageListener = (event: MessageEvent) => {
-				// Verifica che il messaggio provenga dal dominio corretto
-				if (event.origin !== window.location.origin) {
+			// Ascolta i messaggi dal popup
+			const messageHandler = (event: MessageEvent) => {
+				// Verifica che il messaggio provenga dal popup
+				if (event.source !== popup) {
 					return;
 				}
 
 				if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
-					// Salva i dati nel localStorage della finestra principale
+					console.log('Google auth success received:', event.data);
+					
+					// Salva i dati nel localStorage
 					localStorage.setItem('user', JSON.stringify(event.data.user));
 					localStorage.setItem('nickname', event.data.nickname);
 					
-					popup.close();
-					window.removeEventListener('message', messageListener);
-					clearInterval(checkClosed);
-					resolve(event.data);
+					// Rimuovi il listener
+					window.removeEventListener('message', messageHandler);
+					
+					// Risolvi la promise
+					resolve({
+						success: true,
+						user: event.data.user,
+						nickname: event.data.nickname,
+						token: event.data.user.token
+					});
 				} else if (event.data.type === 'GOOGLE_AUTH_ERROR') {
-					popup.close();
-					window.removeEventListener('message', messageListener);
-					clearInterval(checkClosed);
+					console.log('Google auth error received:', event.data);
+					
+					// Rimuovi il listener
+					window.removeEventListener('message', messageHandler);
+					
+					// Rifiuta la promise
 					reject(new Error(event.data.error));
 				}
 			};
 
-			window.addEventListener('message', messageListener);
+			// Aggiungi il listener per i messaggi
+			window.addEventListener('message', messageHandler);
 
 			// Controlla quando la finestra popup viene chiusa
 			const checkClosed = setInterval(() => {
 				if (popup.closed) {
+					console.log('Popup was closed');
 					clearInterval(checkClosed);
-					window.removeEventListener('message', messageListener);
+					
+					// Rimuovi il listener se la finestra si chiude senza successo
+					window.removeEventListener('message', messageHandler);
+					
+					// Se non abbiamo ricevuto un messaggio di successo, considera il login fallito
 					reject(new Error('Login cancelled by user'));
 				}
-			}, 1000);
+			}, 500);
 
 			// Timeout dopo 5 minuti
 			setTimeout(() => {
-				if (!popup.closed) {
+				if (popup && !popup.closed) {
+					console.log('Popup timeout reached');
 					popup.close();
-					window.removeEventListener('message', messageListener);
 					clearInterval(checkClosed);
 					reject(new Error('Login timeout'));
 				}

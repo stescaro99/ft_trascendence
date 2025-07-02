@@ -137,7 +137,7 @@ export async function GoogleOAuthCallback(request: FastifyRequest, reply: Fastif
 		}
 		const jwtToken = createJWT({ id: user.id, nickname: user.nickname });
 
-		const frontendUrl = 'https://trascendence.fe';
+		const frontendUrl = `https://${process.env.HOST_IP}:8443` || 'https://trascendence.fe:8443';
 		return reply.redirect(`${frontendUrl}/?token=${jwtToken}&nickname=${encodeURIComponent(user.nickname)}`);
 	} catch (error) {
 		return reply.status(500).send({
