@@ -51,7 +51,7 @@ export class AuthenticationService {
 
 	loginUserWithGoogleToApi(): Promise<any> {
 		return new Promise((resolve, reject) => {
-			const api = `https://trascendence.be/api/google_login`;
+			const api = `${environment.apiUrl}/google_login`;
 			
 			// Apre una finestra popup per il login Google
 			const popup = window.open(

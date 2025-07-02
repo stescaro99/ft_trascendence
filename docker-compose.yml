@@ -6,43 +6,41 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    ports:
+      - "${HOST_ID}:9443:9443"
     volumes:
       - ./backend/db:/app/db
       - ./backend/uploads:/app/uploads
+      - ./frontend/cert:/app/cert:ro
     environment:
       - NODE_ENV=production
-      - PORT=2807
+      - PORT=9443
+      - SSL_CERT_PATH=/app/cert/cert.pem
+      - SSL_KEY_PATH=/app/cert/key.pem
     networks:
       - transcendence-network
 
-  frontend-builder:
+  frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${HOST_ID}:8443:8443"
     volumes:
-      - frontend-dist:/tmp
-    command: sh -c "cp -r /usr/share/nginx/html/* /tmp/ && echo 'Frontend files copied' && sleep infinity"
+      - ./frontend/cert:/app/cert:ro
+    environment:
+      - NODE_ENV=production
+      - PORT=8443
+      - SSL_CERT_PATH=/app/cert/cert.pem
+      - SSL_KEY_PATH=/app/cert/key.pem
+      - BACKEND_URL=https://${HOST_ID}:9443
     networks:
       - transcendence-network
-
-  nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
-    ports:
-      - "80:80"
-      - "443:443"
     depends_on:
       - backend
-      - frontend-builder
-    restart: unless-stopped
-    volumes:
-      - frontend-dist:/usr/share/nginx/html
-    networks:
-      - transcendence-network
-
-volumes:
-  frontend-dist:
 
 networks:
   transcendence-network:

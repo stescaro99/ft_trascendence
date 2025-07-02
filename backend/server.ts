@@ -24,9 +24,12 @@ import swagger from '@fastify/swagger';
 import swaggerUI from '@fastify/swagger-ui';
 
 // Carica i certificati SSL
+const certPath = process.env.SSL_CERT_PATH || path.join(__dirname, 'cert', 'cert.pem');
+const keyPath = process.env.SSL_KEY_PATH || path.join(__dirname, 'cert', 'key.pem');
+
 const httpsOptions = {
-	key: fs.readFileSync(path.join(__dirname, 'cert', 'key.pem')),
-	cert: fs.readFileSync(path.join(__dirname, 'cert', 'cert.pem'))
+	key: fs.readFileSync(keyPath),
+	cert: fs.readFileSync(certPath)
 };
 
 const server = Fastify({
@@ -37,10 +40,32 @@ const server = Fastify({
 
 server.register(fastifyCookie); 
 
+// Middleware per rilevare accesso tramite IP
+server.addHook('preHandler', async (request: any, reply: any) => {
+	const host = request.headers.host;
+	const hostId = process.env.HOST_ID;
+	
+	// Controlla se l'utente sta accedendo tramite IP invece che dominio
+	if (host && hostId && (host.includes(hostId) || host.includes('localhost') || host.includes('127.0.0.1'))) {
+		// Aggiungi header per indicare che l'accesso è tramite IP
+		reply.header('X-Access-Via-IP', 'true');
+		reply.header('X-Host-Config-Needed', `${hostId} trascendence.be trascendence.fe`);
+	}
+});
+
 const start = async (sequelize: any) => {
 	try {
-		// CORS is handled by nginx reverse proxy
-		// await server.register(fastifyCors, { ... });
+		// Configure CORS to allow frontend domain and IP access
+		await server.register(fastifyCors, {
+			origin: [
+				'https://trascendence.fe:8443', 
+				'https://localhost:8443',
+				`https://${process.env.HOST_ID}:8443`,
+				`https://127.0.0.1:8443`
+			],
+			credentials: true,
+			methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+		});
 		await server.register(swagger, {
 			openapi: {
 				info: {
@@ -71,7 +96,7 @@ const start = async (sequelize: any) => {
 			}
 		});
 		await server.register(fastifyStatic, {
-			root: path.join(__dirname, '../uploads'),
+			root: path.join(__dirname, 'uploads'),
 			prefix: '/uploads/',
 		});
 
@@ -106,8 +131,9 @@ const start = async (sequelize: any) => {
 		await sequelize.authenticate();
 		console.log('Database connection has been established successfully.');
 		console.log('Database synchronized successfully.');
-		await server.listen({ port: 2807, host: '0.0.0.0' });
-		console.log('Server is running on https://localhost:2807');
+		const port = parseInt(process.env.PORT || '9443');
+		await server.listen({ port, host: '0.0.0.0' });
+		console.log(`Server is running on https://0.0.0.0:${port}`);
 	} catch (err) {
 		server.log.error(err);
 		process.exit(1);

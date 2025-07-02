@@ -1,4 +1,6 @@
-const BASE_URL = "https://localhost:2807/api";
+import { environment } from '../../../environments/environment';
+
+const BASE_URL = environment.apiUrl;
 
 export async function updateStats(
   nickname: string,

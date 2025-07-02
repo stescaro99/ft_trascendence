@@ -15,17 +15,19 @@ RUN npm run build
 # Production stage
 FROM alpine:3.20
 
-# Installa solo quello che serve per servire i file statici
-RUN apk add --no-cache nginx
+WORKDIR /app
 
-# Crea le directory necessarie
-RUN mkdir -p /usr/share/nginx/html
+# Installa Node.js per servire l'app con HTTPS
+RUN apk add --no-cache nodejs npm
 
 # Copia i file build dal stage precedente
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/server.js ./
 
-# Espone la porta (anche se non sarà usata direttamente)
-EXPOSE 80
+# Installa solo le dipendenze di produzione necessarie per HTTPS server
+RUN npm install --only=production express helmet
 
-# Questo container serve solo per fornire i file al volume
-CMD ["cp", "-r", "/usr/share/nginx/html/.", "/tmp/"]
+EXPOSE 8443
+
+CMD ["node", "server.js"]

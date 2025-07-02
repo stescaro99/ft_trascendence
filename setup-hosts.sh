@@ -1,11 +1,23 @@
 #!/bin/bash
 
+# Leggi HOST_ID dal file .env
+if [ -f .env ]; then
+    HOST_ID=$(grep '^HOST_ID=' .env | cut -d '=' -f2)
+else
+    echo "File .env non trovato!"
+    exit 1
+fi
+
+if [ -z "$HOST_ID" ]; then
+    echo "HOST_ID non trovato nel file .env!"
+    exit 1
+fi
+
 # Script per aggiungere gli host locali
-echo "127.0.0.1 trascendence.be trascendence.fe" | sudo tee -a /etc/hosts
+echo "$HOST_ID trascendence.be trascendence.fe" | sudo tee -a /etc/hosts
 
 echo "Host entries added successfully!"
+echo "HOST_ID: $HOST_ID"
 echo "You can now access:"
-echo "- Backend: https://trascendence.be"
-echo "- Frontend: https://trascendence.fe"
-echo "- Alternative access:"
-echo "  - http://localhost (redirects to https)"
+echo "- Backend: https://trascendence.be:9443"
+echo "- Frontend: https://trascendence.fe:8443"

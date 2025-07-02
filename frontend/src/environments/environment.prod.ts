@@ -1,4 +1,25 @@
+// Configurazione dinamica che usa i domini configurati nel browser
+const getApiUrl = (): string => {
+  // Per il multiplayer e le API usiamo sempre il dominio configurato
+  // Il browser deve risolvere trascendence.be tramite /etc/hosts
+  return 'https://trascendence.be:9443/api';
+};
+
+const getWsUrl = (): string => {
+  return 'wss://trascendence.be:9443/ws';
+};
+
+const getHostId = (): string => {
+  // Per HOST_ID restituiamo l'IP per connessioni remote
+  if (typeof window !== 'undefined' && (window as any).__HOST_ID__) {
+    return (window as any).__HOST_ID__;
+  }
+  return '192.168.1.61'; // fallback default
+};
+
 export const environment = {
-	production: true,
-	apiUrl: 'https://trascendence.be/api',
+  production: true,
+  apiUrl: getApiUrl(),
+  wsUrl: getWsUrl(),
+  hostId: getHostId()
 }

@@ -130,7 +130,9 @@ export async function uploadImage(request: FastifyRequest, reply: FastifyReply) 
 			const filepath = path.join(uploadDir, filename);
 			const writeStream = fs.createWriteStream(filepath);
 			await filePart.file.pipe(writeStream);
-			const imageUrl = `${request.protocol}://${request.hostname}/uploads/${filename}`;
+			// Use the backend URL from environment variables or construct it properly
+			const backendUrl = process.env.BACKEND_URL || `${request.protocol}://${request.hostname}:${process.env.PORT || 9443}`;
+			const imageUrl = `${backendUrl}/uploads/${filename}`;
 			return reply.code(200).send({ imageUrl });
 		}
 	}

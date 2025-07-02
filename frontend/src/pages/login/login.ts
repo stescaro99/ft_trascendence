@@ -1,4 +1,3 @@
-
 import { UserService } from '../../service/user.service';
 import { AuthenticationService } from '../../service/authentication.service';
 import { TranslationService } from '../../service/translation.service';
@@ -19,6 +18,7 @@ export class LogInPage{
 		this.render();
 		this.setTheme('green');
 		this.addEventListeners();
+		this.checkHostConfiguration();
 	}
 	private render() {
 		const appDiv = document.getElementById('app');
@@ -149,6 +149,70 @@ export class LogInPage{
 				localStorage.setItem('nickname', 'fgori');
 				window.location.hash = '#/';
 			});
+		}
+	}
+
+	// Controlla se l'utente sta accedendo tramite IP e mostra l'avviso
+	private async checkHostConfiguration() {
+		try {
+			// Rileva se stiamo accedendo tramite IP
+			const currentHost = window.location.host;
+			const isAccessViaIP = /\d+\.\d+\.\d+\.\d+/.test(currentHost) || 
+								 currentHost.includes('localhost') || 
+								 currentHost.includes('127.0.0.1');
+
+			if (isAccessViaIP) {
+				// Tenta di ottenere le informazioni di configurazione dal backend
+				try {
+					const response = await fetch('/api/host-config');
+					const config = await response.json();
+					
+					if (config.accessViaIP) {
+						this.showHostConfigWarning(config);
+					}
+				} catch (error) {
+					// Se il backend non è disponibile, mostra comunque l'avviso base
+					console.warn('Cannot fetch host config from backend:', error);
+					this.showHostConfigWarning({
+						hostId: currentHost.split(':')[0],
+						setupCommand: {
+							linux: `echo "${currentHost.split(':')[0]} trascendence.be trascendence.fe" | sudo tee -a /etc/hosts`
+						}
+					});
+				}
+			}
+		} catch (error) {
+			console.error('Error checking host configuration:', error);
+		}
+	}
+
+	private showHostConfigWarning(config: any) {
+		const warningElement = document.getElementById('hostConfigWarning');
+		const commandElement = document.getElementById('hostConfigCommand');
+		const dismissButton = document.getElementById('dismissHostWarning');
+
+		if (warningElement && commandElement) {
+			// Aggiorna il comando con le informazioni corrette
+			if (config.setupCommand?.linux) {
+				commandElement.textContent = config.setupCommand.linux;
+			}
+
+			// Mostra l'avviso
+			warningElement.classList.remove('hidden');
+
+			// Aggiungi listener per nascondere l'avviso
+			if (dismissButton) {
+				dismissButton.addEventListener('click', () => {
+					warningElement.classList.add('hidden');
+					// Salva la preferenza dell'utente
+					sessionStorage.setItem('hostWarningDismissed', 'true');
+				});
+			}
+
+			// Controlla se l'utente ha già nascosto l'avviso in questa sessione
+			if (sessionStorage.getItem('hostWarningDismissed') === 'true') {
+				warningElement.classList.add('hidden');
+			}
 		}
 	}
 
