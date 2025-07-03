@@ -35,6 +35,9 @@ app.use((req, res, next) => {
 // Serve static files
 app.use(express.static(path.join(__dirname, "dist")));
 
+// Serve uploaded images (must be before the SPA fallback)
+app.use('/uploads', express.static('/app/uploads'));
+
 // SPA fallback
 app.get("*", (req, res) => {
   const indexPath = path.join(__dirname, "dist", "index.html");

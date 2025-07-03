@@ -128,12 +128,11 @@ export async function uploadImage(request: FastifyRequest, reply: FastifyReply) 
 			}
 			const filename = `${Date.now()}_${filePart.filename}`;
 			const filepath = path.join(uploadDir, filename);
-			const writeStream = fs.createWriteStream(filepath);
-			await filePart.file.pipe(writeStream);
-			// Use the backend URL from environment variables or construct it properly
-			const backendUrl = process.env.BACKEND_URL || `${request.protocol}://${request.hostname}:${process.env.PORT || 9443}`;
-			const imageUrl = `${backendUrl}/uploads/${filename}`;
-			return reply.code(200).send({ imageUrl });
+			const writeStream = fs.createWriteStream(filepath);		await filePart.file.pipe(writeStream);
+		// Use the frontend URL to serve images since they are mounted there
+		const frontendUrl = 'https://trascendence.fe:8443'; //|| `https://${process.env.HOST_ID}:8443`;
+		const imageUrl = `${frontendUrl}/uploads/${filename}`;
+		return reply.code(200).send({ imageUrl });
 		}
 	}
 	reply.code(400).send({ error: 'No image uploaded' });
