@@ -129,17 +129,9 @@ export class LogInPage{
 		const googleid = document.getElementById('googleid');
 		if (googleid) {
 			googleid.addEventListener('click', () => {
-				this.authenticationService.loginUserWithGoogleToApi()
-				.then((response) => {
-					console.log('Google login successful:', response);
-					// L'utente è già stato salvato nel localStorage dal popup
-					// Reindirizza alla home page
-					window.location.hash = '/';
-				})
-				.catch((error) => {
-					console.error('Google login failed:', error);
-					alert('Google login failed: ' + error.message);
-				});
+				console.log('Starting Google login...');
+				this.authenticationService.loginUserWithGoogleToApi();
+				// Non aspettiamo la promise perché ora fa un redirect
 			});
 		}
 		const debugButton = document.getElementById('debugLogin');

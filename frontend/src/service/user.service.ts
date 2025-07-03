@@ -37,8 +37,25 @@ export class UserService {
 		const url = `${this.apiUrl}/get_user?nickname=${nick}`;
 		console.log('localStorage user:', localStorage.getItem('user'));
 		console.log('localStorage nickname:', nick);
-		console.log('UserService initialized with token:', localStorage.getItem('token'));
-		const token: string | null = localStorage.getItem('token') || '{}';
+		
+		// Recupera il token dall'oggetto user nel localStorage
+		const userDataString = localStorage.getItem('user');
+		let token: string | null = null;
+		
+		if (userDataString) {
+			try {
+				const userData = JSON.parse(userDataString);
+				token = userData.token;
+			} catch (error) {
+				console.error('Error parsing user data from localStorage:', error);
+			}
+		}
+		
+		console.log('UserService initialized with token:', token);
+		
+		if (!token) {
+			throw new Error('No valid token found');
+		}
 		
 		const response = await fetch(url, {
 			method: 'GET',

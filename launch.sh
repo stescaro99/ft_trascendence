@@ -50,7 +50,7 @@ echo ""
 docker-compose down
 
 # Build e avvia i nuovi container
-docker-compose up --build
+docker-compose up --build -d
 
 echo ""
 echo "🎉 Avvio completato!"

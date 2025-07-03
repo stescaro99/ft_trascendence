@@ -8,7 +8,23 @@ export async function updateStats(
   result: number,
   index: number
 ) {
-  const token = localStorage.getItem("token");
+  // Recupera il token dall'oggetto user nel localStorage
+  const userDataString = localStorage.getItem("user");
+  let token: string | null = null;
+  
+  if (userDataString) {
+    try {
+      const userData = JSON.parse(userDataString);
+      token = userData.token;
+    } catch (error) {
+      console.error('Error parsing user data from localStorage:', error);
+    }
+  }
+  
+  if (!token) {
+    throw new Error('No valid token found');
+  }
+  
   const res = await fetch(`${BASE_URL}/update_stats`, {
 	method: "PUT",
 	headers: {

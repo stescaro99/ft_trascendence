@@ -42,7 +42,11 @@ export class HomePage {
 				window.location.hash = '/identification'; // o dove vuoi reindirizzare
 			});
 		}
-		this.addlisteners();
+		
+		// Aggiungi un piccolo ritardo per assicurarsi che il DOM sia completamente renderizzato
+		setTimeout(() => {
+			this.addlisteners();
+		}, 100);
 	}
 
 	private addGlow(button: HTMLElement) {
@@ -53,9 +57,12 @@ export class HomePage {
         }, 300);
     }
 	private addlisteners() {
+		console.log('Adding event listeners...');
 		const playButton = document.getElementById('playButton');
+		console.log('playButton found:', playButton);
 		if (playButton) {
 			playButton.addEventListener('click', () => {
+				console.log('playButton clicked, onlineStatus:', this.onlineStatus);
 				if (!this.onlineStatus)
 					window.location.hash = `#/game?players=2`;
 				else
@@ -63,8 +70,10 @@ export class HomePage {
 			});
 		}
 		const playButton4 = document.getElementById('playButton4');
+		console.log('playButton4 found:', playButton4);
 		if (playButton4) {
 			playButton4.addEventListener('click', () => {
+				console.log('playButton4 clicked, onlineStatus:', this.onlineStatus);
 				if (!this.onlineStatus)
 					window.location.hash = `#/game?players=4`;
 				else

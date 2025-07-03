@@ -10,11 +10,10 @@ const getWsUrl = (): string => {
 };
 
 const getHostId = (): string => {
-  // Per HOST_ID restituiamo l'IP per connessioni remote
   if (typeof window !== 'undefined' && (window as any).__HOST_ID__) {
     return (window as any).__HOST_ID__;
   }
-  return '192.168.1.61'; // fallback default
+  return 'localhost';
 };
 
 export const environment = {
