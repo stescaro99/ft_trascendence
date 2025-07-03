@@ -39,13 +39,12 @@ export class UserService {
 		console.log('localStorage nickname:', nick);
 		
 		// Recupera il token dall'oggetto user nel localStorage
-		const userDataString = localStorage.getItem('user');
+		const userDataString = localStorage.getItem('token');
 		let token: string | null = null;
 		
 		if (userDataString) {
 			try {
-				const userData = JSON.parse(userDataString);
-				token = userData.token;
+				token = userDataString;
 			} catch (error) {
 				console.error('Error parsing user data from localStorage:', error);
 			}

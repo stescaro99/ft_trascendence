@@ -14,6 +14,31 @@ export class ProfilePage {
 	
 	constructor(lang: string) {
 		this.currentLang = lang;
+		
+		console.log('🔍 ProfilePage Debug:');
+		console.log('localStorage user:', localStorage.getItem('user'));
+		console.log('localStorage token:', localStorage.getItem('token'));
+		console.log('localStorage nickname:', localStorage.getItem('nickname'));
+
+		const userString = localStorage.getItem('user');
+		if (userString) {
+			try {
+				const user = JSON.parse(userString);
+				console.log('🔍 User source:', user.provider || 'local');
+			} catch (e) {
+				console.error('🔍 Error parsing user:', e);
+			}
+		}
+
+    this.userService.takeUserFromApi(localStorage.getItem('nickname') || '') 
+        .then((userData) => {
+            console.log('🔍 API call successful:', userData);
+            // ... resto del codice
+        })
+        .catch((error) => {
+            console.error('🔍 API call failed:', error);
+            console.error('🔍 This might be a token/auth issue');
+        });
 
 		this.userService.takeUserFromApi(localStorage.getItem('nickname') || '') 
 			.then((userData) => {

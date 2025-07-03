@@ -2,8 +2,7 @@ import { GameState } from "../common/types";
 import { randomizePowerUp, update } from "./../common/GameUpdate";
 import { drawBall, drawRect, drawScore, drawPowerUp, drawField } from "../common/Draw";
 import { getBotActive, predictBallY, moveBot } from "../common/BotState";
-import { updateGameField, createGame } from "../services/gameService";
-import { addGameToStats } from "../services/statsService";
+
 
 // Helper per ottenere canvas e ctx in modo sicuro
 function getCanvasAndCtx() {
@@ -155,13 +154,13 @@ const originalResetAfterPoint = (window as any).resetAfterPoint;
   if (x < game.canvas.width / 2) {
 	// Segna la destra
 	game.scoreRight++;
-	if (typeof currentGameId === "number")
-	  await updateGameField(currentGameId, "2_scores", game.scoreRight.toString());
+	// if (typeof currentGameId === "number")
+	//   await updateGameField(currentGameId, "2_scores", game.scoreRight.toString());
   } else {
 	// Segna la sinistra
 	game.scoreLeft++;
-	if (typeof currentGameId === "number")
-	  await updateGameField(currentGameId, "1_scores", game.scoreLeft.toString());
+	// if (typeof currentGameId === "number")
+	//   await updateGameField(currentGameId, "1_scores", game.scoreLeft.toString());
   }
   if (originalResetAfterPoint) originalResetAfterPoint(x, game);
 };
@@ -190,7 +189,8 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
 	console.log("Players:", players);
 	
 	try {
-	const res = await createGame(players);
+	// const res = await createGame(players);
+	const res = { id: 123 }; // Simulazione risposta backend
 	currentGameId = res.id;
 	} catch (error) {
 	  console.error("Failed to create game on backend:", error);
@@ -209,9 +209,9 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
 	ctx.fillText(`${winner} ha vinto!`, canvas.width / 2, canvas.height / 2);
 
 	if (currentGameId) {
-	  await updateGameField(currentGameId, "1_scores", game.scoreLeft.toString());
-	  await updateGameField(currentGameId, "2_scores", game.scoreRight.toString());
-	  await updateGameField(currentGameId, "status", "finished");
+	//   await updateGameField(currentGameId, "1_scores", game.scoreLeft.toString());
+	//   await updateGameField(currentGameId, "2_scores", game.scoreRight.toString());
+	//   await updateGameField(currentGameId, "status", "finished");
 	  const players = [
 		game.leftPaddle[0].nickname,
 		game.rightPaddle[0].nickname
@@ -222,8 +222,8 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
 		  (game.scoreLeft > game.scoreRight && idx === 0) ||
 		  (game.scoreRight > game.scoreLeft && idx === 1)
 		) result = 2;
-		else if (game.scoreLeft === game.scoreRight) result = 1;
-		addGameToStats(nickname, currentGameId!, result, 2);
+		// else if (game.scoreLeft === game.scoreRight) result = 1;
+		// addGameToStats(nickname, currentGameId!, result, 2);
 	  });
 	}
 

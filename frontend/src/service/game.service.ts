@@ -2,6 +2,17 @@ import { environment } from '../environments/environment';
 
 export class GameService {
 	apiUrl = `${environment.apiUrl}`;
+	private token: string | null = null;
+	constructor() {
+		if (localStorage.getItem("token")) {
+			try {
+				this.token = localStorage.getItem("token");
+			} catch (error) {
+				console.error('Error parsing user data from localStorage:', error);
+			}
+		}
+	}
+
 
 	async addGame(players: string[]) {
 		if (!players || players.length === 0) {
@@ -9,20 +20,7 @@ export class GameService {
 		}
 		const date = new Date().toISOString();
 		
-		// Recupera il token dall'oggetto user nel localStorage
-		const userDataString = localStorage.getItem("user");
-		let token: string | null = null;
-		
-		if (userDataString) {
-			try {
-				const userData = JSON.parse(userDataString);
-				token = userData.token;
-			} catch (error) {
-				console.error('Error parsing user data from localStorage:', error);
-			}
-		}
-		
-		if (!token) {
+		if (!this.token) {
 			throw new Error('No valid token found');
 		}
 		
@@ -32,8 +30,8 @@ export class GameService {
 		const res = await fetch(`${this.apiUrl}/add_game`, {
 			method: "POST",
 			headers: {
-			"Content-Type": "application/json",
-			Authorization: `Bearer ${token}`,
+				"Authorization": `Bearer ${this.token}`,
+				"Content-Type": "application/json",
 			},
 			body: JSON.stringify(body),
 		});
@@ -46,27 +44,17 @@ export class GameService {
 		}
 		
 		// Recupera il token dall'oggetto user nel localStorage
-		const userDataString = localStorage.getItem("user");
-		let token: string | null = null;
 		
-		if (userDataString) {
-			try {
-				const userData = JSON.parse(userDataString);
-				token = userData.token;
-			} catch (error) {
-				console.error('Error parsing user data from localStorage:', error);
-			}
-		}
 		
-		if (!token) {
+		if (!this.token) {
 			throw new Error('No valid token found');
 		}
 		
 		const res = await fetch(`${this.apiUrl}/update_game`, {
 			method: "PUT",
 			headers: {
+				"Authorization": `Bearer ${this.token}`,
 				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`,
 			},
 			body: JSON.stringify({ game_id, field, new_value }),
 		});
@@ -90,30 +78,49 @@ export class GameService {
 		}
 		
 		// Recupera il token dall'oggetto user nel localStorage
-		const userDataString = localStorage.getItem("user");
-		let token: string | null = null;
 		
-		if (userDataString) {
-			try {
-				const userData = JSON.parse(userDataString);
-				token = userData.token;
-			} catch (error) {
-				console.error('Error parsing user data from localStorage:', error);
-			}
-		}
-		
-		if (!token) {
+		if (this.token) {
 			throw new Error('No valid token found');
 		}
 		
 		const res = await fetch(`${this.apiUrl}/delete_game?game_id=${game_id}`, {
 			method: "DELETE",
 			headers: {
-				Authorization: `Bearer ${token}`,
+				"Authorization": `Bearer ${this.token}`,
 			},
 		});
 		if (!res.ok) {
 			throw new Error(`Error deleting game with ID ${game_id}`);
+		}
+		return res.json();
+	}
+
+	async upDateStat(name : string, game_id : number, result : number) {
+
+		if (!name || !game_id || result === undefined) {
+			throw new Error("Invalid parameters for updating stat");
+		}
+		if (!this.token) {
+			throw new Error('No valid token found');
+		}
+
+		const body = {
+			name: name,
+			game_id: game_id,
+			result: result,
+			index: 0
+		};
+		const res = await fetch(`${this.apiUrl}/update_stat`, {
+			
+			method: "PUT",
+			headers:{
+				"Authorization": `Bearer ${this.token}`,
+				"Content-Type": "application/json",
+			},
+			body : JSON.stringify(body),
+		});
+		if (!res.ok) {
+			throw new Error(`Error updating stat for ${name} in game ${game_id}`);
 		}
 		return res.json();
 	}
