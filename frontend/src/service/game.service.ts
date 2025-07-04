@@ -4,22 +4,7 @@ export class GameService {
 	apiUrl = `${environment.apiUrl}`;
 	private token: string | null = null;
 	constructor() {
-		// Prima prova a recuperare dal localStorage.token
-		const directToken = localStorage.getItem('token');
-		if (directToken) {
-			this.token = directToken;
-		} else {
-			// Altrimenti prova a recuperare dal localStorage.user.token
-			const userDataString = localStorage.getItem('user');
-			if (userDataString) {
-				try {
-					const userData = JSON.parse(userDataString);
-					this.token = userData.token || null;
-				} catch (error) {
-					console.error('Error parsing user data from localStorage:', error);
-				}
-			}
-		}
+		
 	}
 
 

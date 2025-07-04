@@ -30,16 +30,6 @@ export class ProfilePage {
 			}
 		}
 
-    this.userService.takeUserFromApi(localStorage.getItem('nickname') || '') 
-        .then((userData) => {
-            console.log('🔍 API call successful:', userData);
-            // ... resto del codice
-        })
-        .catch((error) => {
-            console.error('🔍 API call failed:', error);
-            console.error('🔍 This might be a token/auth issue');
-        });
-
 		this.userService.takeUserFromApi(localStorage.getItem('nickname') || '') 
 			.then((userData) => {
 				this.user.name = userData.name || '';

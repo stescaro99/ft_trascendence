@@ -2,15 +2,20 @@ import { GameState } from "../common/types";
 import { randomizePowerUp, update } from "./../common/GameUpdate";
 import { drawBall, drawRect, drawScore, drawPowerUp, drawField } from "../common/Draw";
 import { getBotActive, predictBallY, moveBot } from "../common/BotState";
-
+import { User } from "../../../model/user.model";
+import { UserService } from "../../../service/user.service";
+import { GameService } from "../../../service/game.service";
 
 // Helper per ottenere canvas e ctx in modo sicuro
 function getCanvasAndCtx() {
-  const canvas = document.getElementById("pong") as HTMLCanvasElement | null;
-  if (!canvas) throw new Error("Canvas not found!");
+	const canvas = document.getElementById("pong") as HTMLCanvasElement | null;
+	if (!canvas) throw new Error("Canvas not found!");
   const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
   return { canvas, ctx };
 }
+const user : User = localStorage.getItem('user') || JSON.parse(localStorage.getItem('user') || '{}');
+const userService: UserService = new UserService();
+const gameService: GameService = new GameService();
 
 function getPlayerNick(index: number, side: "left" | "right") {
   // Prova prima a prendere dall'utente loggato
@@ -148,14 +153,16 @@ let predictedY: number | null = null;
 let currentGameId: number | null = null;
 let gameCreated = false;
 
+
 // Sovrascrivi la funzione resetAfterPoint (o chiamala dove aggiorni i punteggi)
 const originalResetAfterPoint = (window as any).resetAfterPoint;
 (window as any).resetAfterPoint = async function(x: number, game: GameState) {
   if (x < game.canvas.width / 2) {
 	// Segna la destra
 	game.scoreRight++;
-	// if (typeof currentGameId === "number")
-	//   await updateGameField(currentGameId, "2_scores", game.scoreRight.toString());
+	 if (typeof currentGameId === "number")
+	   //await updateGameField(currentGameId, "2_scores", game.scoreRight.toString());
+	this.gameService.updateGame(currentGameId, "2_scores", game.scoreRight.toString())
   } else {
 	// Segna la sinistra
 	game.scoreLeft++;
@@ -166,7 +173,10 @@ const originalResetAfterPoint = (window as any).resetAfterPoint;
 };
 
 export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
-  const { canvas, ctx } = getCanvasAndCtx();
+  
+	
+	const { canvas, ctx } = getCanvasAndCtx();
+
   // Crea stato di gioco solo la prima volta
   
   if (!(window as any).game || (window as any).game.canvas !== canvas) {
@@ -189,9 +199,11 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
 	console.log("Players:", players);
 	
 	try {
-	// const res = await createGame(players);
-	const res = { id: 123 }; // Simulazione risposta backend
-	currentGameId = res.id;
+	gameService.addGame([user.nickname, 'guest']
+	).then((response) => {
+	  console.log("Game created on backend:", response);
+	  currentGameId  = response.id;
+	});
 	} catch (error) {
 	  console.error("Failed to create game on backend:", error);
 	  // Continua il gioco anche se il backend non risponde
@@ -209,6 +221,7 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
 	ctx.fillText(`${winner} ha vinto!`, canvas.width / 2, canvas.height / 2);
 
 	if (currentGameId) {
+		gameService
 	//   await updateGameField(currentGameId, "1_scores", game.scoreLeft.toString());
 	//   await updateGameField(currentGameId, "2_scores", game.scoreRight.toString());
 	//   await updateGameField(currentGameId, "status", "finished");
@@ -222,7 +235,7 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
 		  (game.scoreLeft > game.scoreRight && idx === 0) ||
 		  (game.scoreRight > game.scoreLeft && idx === 1)
 		) result = 2;
-		// else if (game.scoreLeft === game.scoreRight) result = 1;
+		else if (game.scoreLeft === game.scoreRight) result = 1;
 		// addGameToStats(nickname, currentGameId!, result, 2);
 	  });
 	}

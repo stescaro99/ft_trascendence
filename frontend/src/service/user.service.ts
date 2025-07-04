@@ -7,30 +7,28 @@ export class UserService {
 
 	private apiUrl = `${environment.apiUrl}`; 
 	
-	getUser(): User | null {
+	async getUser(): Promise<User | null >{
 		const nickname = localStorage.getItem('nickname');
-		if (localStorage.getItem('user') || nickname) {
-			if (nickname) {
-				this.takeUserFromApi(nickname)
-				.then((userData) => {
-					this.user.name = userData.name || '';
-					this.user.surname = userData.surname;
-						this.user.nickname = userData.nickname;
-						this.user.email = userData.email;
-						this.user.image_url = userData.image_url;
-						this.user.stats = userData.stats;
-						this.user.id = userData.id;
-						return this.user;
-					})
-					.catch((error) => {
-						console.error('Error fetching user data:', error);
-					});
-			}
-		} else {
-			console.warn('No user data found in localStorage');
-			return null;
-		}
-		return this.user;
+		console.log('getUser called with nickname:', nickname);
+		
+		if (nickname) {
+			try {
+				const userData = await this.takeUserFromApi(nickname);
+				this.user.name = userData.name || '';
+				this.user.surname = userData.surname;
+				this.user.nickname = userData.nickname;
+				this.user.email = userData.email;
+				this.user.image_url = userData.image_url;
+				this.user.stats = userData.stats;
+				this.user.id = userData.id;
+				return this.user;
+			} catch (error) {
+				console.error('Error fetching user data:', error);
+				return null;
+        }
+    }
+    
+    return null;
 	}
 
 	async takeUserFromApi(nick: string): Promise<any>{
