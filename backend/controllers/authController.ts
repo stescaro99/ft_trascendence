@@ -129,7 +129,7 @@ export async function GoogleOAuthCallback(request: FastifyRequest, reply: Fastif
 				name: userInfo.name,
 				surname: userInfo.family_name,
 				password: '', // Password is not used for OAuth users
-				nickname: userInfo.name || userInfo.email.split('@')[0] || `${userInfo.name.split(' ')[0]}_${Date.now()}`,
+				nickname: userInfo.name || userInfo.email.split('@')[0] || `${userInfo.name}_${Date.now()}`,
 				email: userInfo.email,
 				image_url: userInfo.picture,
 				tfa_code: null, // 2FA not set up for OAuth users
