@@ -38,15 +38,23 @@ export class UserService {
 		console.log('localStorage user:', localStorage.getItem('user'));
 		console.log('localStorage nickname:', nick);
 		
-		// Recupera il token dall'oggetto user nel localStorage
-		const userDataString = localStorage.getItem('token');
+		// Recupera il token dall'oggetto user nel localStorage o dal token diretto
 		let token: string | null = null;
 		
-		if (userDataString) {
-			try {
-				token = userDataString;
-			} catch (error) {
-				console.error('Error parsing user data from localStorage:', error);
+		// Prima prova a recuperare dal localStorage.token
+		const directToken = localStorage.getItem('token');
+		if (directToken) {
+			token = directToken;
+		} else {
+			// Altrimenti prova a recuperare dal localStorage.user.token
+			const userDataString = localStorage.getItem('user');
+			if (userDataString) {
+				try {
+					const userData = JSON.parse(userDataString);
+					token = userData.token || null;
+				} catch (error) {
+					console.error('Error parsing user data from localStorage:', error);
+				}
 			}
 		}
 		

@@ -18,7 +18,7 @@ export async function generate2FA(request: FastifyRequest, reply: FastifyReply) 
 		return reply.code(401).send({ error: 'Invalid credentials' });
 	}
 	try {
-		const issuer = 'FT_transcendence';
+		const issuer = process.env.TFA_ISSUER || 'ft_transcendence';
 		const secret = speakeasy.generateSecret({ name: user.nickname, issuer });
 		user.tfa_code = secret.base32;
 		await user.save();
