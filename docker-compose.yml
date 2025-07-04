@@ -18,7 +18,7 @@ services:
       - SSL_CERT_PATH=/app/cert/cert.pem
       - SSL_KEY_PATH=/app/cert/key.pem
       - HOST_ID=${HOST_ID}
-      - FRONTEND_URL=https://${HOST_ID}:8443
+      - FRONTEND_URL=${FRONTEND_URL}
     networks:
       - transcendence-network
 

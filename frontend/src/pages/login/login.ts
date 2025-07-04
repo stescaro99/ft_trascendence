@@ -168,7 +168,7 @@ export class LogInPage{
 					this.showHostConfigWarning({
 						hostId: currentHost.split(':')[0],
 						setupCommand: {
-							linux: `echo "${currentHost.split(':')[0]} trascendence.be trascendence.fe" | sudo tee -a /etc/hosts`
+							linux: `echo "${currentHost.split(':')[0]} transcendence.be transcendence.fe" | sudo tee -a /etc/hosts`
 						}
 					});
 				}

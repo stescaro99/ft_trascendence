@@ -59,13 +59,13 @@ curl -k https://192.168.1.61:9443/api/host-config
 
 **Frontend:**
 - ✅ Mostra avviso giallo
-- ✅ Visualizza comando: `echo "192.168.1.61 trascendence.be trascendence.fe" | sudo tee -a /etc/hosts`
+- ✅ Visualizza comando: `echo "192.168.1.61 transcendence.be transcendence.fe" | sudo tee -a /etc/hosts`
 - ✅ Elenca limitazioni
 
 ### Scenario 2: Accesso tramite Dominio
 ```bash
-# Utente accede a: https://trascendence.fe:8443
-curl -k https://trascendence.be:9443/api/host-config
+# Utente accede a: https://transcendence.fe:8443
+curl -k https://transcendence.be:9443/api/host-config
 ```
 
 **Risposta:**
@@ -73,7 +73,7 @@ curl -k https://trascendence.be:9443/api/host-config
 {
   "accessViaIP": false,
   "hostId": "192.168.1.61",
-  "currentHost": "trascendence.be:9443",
+  "currentHost": "transcendence.be:9443",
   "limitations": []
 }
 ```
@@ -104,7 +104,7 @@ curl -k https://trascendence.be:9443/api/host-config
 curl -k https://192.168.1.61:9443/api/host-config
 
 # Test rilevamento dominio  
-curl -k https://trascendence.be:9443/api/host-config
+curl -k https://transcendence.be:9443/api/host-config
 
 # Verifica header
 curl -k -I https://192.168.1.61:9443/api/host-config
@@ -115,7 +115,7 @@ curl -k -I https://192.168.1.61:9443/api/host-config
 1. Accedi a `https://192.168.1.61:8443`
 2. Vai alla pagina di login
 3. Dovresti vedere il banner giallo di avviso
-4. Configura hosts e riprova con `https://trascendence.fe:8443`
+4. Configura hosts e riprova con `https://transcendence.fe:8443`
 5. L'avviso non dovrebbe più apparire
 
 ### Test Connettività
@@ -128,17 +128,17 @@ curl -k -I https://192.168.1.61:9443/api/host-config
 
 ### Linux/macOS
 ```bash
-echo "192.168.1.61 trascendence.be trascendence.fe" | sudo tee -a /etc/hosts
+echo "192.168.1.61 transcendence.be transcendence.fe" | sudo tee -a /etc/hosts
 ```
 
 ### Windows (Prompt come Amministratore)
 ```cmd
-echo 192.168.1.61 trascendence.be trascendence.fe >> C:\Windows\System32\drivers\etc\hosts
+echo 192.168.1.61 transcendence.be transcendence.fe >> C:\Windows\System32\drivers\etc\hosts
 ```
 
 ### Manuale
 1. Apri il file hosts del tuo sistema
-2. Aggiungi la riga: `192.168.1.61 trascendence.be trascendence.fe`
+2. Aggiungi la riga: `192.168.1.61 transcendence.be transcendence.fe`
 3. Salva e riavvia il browser
 
 ## 🔄 Flusso Completo

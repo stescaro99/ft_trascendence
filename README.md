@@ -6,8 +6,8 @@ Frontend - aconciar(Pong)-ucolla-fgori
 ## 🚀 Setup con HTTPS e Domini Personalizzati
 
 Il progetto è configurato per utilizzare HTTPS con certificati SSL e domini personalizzati:
-- **Frontend**: `https://trascendence.fe:8443`
-- **Backend**: `https://trascendence.be:9443`
+- **Frontend**: `https://transcendence.fe:8443`
+- **Backend**: `https://transcendence.be:9443`
 
 ### 📋 Prerequisiti
 
@@ -42,7 +42,7 @@ Il progetto è configurato per utilizzare HTTPS con certificati SSL e domini per
    
    Oppure manualmente:
    ```bash
-   echo "192.168.1.61 trascendence.be trascendence.fe" | sudo tee -a /etc/hosts
+   echo "192.168.1.61 transcendence.be transcendence.fe" | sudo tee -a /etc/hosts
    ```
 
 3. **Genera certificati SSL** (se necessario):
@@ -57,9 +57,9 @@ Il progetto è configurato per utilizzare HTTPS con certificati SSL e domini per
 
 ### 🌐 Accesso
 
-- **Frontend**: https://trascendence.fe:8443
-- **Backend API**: https://trascendence.be:9443/api
-- **WebSocket** (multiplayer): wss://trascendence.be:9443/ws/game
+- **Frontend**: https://transcendence.fe:8443
+- **Backend API**: https://transcendence.be:9443/api
+- **WebSocket** (multiplayer): wss://transcendence.be:9443/ws/game
 
 ## 🌐 Accesso da Altre Macchine
 
@@ -67,7 +67,7 @@ Per accedere al progetto da altre macchine nella stessa rete:
 
 1. **Sulla macchina remota**, aggiungi la stessa voce hosts:
    ```bash
-   echo "192.168.1.61 trascendence.be trascendence.fe" | sudo tee -a /etc/hosts
+   echo "192.168.1.61 transcendence.be transcendence.fe" | sudo tee -a /etc/hosts
    ```
 
 2. **Configura il firewall** sulla macchina host per permettere le connessioni:
@@ -88,9 +88,9 @@ Per accedere al progetto da altre macchine nella stessa rete:
    ```
 
 4. **Accedi alle applicazioni**:
-   - Frontend: https://trascendence.fe:8443
-   - Backend: https://trascendence.be:9443
-   - Immagini: https://trascendence.be:9443/uploads/nome_file.jpg
+   - Frontend: https://transcendence.fe:8443
+   - Backend: https://transcendence.be:9443
+   - Immagini: https://transcendence.be:9443/uploads/nome_file.jpg
 
 **Nota**: Le immagini caricate saranno automaticamente accessibili da tutte le macchine configurate!
 
@@ -107,9 +107,9 @@ I certificati sono condivisi tra frontend e backend e si trovano in `frontend/ce
 ### 🔑 Google OAuth
 
 Per il corretto funzionamento di Google OAuth, assicurati di configurare in Google Cloud Console:
-- **Authorized redirect URI**: `https://trascendence.be:9443/api/google/callback`
+- **Authorized redirect URI**: `https://transcendence.be:9443/api/google/callback`
 
-⚠️ **Importante**: Google OAuth non accetta redirect URI su indirizzi IP privati, quindi è necessario usare il dominio `trascendence.be` configurato nel file hosts.
+⚠️ **Importante**: Google OAuth non accetta redirect URI su indirizzi IP privati, quindi è necessario usare il dominio `transcendence.be` configurato nel file hosts.
 
 ### 🐳 Avvio Container
 ### 🐳 Avvio Container
@@ -129,7 +129,7 @@ Se riscontri problemi:
 1. **Domini non risolti**: Verifica che i domini siano nel file `/etc/hosts`
 2. **Porte occupate**: Controlla che le porte 8443 e 9443 siano libere
 3. **Certificati SSL**: Il browser mostrerà un avviso per certificati self-signed
-4. **Google OAuth**: Assicurati che `trascendence.be:9443` sia nella whitelist di Google
+4. **Google OAuth**: Assicurati che `transcendence.be:9443` sia nella whitelist di Google
 5. **Log dei container**: `docker-compose logs -f`
 
 ### 📝 Note per lo Sviluppo

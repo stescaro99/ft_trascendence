@@ -12,17 +12,17 @@ sudo nano /etc/hosts
 
 Aggiungi:
 ```
-192.168.1.61 trascendence.be trascendence.fe
+192.168.1.61 transcendence.be transcendence.fe
 ```
 
 ### 2. Accesso alle applicazioni
 
 Una volta configurato il file hosts, potrai accedere da qualsiasi macchina nella rete:
 
-- **Frontend**: https://trascendence.fe:8443
-- **Backend API**: https://trascendence.be:9443
-- **Immagini caricate**: https://trascendence.be:9443/uploads/nomefile.jpg
-- **Swagger Documentation**: https://trascendence.be:9443/swagger
+- **Frontend**: https://transcendence.fe:8443
+- **Backend API**: https://transcendence.be:9443
+- **Immagini caricate**: https://transcendence.be:9443/uploads/nomefile.jpg
+- **Swagger Documentation**: https://transcendence.be:9443/swagger
 
 ### 3. Certificati SSL
 
@@ -37,13 +37,13 @@ Per verificare che tutto funzioni dalla macchina remota:
 
 ```bash
 # Test connessione backend
-curl -k https://trascendence.be:9443/api/health
+curl -k https://transcendence.be:9443/api/health
 
 # Test connessione frontend  
-curl -k https://trascendence.fe:8443
+curl -k https://transcendence.fe:8443
 
 # Test accesso a un'immagine (sostituisci con un'immagine esistente)
-curl -k https://trascendence.be:9443/uploads/example.jpg
+curl -k https://transcendence.be:9443/uploads/example.jpg
 ```
 
 ### 5. Firewall
@@ -63,9 +63,9 @@ sudo firewall-cmd --reload
 
 ## Note Importanti
 
-1. **Google OAuth**: Il callback è configurato per il dominio `trascendence.be:9443`, quindi il login Google funzionerà anche dalle macchine remote.
+1. **Google OAuth**: Il callback è configurato per il dominio `transcendence.be:9443`, quindi il login Google funzionerà anche dalle macchine remote.
 
-2. **Immagini**: Le immagini caricate saranno accessibili da qualsiasi macchina all'URL `https://trascendence.be:9443/uploads/nomefile.jpg`
+2. **Immagini**: Le immagini caricate saranno accessibili da qualsiasi macchina all'URL `https://transcendence.be:9443/uploads/nomefile.jpg`
 
 3. **CORS**: Il backend è già configurato per accettare richieste dal frontend, indipendentemente dalla macchina.
 

@@ -20,7 +20,7 @@ mkdir -p frontend/cert
 openssl req -x509 -newkey rsa:4096 -sha256 -days 365 \
     -nodes -keyout frontend/cert/key.pem -out frontend/cert/cert.pem \
     -subj "/CN=$HOST_ID" \
-    -addext "subjectAltName=DNS:trascendence.be,DNS:trascendence.fe,IP:$HOST_ID,DNS:localhost,IP:127.0.0.1"
+    -addext "subjectAltName=DNS:transcendence.be,DNS:transcendence.fe,IP:$HOST_ID,DNS:localhost,IP:127.0.0.1"
 
 echo ""
 echo "✅ Certificati generati con successo in frontend/cert/"
@@ -29,8 +29,8 @@ echo "   - key.pem"
 echo ""
 echo "🎯 I certificati sono validi per:"
 echo "   - $HOST_ID"
-echo "   - trascendence.be"
-echo "   - trascendence.fe" 
+echo "   - transcendence.be"
+echo "   - transcendence.fe" 
 echo "   - localhost"
 echo "   - 127.0.0.1"
 echo ""

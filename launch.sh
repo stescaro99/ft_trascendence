@@ -20,8 +20,8 @@ fi
 
 echo "📋 Configurazione rilevata:"
 echo "   HOST_ID: $HOST_ID"
-echo "   Backend: https://trascendence.be:9443 (https://$HOST_ID:9443)"
-echo "   Frontend: https://trascendence.fe:8443 (https://$HOST_ID:8443)"
+echo "   Backend: https://transcendence.be:9443 (https://$HOST_ID:9443)"
+echo "   Frontend: https://transcendence.fe:8443 (https://$HOST_ID:8443)"
 echo ""
 
 # Controlla se i certificati esistono
@@ -34,9 +34,9 @@ fi
 echo "✅ Certificati SSL trovati"
 
 # Aggiungi gli host al file hosts se non esistono già
-if ! grep -q "trascendence.be\|trascendence.fe" /etc/hosts; then
+if ! grep -q "transcendence.be\|transcendence.fe" /etc/hosts; then
     echo "📝 Aggiungendo entries al file hosts..."
-    echo "$HOST_ID trascendence.be trascendence.fe" | sudo tee -a /etc/hosts
+    echo "$HOST_ID transcendence.be transcendence.fe" | sudo tee -a /etc/hosts
     echo "✅ Host entries aggiunti"
 else
     echo "✅ Host entries già presenti"
@@ -56,9 +56,9 @@ echo ""
 echo "🎉 Avvio completato!"
 echo ""
 echo "🌐 Accedi tramite:"
-echo "   Frontend: https://trascendence.fe:8443"
-echo "   Backend API: https://trascendence.be:9443/api"
+echo "   Frontend: https://transcendence.fe:8443"
+echo "   Backend API: https://transcendence.be:9443/api"
 echo ""
 echo "📡 Per WebSocket (multiplayer):"
-echo "   wss://trascendence.be:9443/ws/game"
+echo "   wss://transcendence.be:9443/ws/game"
 echo ""

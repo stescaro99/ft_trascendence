@@ -14,10 +14,10 @@ if [ -z "$HOST_ID" ]; then
 fi
 
 # Script per aggiungere gli host locali
-echo "$HOST_ID trascendence.be trascendence.fe" | sudo tee -a /etc/hosts
+echo "$HOST_ID transcendence.be transcendence.fe" | sudo tee -a /etc/hosts
 
 echo "Host entries added successfully!"
 echo "HOST_ID: $HOST_ID"
 echo "You can now access:"
-echo "- Backend: https://trascendence.be:9443"
-echo "- Frontend: https://trascendence.fe:8443"
+echo "- Backend: https://transcendence.be:9443"
+echo "- Frontend: https://transcendence.fe:8443"

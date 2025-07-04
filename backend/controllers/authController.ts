@@ -18,7 +18,7 @@ export async function generate2FA(request: FastifyRequest, reply: FastifyReply) 
 		return reply.code(401).send({ error: 'Invalid credentials' });
 	}
 	try {
-		const issuer = 'FT_TRASCENDENCE';
+		const issuer = 'FT_transcendence';
 		const secret = speakeasy.generateSecret({ name: user.nickname, issuer });
 		user.tfa_code = secret.base32;
 		await user.save();
@@ -139,7 +139,7 @@ export async function GoogleOAuthCallback(request: FastifyRequest, reply: Fastif
 		}
 		const jwtToken = createJWT({ id: user.id, nickname: user.nickname });
 
-		const frontendUrl = `${process.env.FRONTEND_URL}` ||'https://trascendence.fe:8443';
+		const frontendUrl = `${process.env.FRONTEND_URL}` ||'https://transcendence.fe:8443';
 		return reply.redirect(`${frontendUrl}/?token=${jwtToken}&nickname=${encodeURIComponent(user.nickname)}`);
 	} catch (error) {
 		return reply.status(500).send({

@@ -13,16 +13,16 @@ const configRoutes = async (fastify: any) => {
 			accessViaIP: isAccessViaIP,
 			hostId: hostId,
 			currentHost: host,
-			recommendedHostsEntry: hostId ? `${hostId} trascendence.be trascendence.fe` : null,
+			recommendedHostsEntry: hostId ? `${hostId} transcendence.be transcendence.fe` : null,
 			setupCommand: {
-				linux: hostId ? `echo "${hostId} trascendence.be trascendence.fe" | sudo tee -a /etc/hosts` : null,
-				windows: hostId ? `echo ${hostId} trascendence.be trascendence.fe >> C:\\Windows\\System32\\drivers\\etc\\hosts` : null,
+				linux: hostId ? `echo "${hostId} transcendence.be transcendence.fe" | sudo tee -a /etc/hosts` : null,
+				windows: hostId ? `echo ${hostId} transcendence.be transcendence.fe >> C:\\Windows\\System32\\drivers\\etc\\hosts` : null,
 				manual: 'Modifica manualmente il file hosts del tuo sistema operativo'
 			},
 			optimalUrls: {
-				frontend: 'https://trascendence.fe:8443',
-				backend: 'https://trascendence.be:9443',
-				swagger: 'https://trascendence.be:9443/swagger'
+				frontend: 'https://transcendence.fe:8443',
+				backend: 'https://transcendence.be:9443',
+				swagger: 'https://transcendence.be:9443/swagger'
 			},
 			limitations: isAccessViaIP ? [
 				'Google OAuth potrebbe non funzionare correttamente',

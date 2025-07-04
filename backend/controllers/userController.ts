@@ -130,7 +130,7 @@ export async function uploadImage(request: FastifyRequest, reply: FastifyReply) 
 			const filepath = path.join(uploadDir, filename);
 			const writeStream = fs.createWriteStream(filepath);		await filePart.file.pipe(writeStream);
 		// Use the frontend URL to serve images since they are mounted there
-		const frontendUrl = 'https://trascendence.fe:8443'; //|| `https://${process.env.HOST_ID}:8443`;
+		const frontendUrl = 'https://transcendence.fe:8443'; //|| `https://${process.env.HOST_ID}:8443`;
 		const imageUrl = `${frontendUrl}/uploads/${filename}`;
 		return reply.code(200).send({ imageUrl });
 		}

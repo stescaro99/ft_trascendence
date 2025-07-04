@@ -49,7 +49,7 @@ server.addHook('preHandler', async (request: any, reply: any) => {
 	if (host && hostId && (host.includes(hostId) || host.includes('localhost') || host.includes('127.0.0.1'))) {
 		// Aggiungi header per indicare che l'accesso è tramite IP
 		reply.header('X-Access-Via-IP', 'true');
-		reply.header('X-Host-Config-Needed', `${hostId} trascendence.be trascendence.fe`);
+		reply.header('X-Host-Config-Needed', `${hostId} transcendence.be transcendence.fe`);
 	}
 });
 
@@ -58,7 +58,7 @@ const start = async (sequelize: any) => {
 		// Configure CORS to allow frontend domain and IP access
 		await server.register(fastifyCors, {
 			origin: [
-				'https://trascendence.fe:8443', 
+				'https://transcendence.fe:8443', 
 				'https://localhost:8443',
 				`https://${process.env.HOST_ID}:8443`,
 				`https://127.0.0.1:8443`
@@ -69,7 +69,7 @@ const start = async (sequelize: any) => {
 		await server.register(swagger, {
 			openapi: {
 				info: {
-					title: 'API ft_trascendence',
+					title: 'API ft_transcendence',
 					description: 'Documentazione API Pong',
 					version: '1.0.0'
 				},
