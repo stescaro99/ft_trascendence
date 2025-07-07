@@ -162,11 +162,12 @@ const originalResetAfterPoint = (window as any).resetAfterPoint;
 	game.scoreRight++;
 	 if (typeof currentGameId === "number")
 	   //await updateGameField(currentGameId, "2_scores", game.scoreRight.toString());
-	this.gameService.updateGame(currentGameId, "2_scores", game.scoreRight.toString())
+	this.gameService.updateGame(currentGameId, "2_scores", game.scoreRight.toString());
   } else {
 	// Segna la sinistra
 	game.scoreLeft++;
-	// if (typeof currentGameId === "number")
+	if (typeof currentGameId === "number")
+		this.gameService.updateGame(currentGameId, "1_scores", game.scoreLeft.toString());
 	//   await updateGameField(currentGameId, "1_scores", game.scoreLeft.toString());
   }
   if (originalResetAfterPoint) originalResetAfterPoint(x, game);
@@ -222,6 +223,9 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
 
 	if (currentGameId) {
 		gameService
+		gameService.updateGame(currentGameId, "1_scores", game.scoreLeft.toString());
+		gameService.updateGame(currentGameId, "2_scores", game.scoreRight.toString());
+		gameService.updateGame(currentGameId, "status", "finished");
 	//   await updateGameField(currentGameId, "1_scores", game.scoreLeft.toString());
 	//   await updateGameField(currentGameId, "2_scores", game.scoreRight.toString());
 	//   await updateGameField(currentGameId, "status", "finished");
@@ -236,6 +240,7 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
 		  (game.scoreRight > game.scoreLeft && idx === 1)
 		) result = 2;
 		else if (game.scoreLeft === game.scoreRight) result = 1;
+		gameService.upDateStat(nickname, currentGameId!, result);
 		// addGameToStats(nickname, currentGameId!, result, 2);
 	  });
 	}
