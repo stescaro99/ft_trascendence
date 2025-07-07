@@ -7,7 +7,7 @@ export interface Ball {
 	speed: number;
   }
   
-  export interface Paddle {
+export interface Paddle {
 	nickname: string;
 	x: number;
 	y: number;
@@ -16,7 +16,7 @@ export interface Ball {
 	height: number;
   }
   
-  export interface PowerUp {
+export interface PowerUp {
 	x: number;
 	y: number;
 	width: number;
@@ -26,7 +26,7 @@ export interface Ball {
 	color: string;
   }
   
-  export interface GameState {
+export interface GameState {
 	ball: Ball;
 	leftPaddle: Paddle[];
 	rightPaddle: Paddle[];
@@ -41,4 +41,4 @@ export interface Ball {
 	paddleSpeed: number;
   }
 
-  export const triangleSize = 60;
+export const triangleSize = 60;

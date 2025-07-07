@@ -34,7 +34,7 @@ export class UserService {
 	}
 
 	async takeUserFromApi(nick: string): Promise<any>{
-		const url = `${this.apiUrl}/get_user?nickname=${nick}`;
+		const url = `${this.apiUrl}/users?nickname=${nick}`;
 		console.log('localStorage user:', localStorage.getItem('user'));
 		console.log('localStorage nickname:', nick);
 		

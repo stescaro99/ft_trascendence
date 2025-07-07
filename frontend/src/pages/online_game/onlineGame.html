@@ -1,8 +1,24 @@
-<div>
-	<span >online game</span>
+<!-- <div>
+	<span>online game</span>
 	<div class="flex flex-col items-center">
-		<div id="nickname"></div>
-		<div id="idRoom"></div>
-		<div id="players"></div>
+	  <div id="nickname"></div>
+	  <div id="idRoom"></div>
+	  <div id="players"></div>
+	  <canvas id="gameCanvas" width="800" height="600"></canvas>
+	</div>
+  </div>
+   -->
 
+<div class="flex flex-col items-center mt-8 space-y-4">
+	<h2 class="text-xl font-bold">Online Game</h2>
+
+	<div id="nickname" class="text-blue-600 font-medium"></div>
+	<div id="status" class="text-gray-500 text-sm">In attesa di un avversario...</div>
+
+	<canvas id="gameCanvas" width="800" height="600" class="hidden border border-gray-400 shadow-md"></canvas>
+
+	<div id="matchInfo" class="text-green-500 text-sm hidden">
+		Partita trovata!
+	</div>
 </div>
+  
