@@ -3,17 +3,17 @@ import { UserService } from '../../service/user.service';
 import { User } from '../../model/user.model';
 import { TranslationService } from '../../service/translation.service';
 import { RemoteController } from "./RemoteController";
-import { MultiplayerService } from '../../services/multiplayerService';
+import multiplayerService from '../../services/multiplayerService';
 
 window.addEventListener("DOMContentLoaded", () => {
 	const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 	const status = document.getElementById("status")!;
 	const matchInfo = document.getElementById("matchInfo")!;
 
-	MultiplayerService.connect();
+	multiplayerService.connect();
 
-	MultiplayerService.onGameStart(() => {
-		status.textContent = "🎉 Partita trovata!";
+	multiplayerService.onGameStart(() => {
+		status.textContent = "Partita trovata!";
 		matchInfo.classList.remove("hidden");
 		canvas.classList.remove("hidden");
 

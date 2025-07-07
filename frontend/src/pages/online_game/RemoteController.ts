@@ -41,12 +41,10 @@ export class RemoteController {
         drawBall(this.ctx, state.ball);
         drawPowerUp(this.ctx, state.powerUp);
     
-        // Paddle SX
         state.leftPaddle.forEach(p =>
             drawRect(this.ctx, p.x, p.y, state.paddleWidth, p.height, "#FFFFFF")
         );
     
-        // Paddle DX
         state.rightPaddle.forEach(p =>
             drawRect(this.ctx, p.x, p.y, state.paddleWidth, p.height, "#FFFFFF")
         );
