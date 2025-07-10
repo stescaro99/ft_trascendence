@@ -5,6 +5,7 @@ import { getBotActive, predictBallY, moveBot } from "../common/BotState";
 import { User } from "../../../model/user.model";
 import { UserService } from "../../../service/user.service";
 import { GameService } from "../../../service/game.service";
+import { Game } from "../../../model/game.model";
 
 // Helper per ottenere canvas e ctx in modo sicuro
 function getCanvasAndCtx() {
@@ -15,6 +16,7 @@ function getCanvasAndCtx() {
 }
 const user : User = localStorage.getItem('user') || JSON.parse(localStorage.getItem('user') || '{}');
 const userService: UserService = new UserService();
+let gameRoom : Game = new Game();
 const gameService: GameService = new GameService();
 
 function getPlayerNick(index: number, side: "left" | "right") {
@@ -150,7 +152,6 @@ function render(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, game: 
 // === Game loop ===
 let botInterval: number | undefined = undefined;
 let predictedY: number | null = null;
-let currentGameId: number | null = null;
 let gameCreated = false;
 
 
@@ -160,19 +161,20 @@ const originalResetAfterPoint = (window as any).resetAfterPoint;
   if (x < game.canvas.width / 2) {
 	// Segna la destra
 	game.scoreRight++;
-	 if (typeof currentGameId === "number")
-	   //await updateGameField(currentGameId, "2_scores", game.scoreRight.toString());
-	this.gameService.updateGame(currentGameId, "2_scores", game.scoreRight.toString());
+	gameRoom.scores = [game.scoreLeft, game.scoreRight++];
+	 if (typeof gameRoom.game_id === "number")
+		this.gameService.updateGame(gameRoom.game_id, "2_scores", game.scoreRight.toString());
   } else {
 	// Segna la sinistra
 	game.scoreLeft++;
-	if (typeof currentGameId === "number")
-		this.gameService.updateGame(currentGameId, "1_scores", game.scoreLeft.toString());
-	//   await updateGameField(currentGameId, "1_scores", game.scoreLeft.toString());
+	gameRoom.scores = [game.scoreLeft++, game.scoreRight];
+	if (typeof gameRoom.game_id === "number")
+		this.gameService.updateGame(gameRoom.game_id, "1_scores", game.scoreLeft.toString());
   }
   if (originalResetAfterPoint) originalResetAfterPoint(x, game);
 };
-
+let lastLogTime = 0;
+const LOG_INTERVAL = 3000;
 export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
   
 	
@@ -185,10 +187,21 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
 	setupKeyboard((window as any).game);
 	predictedY = predictBallY((window as any).game.ball, (window as any).game.rightPaddle[0].x, canvas);
 	gameCreated = false;
-	currentGameId = null;
+	gameRoom.game_id = undefined;
   }
   const game: GameState = (window as any).game;
-
+  const now = Date.now();
+  if (now - lastLogTime > LOG_INTERVAL) {
+    console.log("DEBUG Auto-log:", {
+      scoreLeft: game.scoreLeft,
+      scoreRight: game.scoreRight,
+      gameId: gameRoom.game_id,
+      gameCreated: gameCreated,
+      timestamp: new Date().toLocaleTimeString()
+    });
+    lastLogTime = now;
+  }
+  
   // Crea partita su backend solo la prima volta
   if (!gameCreated)
   {
@@ -202,47 +215,81 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
 	try {
 	gameService.addGame([user.nickname, 'guest']
 	).then((response) => {
-	  console.log("Game created on backend:", response);
-	  currentGameId  = response.id;
-	});
+		console.log("Game created on backend:", response);
+		console.log("response.game:", response.game);
+		console.log("response.game.game_id:", response.game.game_id);
+		
+		gameRoom = response.game;
+		console.log("gameRoom after assignment:", gameRoom);
+		console.log("gameRoom.game_id after assignment:", gameRoom.game_id);
+	
+		}).catch((error) => {
+		console.error("DEBUG: Failed to create game:", error);
+		gameRoom.game_id = undefined;
+		});
 	} catch (error) {
 	  console.error("Failed to create game on backend:", error);
 	  // Continua il gioco anche se il backend non risponde
-	  currentGameId = null;
+	  gameRoom.game_id = undefined;
 	}
 	gameCreated = true;
   }
 
   // Fine partita
-  if (game.scoreLeft >= game.maxScore || game.scoreRight >= game.maxScore) {
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	ctx.fillStyle = "white";
-	ctx.font = "40px Arial";
-	const winner = game.scoreLeft > game.scoreRight ? "Giocatore 1" : "Giocatore 2";
-	ctx.fillText(`${winner} ha vinto!`, canvas.width / 2, canvas.height / 2);
+	if (game.scoreLeft >= game.maxScore || game.scoreRight >= game.maxScore) {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.fillStyle = "white";
+		ctx.font = "40px Arial";
+		const winner = game.scoreLeft > game.scoreRight ? localStorage.getItem("nickname") : "Giocatore 2";
+		ctx.fillText(`${winner} ha vinto!`, canvas.width / 2, canvas.height / 2);
 
-	if (currentGameId) {
-		gameService
-		gameService.updateGame(currentGameId, "1_scores", game.scoreLeft.toString());
-		gameService.updateGame(currentGameId, "2_scores", game.scoreRight.toString());
-		gameService.updateGame(currentGameId, "status", "finished");
-	//   await updateGameField(currentGameId, "1_scores", game.scoreLeft.toString());
-	//   await updateGameField(currentGameId, "2_scores", game.scoreRight.toString());
-	//   await updateGameField(currentGameId, "status", "finished");
-	  const players = [
-		game.leftPaddle[0].nickname,
-		game.rightPaddle[0].nickname
-	  ];
-	  players.forEach((nickname, idx) => {
+		if (gameRoom.game_id) {
+			gameService.updateGame(gameRoom.game_id, "1_scores", game.scoreLeft.toString())
+			.then(() => console.log("DEBUG: Successfully updated left score to:", game.scoreLeft))
+			.catch((error) => console.error("DEBUG: Failed to update left score:", error));
+			gameService.updateGame(gameRoom.game_id, "2_scores", game.scoreRight.toString())
+			.then(() => console.log("DEBUG: Successfully updated right score to:", game.scoreRight))
+			.catch((error) => console.error("DEBUG: Failed to update right score:", error));
+
+
+		const players = [
+		game.leftPaddle[0].nickname,   // idx = 0 (giocatore sinistro)
+		game.rightPaddle[0].nickname   // idx = 1 (giocatore destro)
+		];
+
+		players.forEach((nickname, idx) => {
 		let result = 0;
-		if (
-		  (game.scoreLeft > game.scoreRight && idx === 0) ||
-		  (game.scoreRight > game.scoreLeft && idx === 1)
-		) result = 2;
-		else if (game.scoreLeft === game.scoreRight) result = 1;
-		gameService.upDateStat(nickname, currentGameId!, result);
-		// addGameToStats(nickname, currentGameId!, result, 2);
-	  });
+		
+		if (game.scoreLeft === game.scoreRight) {
+			result = 1; // pareggio per entrambi
+		} else if (
+			(game.scoreLeft > game.scoreRight && idx === 0) ||  // sinistro vince E sono il giocatore sinistro
+			(game.scoreRight > game.scoreLeft && idx === 1)     // destro vince E sono il giocatore destro
+		) {
+			result = 2; // vittoria per questo giocatore
+		} else {
+			result = 0; // sconfitta per questo giocatore
+		}
+		if (idx === 0) {
+			gameService.upDateStat(nickname, gameRoom.game_id!, result)
+				.then(() => console.log(`DEBUG: Successfully updated stats for ${nickname} with result:`, result))
+				.catch((error) => console.error(`DEBUG: Failed to update stats for ${nickname}:`, error));
+			}
+		});
+
+		// Determina il vincitore e aggiorna una volta sola
+		let winnerNickname = "";
+		if (game.scoreLeft > game.scoreRight) {
+		winnerNickname = game.leftPaddle[0].nickname;
+		} else if (game.scoreRight > game.scoreLeft) {
+		winnerNickname = game.rightPaddle[0].nickname;
+		} else {
+		winnerNickname = "Draw"; // o gestisci il pareggio come preferisci
+		}
+
+		gameService.updateGame(gameRoom.game_id, "winner_nickname", winnerNickname)
+		.then(() => console.log("DEBUG: Successfully updated winner nickname to:", winnerNickname))
+		.catch((error) => console.error("DEBUG: Failed to update winner nickname:", error));
 	}
 
 	if (botInterval) {
@@ -250,7 +297,7 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
 	  botInterval = undefined;
 	}
 
-	currentGameId = null;
+	gameRoom.game_id = undefined;
 	gameCreated = false;
 
 	return;
