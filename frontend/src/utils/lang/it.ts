@@ -2,6 +2,8 @@ export default {
     homepage: {
         "login": "accedi",
         "play": "gioca",
+        "profile": "profilo",
+        "welcome": "Ready to play!"
     },
     loginpage: {
         "LOGIN": "ACCEDI",

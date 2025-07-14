@@ -1,12 +1,11 @@
 import './style.css';
-import {HomePage} from './pages/home/home';
-import {IdentificationPage} from './pages/identification/identification';
-import {StatsPage} from './pages/stats/stats';
-import {LogInPage} from './pages/login/login';
-import {ProfilePage} from './pages/profile/profile';
+import { HomePage } from './pages/home/home';
+import { IdentificationPage } from './pages/identification/identification';
+import { StatsPage } from './pages/stats/stats';
+import { LogInPage } from './pages/login/login';
+import { ProfilePage } from './pages/profile/profile';
 import { GamePage } from './pages/game/game';
 import { OnlineGamePage } from './pages/online_game/online_game';
-
 
 console.log("Script caricato");
 

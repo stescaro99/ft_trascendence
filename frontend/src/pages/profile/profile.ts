@@ -30,15 +30,15 @@ export class ProfilePage {
 			}
 		}
 
-    this.userService.takeUserFromApi(localStorage.getItem('nickname') || '') 
-        .then((userData) => {
-            console.log('🔍 API call successful:', userData);
-            // ... resto del codice
-        })
-        .catch((error) => {
-            console.error('🔍 API call failed:', error);
-            console.error('🔍 This might be a token/auth issue');
-        });
+		this.userService.takeUserFromApi(localStorage.getItem('nickname') || '') 
+			.then((userData) => {
+				console.log('🔍 API call successful:', userData);
+				// ... resto del codice
+			})
+			.catch((error) => {
+				console.error('🔍 API call failed:', error);
+				console.error('🔍 This might be a token/auth issue');
+			});
 
 		this.userService.takeUserFromApi(localStorage.getItem('nickname') || '') 
 			.then((userData) => {
@@ -55,8 +55,6 @@ export class ProfilePage {
 			.catch((error) => {
 				console.error('Error fetching user data:', error);
 			});
-		
-
 	}
 
 	private render() {
@@ -65,7 +63,7 @@ export class ProfilePage {
 		if (appDiv) {
 			const translation = new TranslationService(this.currentLang);
 			const translatedHtml = translation.translateTemplate(profileHtml);
-			console.log("uer", this.user);
+			console.log("user", this.user);
 			appDiv.innerHTML = translatedHtml;
 			
 			this.setNewLang()
@@ -85,7 +83,6 @@ export class ProfilePage {
 			this.showValueStats("percentage_losses")
 			this.showValueStats("percentage_draws")
 			
-
 			setTimeout(() => {
 				const imgElement = document.getElementById('profile_image') as HTMLImageElement;
 				imgElement.src = this.user.image_url;
