@@ -3,7 +3,6 @@ import { randomizePowerUp, update } from "./../common/GameUpdate";
 import { drawBall, drawRect, drawScore, drawPowerUp, drawField } from "../common/Draw";
 import { getBotActive, predictBallY, moveBot } from "../common/BotState";
 import { User } from "../../../model/user.model";
-import { UserService } from "../../../service/user.service";
 import { GameService } from "../../../service/game.service";
 import { Game } from "../../../model/game.model";
 
@@ -15,12 +14,10 @@ function getCanvasAndCtx() {
   return { canvas, ctx };
 }
 const user : User = localStorage.getItem('user') || JSON.parse(localStorage.getItem('user') || '{}');
-const userService: UserService = new UserService();
 let gameRoom : Game = new Game();
 const gameService: GameService = new GameService();
 
 function getPlayerNick(index: number, side: "left" | "right") {
-  // Prova prima a prendere dall'utente loggato
   const userStr = localStorage.getItem('user');
   if (userStr) {
     try {
@@ -158,20 +155,20 @@ let gameCreated = false;
 // Sovrascrivi la funzione resetAfterPoint (o chiamala dove aggiorni i punteggi)
 const originalResetAfterPoint = (window as any).resetAfterPoint;
 (window as any).resetAfterPoint = async function(x: number, game: GameState) {
-  if (x < game.canvas.width / 2) {
-	// Segna la destra
-	game.scoreRight++;
-	gameRoom.scores = [game.scoreLeft, game.scoreRight++];
-	 if (typeof gameRoom.game_id === "number")
-		this.gameService.updateGame(gameRoom.game_id, "2_scores", game.scoreRight.toString());
-  } else {
-	// Segna la sinistra
-	game.scoreLeft++;
-	gameRoom.scores = [game.scoreLeft++, game.scoreRight];
-	if (typeof gameRoom.game_id === "number")
-		this.gameService.updateGame(gameRoom.game_id, "1_scores", game.scoreLeft.toString());
-  }
-  if (originalResetAfterPoint) originalResetAfterPoint(x, game);
+	if (x < game.canvas.width / 2) {
+		// Segna la destra
+		game.scoreRight++;
+		gameRoom.scores = [game.scoreLeft, game.scoreRight++];
+		if (typeof gameRoom.game_id === "number")
+			this.gameService.updateGame(gameRoom.game_id, "2_scores", game.scoreRight.toString());
+	} else {
+		// Segna la sinistra
+		game.scoreLeft++;
+		gameRoom.scores = [game.scoreLeft++, game.scoreRight];
+		if (typeof gameRoom.game_id === "number")
+			this.gameService.updateGame(gameRoom.game_id, "1_scores", game.scoreLeft.toString());
+	}
+	if (originalResetAfterPoint) originalResetAfterPoint(x, game);
 };
 let lastLogTime = 0;
 const LOG_INTERVAL = 3000;
@@ -206,12 +203,7 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
   if (!gameCreated)
   {
 	randomizePowerUp(game);
-	const players = [
-	  game.leftPaddle[0].nickname,
-	  game.rightPaddle[0].nickname
-	];
-	console.log("Players:", players);
-	
+
 	try {
 	gameService.addGame([user.nickname, 'guest']
 	).then((response) => {
