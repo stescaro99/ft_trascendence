@@ -1,4 +1,4 @@
-import { GameState } from "../game/common/types.ts";
+import { GameState } from "../pages/game/common/types";
 
 export class MultiplayerService {
 	private socket: WebSocket | null = null;
@@ -7,28 +7,41 @@ export class MultiplayerService {
 
 	connect() {
         const token = localStorage.getItem("jwt");
+        console.log("[WebSocket] Token trovato:", !!token);
         if (!token)
         {
-            console.error("Token JWT mancante.");
+            console.error("[WebSocket] Token JWT mancante. Impossibile connettersi.");
             return ;
         }
 
-		this.socket = new WebSocket(`wss://localhost:9443/ws/game?token=${token}`);
+		console.log("[WebSocket] Tentativo di connessione a wss://transcendence.be:9443/ws/game");
+		this.socket = new WebSocket(`wss://transcendence.be:9443/ws/game?token=${token}`);
 
 		this.socket.onopen = () => {
-			console.log("[WebSocket] Connesso");
+			console.log("[WebSocket] Connesso con successo!");
 		};
 
 		this.socket.onmessage = (event) => {
 			const data = JSON.parse(event.data);
-			console.log("[WebSocket] Ricevuto:", data);
+			console.log("[WebSocket] Messaggio ricevuto:", data);
 	
-			if (data.type === "state" && this.gameUpdateCallback) {
-				this.gameUpdateCallback(data.payload);
+			if (data.type === "gameUpdate" && this.gameUpdateCallback) {
+				console.log("[WebSocket] Gestendo gameUpdate");
+				this.gameUpdateCallback(data.gameState);
 			}
 
-			if (data.type === "match_found" && this.gameStartCallback) {
-				this.gameStartCallback();
+			if (data.type === "matchFound") {
+				console.log("[WebSocket] Partita trovata! Room ID:", data.roomId);
+				if (this.gameStartCallback) {
+					this.gameStartCallback();
+				}
+			}
+
+			if (data.type === "gameStarted") {
+				console.log("[WebSocket] Gioco iniziato!");
+				if (this.gameStartCallback) {
+					this.gameStartCallback();
+				}
 			}
 		};
 
@@ -43,7 +56,23 @@ export class MultiplayerService {
 
 	sendInput(input: { direction: 'up' | 'down'; timestamp: number }) {
 		if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-			this.socket.send(JSON.stringify({ type: "input", ...input }));
+			this.socket.send(JSON.stringify({ 
+				type: "playerInput", 
+				input: input 
+			}));
+		}
+	}
+
+	findMatch(gameType: 'two' | 'four' = 'two') {
+		console.log("[WebSocket] Cercando partita tipo:", gameType);
+		if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+			console.log("[WebSocket] Inviando richiesta findMatch");
+			this.socket.send(JSON.stringify({ 
+				type: "findMatch", 
+				gameType: gameType 
+			}));
+		} else {
+			console.error("[WebSocket] Socket non connesso! ReadyState:", this.socket?.readyState);
 		}
 	}
 
