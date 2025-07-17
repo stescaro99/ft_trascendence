@@ -117,6 +117,12 @@ export class OnlineGamePage {
 		
 		findMatchBtn.parentNode?.insertBefore(cancelBtn, findMatchBtn.nextSibling);
 
+		// Callback quando si è in attesa di altri giocatori
+		multiplayerService.onWaitingForPlayers((data) => {
+			console.log("[OnlineGame] 🕐 In attesa di altri giocatori:", data);
+			status.textContent = `In attesa di giocatori... (${data.currentPlayers}/${data.maxPlayers})`;
+		});
+
 		// Callback quando la partita inizia
 		multiplayerService.onGameStart(() => {
 			console.log("[OnlineGame] 🎉 Partita trovata! Callback onGameStart chiamato!");

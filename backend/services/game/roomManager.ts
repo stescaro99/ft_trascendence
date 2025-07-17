@@ -43,15 +43,18 @@ export class RoomManager {
   }
 
   findMatch(player: Player, gameType: 'two' | 'four' = 'two'): string | null {
+    // Prima cerca una room esistente
     for (const [roomId, room] of this.rooms) {
       if (room.type === gameType && 
           room.players.length < room.maxPlayers && 
           !room.isActive) {
+        // Trovata room esistente con spazio
         this.addPlayerToRoom(roomId, player);
         return roomId;
       }
     }
 
+    // Nessuna room disponibile, crea una nuova
     const roomId = this.createRoom(gameType);
     this.addPlayerToRoom(roomId, player);
     return roomId;

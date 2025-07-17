@@ -6,16 +6,16 @@ export class RemoteController {
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D;
   
-    constructor(canvasId: string) {
-      const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
-      const ctx = canvas.getContext("2d")!;
-      this.canvas = canvas;
-      this.ctx = ctx;
-  
-      this.setupListeners();
-      this.setupInput();
-      MultiplayerService.connect();
-    }
+  constructor(canvasId: string) {
+    const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    const ctx = canvas.getContext("2d")!;
+    this.canvas = canvas;
+    this.ctx = ctx;
+
+    this.setupListeners();
+    this.setupInput();
+    // Non riconnettersi, usa la connessione esistente
+  }
   
     private setupListeners() {
       MultiplayerService.onGameUpdate((state: GameState) => {

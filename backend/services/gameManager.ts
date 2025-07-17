@@ -39,15 +39,18 @@ class GameManager {
     return success;
   }
 
-  findMatch(player: Player, gameType: 'two' | 'four' = 'two'): string | null {
+  findMatch(player: Player, gameType: 'two' | 'four' = 'two'): { roomId: string | null, isRoomFull: boolean } {
     const roomId = this.roomManager.findMatch(player, gameType);
+    let isRoomFull = false;
+    
     if (roomId) {
       const room = this.roomManager.getRoom(roomId);
       if (room && room.players.length === room.maxPlayers) {
-        this.startGame(roomId);
+        isRoomFull = true;
+        // Non avviamo il gioco qui, lo farà il controller
       }
     }
-    return roomId;
+    return { roomId, isRoomFull };
   }
 
   removePlayerFromRoom(roomId: string, playerId: string): void {

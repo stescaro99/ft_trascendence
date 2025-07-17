@@ -2,7 +2,7 @@ import { triangleSize } from "./types";
 
 export function drawPowerUp(ctx: CanvasRenderingContext2D, powerUp: any)
 {
-	if (powerUp.active)
+	if (powerUp && powerUp.active)
 	{
 		ctx.fillStyle = powerUp.color;
 		ctx.shadowColor = powerUp.color;

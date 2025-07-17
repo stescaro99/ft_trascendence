@@ -4,6 +4,10 @@ import jwt from 'jsonwebtoken';
 import User from '../models/user';
 
 export async function handleWebSocketConnection(connection: any, req: FastifyRequest) {
+  console.log('[WebSocket] Nuova connessione WebSocket ricevuta');
+  console.log('[WebSocket] Headers:', req.headers);
+  console.log('[WebSocket] Query:', req.query);
+  
   let authenticatedUser = null;
   const query = req.query as any;
   
@@ -24,24 +28,24 @@ export async function handleWebSocketConnection(connection: any, req: FastifyReq
   const player: Player = {
     id: Math.random().toString(36).substring(2),
     nickname: authenticatedUser?.nickname || authenticatedUser?.username || '',
-    socket: connection.socket,
+    socket: connection,
     ready: false
   };
 
   console.log(`Player ${player.id} connected with nickname: ${player.nickname}`);
-  connection.socket.send(JSON.stringify({
+  connection.send(JSON.stringify({
     type: 'connected',
     playerId: player.id,
     nickname: player.nickname,
     message: 'Connected to game server'
   }));
-  connection.socket.on('message', (message: any) => {
+  connection.on('message', (message: any) => {
     handlePlayerMessage(player, message);
   });
-  connection.socket.on('close', async () => {
+  connection.on('close', async () => {
     await handlePlayerDisconnection(player, authenticatedUser);
   });
-  connection.socket.on('error', (error: any) => {
+  connection.on('error', (error: any) => {
     console.error(`WebSocket error for player ${player.id}:`, error);
   });
 }
@@ -121,11 +125,32 @@ function handleJoinRoom(player: Player, data: any) {
 }
 
 function handleFindMatch(player: Player, data: any) {
-  const roomId = gameManager.findMatch(player, data.gameType || 'two');
-  sendToPlayer(player, {
-    type: 'matchFound',
-    roomId
-  });
+  const result = gameManager.findMatch(player, data.gameType || 'two');
+  
+  if (result.roomId) {
+    const room = gameManager.getRoomInfo(result.roomId);
+    if (result.isRoomFull && room) {
+      // Room è piena, invia matchFound a tutti i giocatori
+      console.log(`[MatchMaking] Room ${result.roomId} è piena, avviando partita per ${room.players.length} giocatori`);
+      room.players.forEach(p => {
+        sendToPlayer(p, {
+          type: 'matchFound',
+          roomId: result.roomId
+        });
+      });
+      // Avvia il gioco immediatamente
+      gameManager.startGame(result.roomId);
+    } else {
+      // Il giocatore è in attesa
+      console.log(`[MatchMaking] Giocatore ${player.nickname} in attesa nella room ${result.roomId}`);
+      sendToPlayer(player, {
+        type: 'waitingForPlayers',
+        roomId: result.roomId,
+        currentPlayers: room?.players.length || 0,
+        maxPlayers: room?.maxPlayers || 2
+      });
+    }
+  }
 }
 
 function handleCreateRoom(player: Player, data: any) {

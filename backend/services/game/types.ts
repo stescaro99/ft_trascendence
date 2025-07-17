@@ -3,7 +3,7 @@ import { WebSocket } from 'ws';
 export interface Player {
   id: string;
   nickname: string;
-  socket: WebSocket;
+  socket: any; // WebSocket o connection object di Fastify
   ready: boolean;
 }
 
