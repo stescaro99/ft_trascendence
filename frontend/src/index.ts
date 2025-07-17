@@ -5,6 +5,7 @@ import {StatsPage} from './pages/stats/stats';
 import {LogInPage} from './pages/login/login';
 import {ProfilePage} from './pages/profile/profile';
 import { GamePage } from './pages/game/game';
+import { TournamentPage } from './pages/tournament/tournament';
 import { OnlineGamePage } from './pages/online_game/online_game';
 
 
@@ -55,7 +56,11 @@ const routes: Record<string, () => string> = {
   '/online_game': () => {
     new OnlineGamePage(currentLang);
     return "";
-  }
+  },
+  '/tournament': () => {
+    new TournamentPage();
+    return "";
+  },
 };
 
 function router() {
