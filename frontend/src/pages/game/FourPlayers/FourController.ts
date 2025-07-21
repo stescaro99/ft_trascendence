@@ -215,7 +215,7 @@ const originalResetAfterPoint = (window as any).resetAfterPoint;
   if (originalResetAfterPoint) originalResetAfterPoint(x, game);
 };
 
-export async function FourGameLoop(TeamLeft: string, TeamRight: string)
+export async function FourGameLoop(TeamLeft: string, TeamRight: string, fromPage: string)
 {
   const { canvas, ctx } = getCanvasAndCtx();
 
@@ -325,7 +325,10 @@ export async function FourGameLoop(TeamLeft: string, TeamRight: string)
       gameService.updateGame(gameRoom.game_id, "winner_nickname", winnerNickname)
         .then(() => console.log("DEBUG: Successfully updated winner nickname to:", winnerNickname))
         .catch((error) => console.error("DEBUG: Failed to update winner nickname:", error));
-    }
+
+		console.log("DEBUG: Game ended, navigating back to:", fromPage);
+		window.location.hash = fromPage;
+	}
 
     if (botInterval) {
       clearInterval(botInterval);
@@ -369,5 +372,5 @@ export async function FourGameLoop(TeamLeft: string, TeamRight: string)
 
   update(game);
   render(ctx, canvas, game, TeamLeft, TeamRight);
-  requestAnimationFrame(() => FourGameLoop(TeamLeft, TeamRight));
+  requestAnimationFrame(() => FourGameLoop(TeamLeft, TeamRight, fromPage));
 }

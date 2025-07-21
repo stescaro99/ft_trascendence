@@ -21,7 +21,30 @@ const params = new URLSearchParams(window.location.search);
 const token = params.get('token');
 const nickname = params.get('nickname');
 const error = params.get('error');
+let navigationStack: string[] = [];
 
+export function navigateWithHistory(route: string) {
+  const currentRoute = location.hash.slice(1) || '/';
+  
+  // Aggiungi la route corrente allo stack (se non è già presente)
+  if (navigationStack[navigationStack.length - 1] !== currentRoute) {
+    navigationStack.push(currentRoute);
+  }
+  
+  console.log('Navigation stack:', navigationStack);
+  window.location.hash = route;
+}
+
+export function goBack() {
+  if (navigationStack.length > 0) {
+    const previousRoute = navigationStack.pop();
+    console.log('Going back to:', previousRoute);
+    window.location.hash = previousRoute || '/';
+  } else {
+    // Fallback alla home se non c'è storia
+    window.location.hash = '/';
+  }
+}
 // Definisci le rotte una volta sola
 const routes: Record<string, () => string> = {
   '/': () => {
@@ -50,7 +73,26 @@ const routes: Record<string, () => string> = {
     return "";
   },
   '/game': () => {
-    new GamePage(currentLang);
+    console.log('LLLLL navigation stack', navigationStack);
+    const fromPage = navigationStack[navigationStack.length - 2] || '/';
+
+    const hash = location.hash.slice(1) || '/';
+    const urlParams = hash.split('?')[1]; // Ottieni la parte dopo il '?'
+    
+    let player1 = localStorage.getItem('nickname') || 'Player 1';
+    let player2 = 'Player 2';
+    
+    // Se ci sono parametri nell'URL, estraili
+    if (urlParams) {
+        // Formato: /game?Mario_Luigi
+        const players = urlParams.split('_');
+        if (players.length >= 2) {
+            player1 = players[0];
+            player2 = players[1];
+        }
+    }
+
+    new GamePage(currentLang, fromPage, player1, player2);
     return "";
   },
   '/online_game': () => {
@@ -68,6 +110,11 @@ function router() {
   const path = hash.split('?')[0]; 
   console.log("Navigazione verso:", path);
   
+  const currentRoute = hash;
+    if (navigationStack[navigationStack.length - 1] !== currentRoute) {
+      navigationStack.push(currentRoute);
+      console.log('Navigation stack updated:', navigationStack);
+    }
   // Gestisci la visibilità della navbar
   const navbar = document.getElementById('navbar');
   if (navbar) {

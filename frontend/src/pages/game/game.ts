@@ -15,33 +15,27 @@ import { UserService } from '../../service/user.service';
 export class GamePage {
 	private currentLang: string;
 	private langMap = { en, fr, it };
+	private players: string[] = [];
+	fromPage: string;
 	userService: UserService = new UserService();
 	lobby?: Lobby;
-	user : User;
 	Team1Color = "#ffffff";
 	Team2Color = "#ffffff";
 	colors = ["#ff0000", "#00ff00", "#ffff00", "#800080", "#007bff", "#ffffff"];
 	
 
-	constructor(lang: string) {
-		const userString = localStorage.getItem('user');
-		console.log('Initializing GamePage with user from localStorage:', userString);
-    if (userString) {
-        try {
-            this.user = userString ? JSON.parse(userString) : new User();
-            console.log('GamePage initialized with user from localStorage:', this.user);
-        } catch (e) {
-            console.error('Error parsing user from localStorage:', e);
-            this.user = new User();
-        }
-    } else {
-        this.user = new User();
-    }
-		console.log('GamePage initialized with user:', this.user);
+	constructor(lang: string, fromPage: string, player1 : string, player2 : string) {
+
+		if (player1 === undefined || player2 === undefined) {
+			player1 = localStorage.getItem('nickname') || "Player 1";
+			player2 = "Player 2";
+		}
+		this.players.push(player1, player2);
+		console.log('Players initialized:', this.players);
 		this.currentLang = lang;
+		this.fromPage = fromPage;
 		this.render();
 		this.setTheme('game');
-		console.log ("Rendering GamePage for user:", this.user.nickname);
   	}
 
 
@@ -106,14 +100,24 @@ export class GamePage {
 		});
 
 		const usernick = document.getElementById("nickname");
-    if (usernick && this.user.nickname) {
-        usernick.textContent = this.user.nickname;
-        console.log("Updated nickname to:", this.user.nickname);
-    } else {
-        console.log("Nickname element not found or user has no nickname");
-        console.log("usernick element:", usernick);
-        console.log("user nickname:", this.user.nickname);
-    }
+		if (usernick) {
+			usernick.textContent = this.players[0];
+			console.log("Updated nickname to:", this.players[0]);
+		} else {
+			console.log("Nickname element not found or user has no nickname");
+			console.log("usernick element:", usernick);
+			console.log("user nickname:", this.players[0]);
+		}
+
+		const play_two = document.getElementById("play2");
+		if (play_two) {
+			play_two.textContent = this.players[1];
+			console.log("Updated play_two to:", this.players[1]);
+		} else {
+			console.log("play_two element not found or user has no nickname");
+			console.log("play_two element:", play_two);
+			console.log("play_two nickname:", this.players[1]);
+		}
 
 		// Bot buttons
 		for (let i = 0; i < 4; i++) {
@@ -184,15 +188,15 @@ export class GamePage {
 	  if (x === 2) {
 		const player1Name = document.getElementById("player1Name");
 		const player2Name = document.getElementById("player2Name");
-		if (player1Name) player1Name.textContent = this.user.nickname || "ffff";
-		if (player2Name) player2Name.textContent = "Giocatore 2";
+		if (player1Name) player1Name.textContent = this.players[0];
+		if (player2Name) player2Name.textContent = this.players[1];
 	  } else if (x === 4) {
 		const player1Name = document.getElementById("player1Name");
 		const player2Name = document.getElementById("player2Name");
 		const player3Name = document.getElementById("player3Name");
 		const player4Name = document.getElementById("player4Name");
 		
-		if (player1Name) player1Name.textContent = "Team 1 - " + this.user.nickname || "P1";
+		if (player1Name) player1Name.textContent = "Team 1 - " + this.players[0] || "P1";
 		if (player2Name) player2Name.textContent = "Team 1 - P2";
 		if (player3Name) player3Name.textContent = "Team 2 - P1";
 		if (player4Name) player4Name.textContent = "Team 2 - P2";
@@ -211,9 +215,9 @@ export class GamePage {
 	  if (countdown < 0) {
 		clearInterval(interval);
 		if (x === 2) {
-		  TwoGameLoop(this.Team1Color, this.Team2Color);
+		  TwoGameLoop(this.Team1Color, this.Team2Color, this.fromPage, this.players);
 		} else if (x === 4) {
-		  FourGameLoop(this.Team1Color, this.Team2Color);
+		  FourGameLoop(this.Team1Color, this.Team2Color, this.fromPage);
 		}
 	  }
 	  countdown--;
@@ -296,7 +300,7 @@ export class GamePage {
 	  const player3Name = document.getElementById("player3Name");
 	  const player4Name = document.getElementById("player4Name");
 
-	  if (player1Name) player1Name.textContent = getBotActive(0) ? "Team 1 - BOT" : "Team 1 - " + this.user.nickname || "Player 1";
+	  if (player1Name) player1Name.textContent = getBotActive(0) ? "Team 1 - BOT" : "Team 1 - " + this.players[0] || "Player 1";
 	  if (player2Name) player2Name.textContent = getBotActive(1) ? "Team 1 - BOT" : "Team 1 - Player 2";
 	  if (player3Name) player3Name.textContent = getBotActive(2) ? "Team 2 - BOT" : "Team 2 - Player 1";
 	  if (player4Name) player4Name.textContent = getBotActive(3) ? "Team 2 - BOT" : "Team 2 - Player 2";

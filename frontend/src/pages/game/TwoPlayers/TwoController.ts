@@ -172,7 +172,7 @@ const originalResetAfterPoint = (window as any).resetAfterPoint;
 };
 let lastLogTime = 0;
 const LOG_INTERVAL = 3000;
-export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
+export async function TwoGameLoop(paddleColor1: string, paddleColor2: string, fromPage: string, players: string[]) {
   
 	
 	const { canvas, ctx } = getCanvasAndCtx();
@@ -229,10 +229,12 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
 
   // Fine partita
 	if (game.scoreLeft >= game.maxScore || game.scoreRight >= game.maxScore) {
+		const isTournamentMode = localStorage.getItem('tournamentMode') === 'true';
+   
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.fillStyle = "white";
 		ctx.font = "40px Arial";
-		const winner = game.scoreLeft > game.scoreRight ? localStorage.getItem("nickname") : "Giocatore 2";
+		const winner = game.scoreLeft > game.scoreRight ? players[0] : players[1];
 		ctx.fillText(`${winner} ha vinto!`, canvas.width / 2, canvas.height / 2);
 
 		if (gameRoom.game_id) {
@@ -245,8 +247,8 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
 
 
 		const players = [
-		game.leftPaddle[0].nickname,   // idx = 0 (giocatore sinistro)
-		game.rightPaddle[0].nickname   // idx = 1 (giocatore destro)
+		game.leftPaddle[0].nickname,
+		game.rightPaddle[0].nickname   
 		];
 
 		players.forEach((nickname, idx) => {
@@ -262,7 +264,9 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
 		} else {
 			result = 0; // sconfitta per questo giocatore
 		}
-		if (idx === 0) {
+
+		const usernick = localStorage.getItem('nickname');
+		if (nickname === usernick) {
 			gameService.upDateStat(nickname, gameRoom.game_id!, result)
 				.then(() => console.log(`DEBUG: Successfully updated stats for ${nickname} with result:`, result))
 				.catch((error) => console.error(`DEBUG: Failed to update stats for ${nickname}:`, error));
@@ -276,24 +280,76 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
 		} else if (game.scoreRight > game.scoreLeft) {
 		winnerNickname = game.rightPaddle[0].nickname;
 		} else {
-		winnerNickname = "Draw"; // o gestisci il pareggio come preferisci
+		winnerNickname = "Draw";
 		}
 
 		gameService.updateGame(gameRoom.game_id, "winner_nickname", winnerNickname)
 		.then(() => console.log("DEBUG: Successfully updated winner nickname to:", winnerNickname))
 		.catch((error) => console.error("DEBUG: Failed to update winner nickname:", error));
-	}
+		
+		setTimeout(() => {
+            if (isTournamentMode) {
+                console.log("DEBUG: Tournament mode - handling tournament game end");
+                handleTournamentGameEnd(winner);
+            } else {
+                console.log("DEBUG: Normal game - navigating back to:", fromPage);
+                window.location.hash = fromPage;
+            }
+        }, 3000);
+    } else {
+        // Se non c'è gameRoom.game_id, gestisci comunque il torneo
+        setTimeout(() => {
+            if (isTournamentMode) {
+                console.log("DEBUG: Tournament mode (no backend) - handling tournament game end");
+                handleTournamentGameEnd(winner);
+            } else {
+                console.log("DEBUG: Normal game (no backend) - navigating back to:", fromPage);
+                window.location.hash = fromPage;
+            }
+        }, 3000);
+    }
 
-	if (botInterval) {
-	  clearInterval(botInterval);
-	  botInterval = undefined;
-	}
+    if (botInterval) {
+        clearInterval(botInterval);
+        botInterval = undefined;
+    }
 
-	gameRoom.game_id = undefined;
-	gameCreated = false;
+    gameRoom.game_id = undefined;
+    gameCreated = false;
 
-	return;
-  }
+    return;
+}
+
+function handleTournamentGameEnd(winner: string) {
+    try {
+        const tournament = JSON.parse(localStorage.getItem('activeTournament') || '{}');
+        const currentIndex = parseInt(localStorage.getItem('currentGameIndex') || '0');
+        
+        // Salva il risultato
+        if (!tournament.results) tournament.results = [];
+        tournament.results.push({
+            game: tournament.games[currentIndex],
+            winner: winner
+        });
+        
+        // Aggiorna l'indice per la prossima partita
+        tournament.currentGameIndex = currentIndex + 1;
+        
+        // Salva lo stato aggiornato del torneo
+        localStorage.setItem('activeTournament', JSON.stringify(tournament));
+        
+        console.log(`Tournament: Game ${currentIndex + 1} completed. Winner: ${winner}`);
+        console.log(`Tournament: ${tournament.results.length}/${tournament.games.length} games completed`);
+        
+        // Torna alla pagina del torneo che gestirà la prossima partita o i risultati finali
+        window.location.hash = '#/tournament?continue=true';
+        
+    } catch (error) {
+        console.error('Error handling tournament game end:', error);
+        // Fallback: torna al torneo senza continue
+        window.location.hash = '#/tournament';
+    }
+}
 
   // Bot logic
   function moveBotPaddle() {
@@ -313,5 +369,5 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string) {
 
   update(game);
   render(ctx, canvas, game, paddleColor1, paddleColor2);
-  requestAnimationFrame(() => TwoGameLoop(paddleColor1, paddleColor2));
+  requestAnimationFrame(() => TwoGameLoop(paddleColor1, paddleColor2, fromPage, players));
 }
