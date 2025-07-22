@@ -1,24 +1,23 @@
 import { GameState } from "../game/common/types";
 import { drawBall, drawField, drawPowerUp, drawRect, drawScore } from "../game/common/Draw"
-import MultiplayerService from "../../services/multiplayerService";
+import multiplayerService from "../../services/multiplayerService";
 
 export class RemoteController {
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D;
   
-  constructor(canvasId: string) {
-    const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
-    const ctx = canvas.getContext("2d")!;
-    this.canvas = canvas;
-    this.ctx = ctx;
+    constructor(canvasId: string, initialState: GameState) {
+      this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+      this.ctx = this.canvas.getContext('2d')!;
 
-    this.setupListeners();
-    this.setupInput();
-    // Non riconnettersi, usa la connessione esistente
-  }
+      this.draw(initialState);
+      this.setupListeners();
+      this.setupInput();
+    }
   
     private setupListeners() {
-      MultiplayerService.onGameUpdate((state: GameState) => {
+      multiplayerService.onGameUpdate((state: GameState) => {
+        console.log('[RemoteController] Ricevuto gameUpdate', state);
         this.draw(state);
       });
     }
@@ -26,7 +25,7 @@ export class RemoteController {
     private setupInput() {
       document.addEventListener("keydown", (e) => {
         if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-          MultiplayerService.sendInput({
+          multiplayerService.sendInput({
             direction: e.key === "ArrowUp" ? "up" : "down",
             timestamp: Date.now()
           });

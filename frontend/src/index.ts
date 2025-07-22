@@ -7,7 +7,6 @@ import {ProfilePage} from './pages/profile/profile';
 import { GamePage } from './pages/game/game';
 import { OnlineGamePage } from './pages/online_game/online_game';
 
-
 console.log("Script caricato");
 
 export let currentLang = 'it';
@@ -103,13 +102,16 @@ if (error) {
   
   // Reindirizza alla pagina di login
   window.location.hash = '/login';
-} else if (token && nickname) {
+}
+else if (token && nickname)
+{
   console.log('Google auth success detected with token and nickname');
   
   // Controlla se eravamo in attesa di un'autenticazione Google
   const wasGoogleAuthPending = localStorage.getItem('googleAuthPending') === 'true';
   
-  if (wasGoogleAuthPending) {
+  if (wasGoogleAuthPending)
+  {
     // Pulisci lo stato di attesa
     localStorage.removeItem('googleAuthPending');
     localStorage.removeItem('googleAuthResolve');
@@ -118,7 +120,20 @@ if (error) {
   }
   
   // Salva i dati nel localStorage
-  localStorage.setItem('user', JSON.stringify({ token }));
+  const userToStore = {
+    token: token,
+    nickname: nickname,
+    language: 'English',
+    image_url: '',
+    online: false,
+    last_seen: '',
+    current_room: '',
+    friends: [],
+    fr_request: [],
+  };
+
+  localStorage.setItem('user', JSON.stringify(userToStore));
+  localStorage.setItem('token', token); // opzionale ma comodo
   localStorage.setItem('nickname', nickname);
   
   // Mostra la navbar ora che l'utente è autenticato

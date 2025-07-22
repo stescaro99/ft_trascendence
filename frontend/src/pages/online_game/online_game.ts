@@ -124,8 +124,8 @@ export class OnlineGamePage {
 		});
 
 		// Callback quando la partita inizia
-		multiplayerService.onGameStart(() => {
-			console.log("[OnlineGame] 🎉 Partita trovata! Callback onGameStart chiamato!");
+		multiplayerService.onGameStart((initialState) => {
+			console.log("[OnlineGame] 🎉 Partita trovata! Callback onGameStart chiamato!", initialState);
 			
 			// Ferma il timer di ricerca
 			if (searchTimer) {
@@ -144,7 +144,7 @@ export class OnlineGamePage {
 			canvas.classList.remove("hidden");
 			if (findMatchBtn) findMatchBtn.style.display = "none";
 
-			new RemoteController("gameCanvas");
+			new RemoteController("gameCanvas", initialState);
 		});
 
 		console.log("[OnlineGame] ✅ Inizializzazione completata!");

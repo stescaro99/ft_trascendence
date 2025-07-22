@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import tailwindcss from '@tailwindcss/vite'
 
-const hmrHost = '10.0.2.15';
+const hmrHost = '192.168.1.40';
 
 export default defineConfig({
     plugins: [    tailwindcss(),  ],

@@ -3,7 +3,7 @@ import { GameState } from "../pages/game/common/types";
 export class MultiplayerService {
 	private socket: WebSocket | null = null;
 	private gameUpdateCallback: ((state: GameState) => void) | null = null;
-	private gameStartCallback: (() => void) | null = null; 
+	private gameStartCallback: ((state: any) => void) | null = null;
 	private waitingCallback: ((data: any) => void) | null = null;
 	private currentRoomId: string | null = null;
 	private heartbeatInterval: number | null = null; 
@@ -59,9 +59,7 @@ export class MultiplayerService {
 
 			if (data.type === "gameStarted") {
 				console.log("[WebSocket] Gioco iniziato!");
-				if (this.gameStartCallback) {
-					this.gameStartCallback();
-				}
+				this.gameStartCallback?.(data.gameState);
 			}
 		};
 
@@ -128,7 +126,7 @@ export class MultiplayerService {
 		this.gameUpdateCallback = cb;
 	}
 
-	onGameStart(cb: () => void) {
+	onGameStart(cb: (state: any) => void) {
 		this.gameStartCallback = cb;
 	}
 

@@ -33,20 +33,19 @@ export class UserService {
 		return this.user;
 	}
 
-	async takeUserFromApi(nick: string): Promise<any>{
-		const url = `${this.apiUrl}/users?nickname=${nick}`;
-		console.log('localStorage user:', localStorage.getItem('user'));
-		console.log('localStorage nickname:', nick);
-		
-		// Recupera il token dall'oggetto user nel localStorage o dal token diretto
+	async takeUserFromApi(nick: string): Promise<any> {
+		const apiEnv = import.meta.env.VITE_BACKEND_URL;
+		const baseUrl = apiEnv || environment.apiUrl;
+		const url = `${baseUrl}/get_user?nickname=${encodeURIComponent(nick)}`;
+
+		console.log('🌐 Fetching URL:', url);
+	
 		let token: string | null = null;
-		
-		// Prima prova a recuperare dal localStorage.token
+	
 		const directToken = localStorage.getItem('token');
 		if (directToken) {
 			token = directToken;
 		} else {
-			// Altrimenti prova a recuperare dal localStorage.user.token
 			const userDataString = localStorage.getItem('user');
 			if (userDataString) {
 				try {
@@ -57,34 +56,35 @@ export class UserService {
 				}
 			}
 		}
-		
+	
 		console.log('UserService initialized with token:', token);
-		
+	
 		if (!token) {
 			throw new Error('No valid token found');
 		}
-		
+	
 		const response = await fetch(url, {
 			method: 'GET',
 			headers: {
-				'Authorization': `Bearer ${token}`,
+				Authorization: `Bearer ${token}`,
 				'Content-Type': 'application/json',
 			},
 		});
-		
-		// Log PRIMA di leggere il body
+	
 		console.log('Response status:', response.status);
 		console.log('Response headers:', [...response.headers.entries()]);
-		
-		// Leggi il body UNA SOLA VOLTA
+	
 		const responseText = await response.text();
+		if (responseText.startsWith('<!doctype html>')) {
+			console.error('❌ Ricevuto HTML invece di JSON. Probabilmente la route è sbagliata.');
+			throw new Error('Expected JSON but received HTML');
+		}
 		console.log('Response body:', responseText);
-		
-		if(!response.ok){
+	
+		if (!response.ok) {
 			throw new Error(`Network response was not ok: ${response.status} - ${responseText}`);
 		}
-		
-		// Ora parsa il JSON dal testo che hai già letto
+	
 		try {
 			return JSON.parse(responseText);
 		} catch (e) {
