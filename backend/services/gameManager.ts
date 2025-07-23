@@ -39,17 +39,27 @@ class GameManager {
     return success;
   }
 
-  findMatch(player: Player, gameType: 'two' | 'four' = 'two'): { roomId: string | null, isRoomFull: boolean } {
+  findMatch(player: Player, gameType: 'two' | 'four' = 'two'): { roomId: string | null, isRoomFull: boolean }
+  {
+    console.log('[GameManager] Finding match for player:', player.nickname, 'gameType:', gameType);
     const roomId = this.roomManager.findMatch(player, gameType);
+    console.log('[GameManager] roomManager.findMatch returned:', roomId); // ← AGGIUNGI
     let isRoomFull = false;
     
     if (roomId) {
       const room = this.roomManager.getRoom(roomId);
+      console.log('[GameManager] Room details:', { // ← AGGIUNGI
+        id: room?.id,
+        playersCount: room?.players.length,
+        maxPlayers: room?.maxPlayers,
+        isActive: room?.isActive
+      });
       if (room && room.players.length === room.maxPlayers) {
         isRoomFull = true;
-        // Non avviamo il gioco qui, lo farà il controller
+        console.log('[GameManager] Room is full, returning isRoomFull=true'); // ← AGGIUNGI
       }
     }
+    console.log('[GameManager] findMatch returning:', { roomId, isRoomFull }); // ← AGGIUNGI
     return { roomId, isRoomFull };
   }
 
@@ -78,11 +88,22 @@ class GameManager {
   // ===== GESTIONE GIOCO =====
 
   startGame(roomId: string): void {
+    console.log('[GameManager] startGame called for roomId:', roomId);
     const room = this.roomManager.getRoom(roomId);
-    if (!room || room.players.length !== room.maxPlayers) return;
+    console.log('[GameManager] Got room:', room ? 'found' : 'not found'); // ← AGGIUNGI
+    if (!room || room.players.length !== room.maxPlayers) {
+      console.log('[GameManager] Cannot start game:', { // ← AGGIUNGI
+        roomExists: !!room,
+        playersCount: room?.players.length,
+        maxPlayers: room?.maxPlayers
+      });
+      return;
+    }
 
     room.isActive = true;
+    console.log('[GameManager] About to call createInitialGameState...'); // ← AGGIUNGI
     room.gameState = this.roomManager.createInitialGameState(room.type);
+    console.log('[GameManager] createInitialGameState completed'); // ← AGGIUNGI
     this.roomManager.assignPlayersToPositions(room);
     this.broadcastToRoom(roomId, {
       type: 'gameStarted',

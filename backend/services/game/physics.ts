@@ -111,20 +111,34 @@ export class GamePhysics {
         x: Math.round(gameState.ball.x * 100) / 100,
         y: Math.round(gameState.ball.y * 100) / 100,
         dx: gameState.ball.dx,
-        dy: gameState.ball.dy
+        dy: gameState.ball.dy,
+        radius: gameState.ball.radius,
+        speed: gameState.ball.speed
       },
       leftPaddle: gameState.leftPaddle.map(p => ({
+        x: p.x,
         y: Math.round(p.y * 100) / 100,
         dy: p.dy,
+        height: p.height,
+        speed: p.speed,
         nickname: p.nickname
       })),
       rightPaddle: gameState.rightPaddle.map(p => ({
+        x: p.x,
         y: Math.round(p.y * 100) / 100,
         dy: p.dy,
+        height: p.height,
+        speed: p.speed,
         nickname: p.nickname
       })),
+      powerUp: gameState.powerUp,
       scoreLeft: gameState.scoreLeft,
       scoreRight: gameState.scoreRight,
+      paddleWidth: gameState.paddleWidth,
+      paddleHeight: gameState.paddleHeight,
+      waitingForStart: gameState.waitingForStart,
+      maxScore: gameState.maxScore,
+      paddleSpeed: gameState.paddleSpeed,
       frameId: frameId
     };
   }

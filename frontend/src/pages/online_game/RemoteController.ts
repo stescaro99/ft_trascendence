@@ -34,20 +34,34 @@ export class RemoteController {
     }
   
     private draw(state: GameState) {
+        console.log('[RemoteController] Drawing state:', {
+            ball: state.ball,
+            leftPaddle: state.leftPaddle,
+            rightPaddle: state.rightPaddle,
+            paddleWidth: state.paddleWidth
+        });
+  
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    
+      
         drawField(this.ctx, this.canvas);
-        drawBall(this.ctx, state.ball);
+        
+        // Prova a disegnare la palla con un colore più visibile
+        if (state.ball) {
+            console.log('[RemoteController] Drawing ball at:', state.ball.x, state.ball.y);
+            drawBall(this.ctx, state.ball);
+        }
+        
         drawPowerUp(this.ctx, state.powerUp);
-    
+  
+        // Test temporaneo - sostituisci le linee delle racchette con:
         state.leftPaddle.forEach(p =>
-            drawRect(this.ctx, p.x, p.y, state.paddleWidth, p.height, "#FFFFFF")
+            drawRect(this.ctx, p.x, p.y, state.paddleWidth, p.height, "#FF0000") // ROSSO
         );
-    
+  
         state.rightPaddle.forEach(p =>
-            drawRect(this.ctx, p.x, p.y, state.paddleWidth, p.height, "#FFFFFF")
+            drawRect(this.ctx, p.x, p.y, state.paddleWidth, p.height, "#00FF00") // VERDE
         );
-    
+  
         drawScore(this.ctx, this.canvas, state.scoreLeft, state.scoreRight);
     }
   }

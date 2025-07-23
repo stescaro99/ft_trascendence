@@ -64,6 +64,8 @@ export interface GameConstants {
   CANVAS_HEIGHT: number;
   PADDLE_WIDTH: number;
   BALL_RADIUS: number;
+  PADDLE_SPEED: number;
+  BALL_SPEED: number;
   TARGET_FPS: number;
   MAX_BALL_SPEED: number;
   SPEED_INCREASE_FACTOR: number;
@@ -77,6 +79,8 @@ export const GAME_CONSTANTS: GameConstants = {
   CANVAS_HEIGHT: 750,
   PADDLE_WIDTH: 10,
   BALL_RADIUS: 10,
+  PADDLE_SPEED: 6,
+  BALL_SPEED: 5,
   TARGET_FPS: 60,
   MAX_BALL_SPEED: 12,
   SPEED_INCREASE_FACTOR: 1.02,

@@ -125,11 +125,15 @@ function handleJoinRoom(player: Player, data: any) {
 }
 
 function handleFindMatch(player: Player, data: any) {
+  console.log('[WebSocket] handleFindMatch called for player:', player.nickname);
   const result = gameManager.findMatch(player, data.gameType || 'two');
-  
-  if (result.roomId) {
+  console.log('[WebSocket] findMatch result:', result);
+
+  if (result.roomId) 
+  {
     const room = gameManager.getRoomInfo(result.roomId);
-    if (result.isRoomFull && room) {
+    if (result.isRoomFull && room)
+    {
       // Room è piena, invia matchFound a tutti i giocatori
       console.log(`[MatchMaking] Room ${result.roomId} è piena, avviando partita per ${room.players.length} giocatori`);
       room.players.forEach(p => {

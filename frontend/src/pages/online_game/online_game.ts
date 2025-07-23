@@ -135,14 +135,18 @@ export class OnlineGamePage {
 			
 			// Nascondi il pulsante di annullamento
 			const cancelBtn = document.getElementById("cancelMatchBtn");
-			if (cancelBtn) {
+			if (cancelBtn)
 				cancelBtn.classList.add("hidden");
-			}
 			
 			status.textContent = "Partita trovata!";
 			matchInfo.classList.remove("hidden");
+
+			// FORZA la visualizzazione del canvas
+			canvas.style.display = "block";
 			canvas.classList.remove("hidden");
-			if (findMatchBtn) findMatchBtn.style.display = "none";
+
+			if (findMatchBtn)
+				findMatchBtn.style.display = "none";
 
 			new RemoteController("gameCanvas", initialState);
 		});
@@ -153,14 +157,16 @@ export class OnlineGamePage {
 	render () {
 		console.log("[OnlineGame] 🎨 Rendering HTML...");
 		const container = document.getElementById('app');
-		if (!container) return;
+		if (!container)
+			return;
 
 		const translation = new UserService().getUser()?.language || 'en';
 		const translatedHtml = new TranslationService(translation).translateTemplate(onlineGameHtml);
 		container.innerHTML = translatedHtml;
 
 		const screen = container.querySelector('.screen');
-		if (screen) screen.classList.add('visible');
+		if (screen)
+			screen.classList.add('visible');
 		
 		console.log("[OnlineGame] ✅ HTML renderizzato!");
 	}
