@@ -326,17 +326,51 @@ export async function FourGameLoop(TeamLeft: string, TeamRight: string, fromPage
         .then(() => console.log("DEBUG: Successfully updated winner nickname to:", winnerNickname))
         .catch((error) => console.error("DEBUG: Failed to update winner nickname:", error));
 
-		console.log("DEBUG: Game ended, navigating back to:", fromPage);
-		window.location.hash = fromPage;
-	}
-
-    if (botInterval) {
-      clearInterval(botInterval);
-      botInterval = undefined;
+      setTimeout(() => {
+        console.log("DEBUG: Four player game ended - resetting state and navigating back to:", fromPage);
+        
+        // RESET COMPLETO DELLO STATO DEL GIOCO
+        (window as any).game4 = null; // Reset del game object
+        gameCreated = false;
+        gameRoom.game_id = undefined;
+        
+        // Reset degli event listeners della tastiera
+        keyboardSetup = false;
+        
+        // Ferma tutti gli interval
+        if (botInterval) {
+          clearInterval(botInterval);
+          botInterval = undefined;
+        }
+        
+        // Pulisci completamente il canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        window.location.hash = fromPage;
+      }, 3000);
+    } else {
+      // Se non c'è gameRoom.game_id, gestisci comunque il reset
+      setTimeout(() => {
+        console.log("DEBUG: Four player game ended (no backend) - resetting state and navigating back to:", fromPage);
+        
+        // RESET COMPLETO
+        (window as any).game4 = null;
+        gameCreated = false;
+        gameRoom.game_id = undefined;
+        keyboardSetup = false;
+        
+        // Ferma tutti gli interval
+        if (botInterval) {
+          clearInterval(botInterval);
+          botInterval = undefined;
+        }
+        
+        // Pulisci completamente il canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        window.location.hash = fromPage;
+      }, 3000);
     }
-    gameRoom.game_id = undefined;
-    gameCreated = false;
-
     return;
   }
 

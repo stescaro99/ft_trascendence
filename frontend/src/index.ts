@@ -73,7 +73,7 @@ const routes: Record<string, () => string> = {
     return "";
   },
   '/game': () => {
-    console.log('LLLLL navigation stack', navigationStack);
+     console.log('LLLLL navigation stack', navigationStack);
     const fromPage = navigationStack[navigationStack.length - 2] || '/';
 
     const hash = location.hash.slice(1) || '/';
@@ -84,13 +84,26 @@ const routes: Record<string, () => string> = {
     
     // Se ci sono parametri nell'URL, estraili
     if (urlParams) {
-        // Formato: /game?Mario_Luigi
-        const players = urlParams.split('_');
-        if (players.length >= 2) {
-            player1 = players[0];
-            player2 = players[1];
+        // Controlla se è il nuovo formato con parametri query
+        if (urlParams.includes('player1=') || urlParams.includes('player2=')) {
+            // Nuovo formato: /game?players=2&player1=Mario&player2=Luigi&tournament=true
+            const params = new URLSearchParams(urlParams);
+            player1 = params.get('player1') || player1;
+            player2 = params.get('player2') || player2;
+            
+            console.log('Using query parameters format:', { player1, player2 });
+        } else {
+            // Formato precedente: /game?Mario_Luigi
+            const players = urlParams.split('_');
+            if (players.length >= 2) {
+                player1 = players[0];
+                player2 = players[1];
+            }
+            
+            console.log('Using underscore format:', { player1, player2 });
         }
     }
+
 
     new GamePage(currentLang, fromPage, player1, player2);
     return "";

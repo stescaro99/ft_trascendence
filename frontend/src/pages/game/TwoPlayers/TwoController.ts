@@ -176,7 +176,6 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string, fr
   
 	
 	const { canvas, ctx } = getCanvasAndCtx();
-
   // Crea stato di gioco solo la prima volta
   
   if (!(window as any).game || (window as any).game.canvas !== canvas) {
@@ -290,33 +289,75 @@ export async function TwoGameLoop(paddleColor1: string, paddleColor2: string, fr
 		setTimeout(() => {
             if (isTournamentMode) {
                 console.log("DEBUG: Tournament mode - handling tournament game end");
+                
+                // RESET COMPLETO DELLO STATO DEL GIOCO
+                (window as any).game = null; // Reset del game object
+                gameCreated = false;
+                gameRoom.game_id = undefined;
+                
+                // Reset degli event listeners della tastiera
+                keyboardSetup = false;
+                
+                // Ferma tutti gli interval
+                if (botInterval) {
+                    clearInterval(botInterval);
+                    botInterval = undefined;
+                }
+                
                 handleTournamentGameEnd(winner);
             } else {
                 console.log("DEBUG: Normal game - navigating back to:", fromPage);
+                
+                // Reset per partite normali
+                (window as any).game = null;
+                gameCreated = false;
+                gameRoom.game_id = undefined;
+                keyboardSetup = false;
+                
+                if (botInterval) {
+                    clearInterval(botInterval);
+                    botInterval = undefined;
+                }
+                
                 window.location.hash = fromPage;
             }
         }, 3000);
     } else {
-        // Se non c'è gameRoom.game_id, gestisci comunque il torneo
+        // Se non c'è gameRoom.game_id, gestisci comunque il reset
         setTimeout(() => {
             if (isTournamentMode) {
                 console.log("DEBUG: Tournament mode (no backend) - handling tournament game end");
+                
+                // RESET COMPLETO
+                (window as any).game = null;
+                gameCreated = false;
+                gameRoom.game_id = undefined;
+                keyboardSetup = false;
+                
+                if (botInterval) {
+                    clearInterval(botInterval);
+                    botInterval = undefined;
+                }
+                
                 handleTournamentGameEnd(winner);
             } else {
                 console.log("DEBUG: Normal game (no backend) - navigating back to:", fromPage);
+                
+                // Reset per partite normali
+                (window as any).game = null;
+                gameCreated = false;
+                gameRoom.game_id = undefined;
+                keyboardSetup = false;
+                
+                if (botInterval) {
+                    clearInterval(botInterval);
+                    botInterval = undefined;
+                }
+                
                 window.location.hash = fromPage;
             }
         }, 3000);
     }
-
-    if (botInterval) {
-        clearInterval(botInterval);
-        botInterval = undefined;
-    }
-
-    gameRoom.game_id = undefined;
-    gameCreated = false;
-
     return;
 }
 
@@ -324,22 +365,37 @@ function handleTournamentGameEnd(winner: string) {
     try {
         const tournament = JSON.parse(localStorage.getItem('activeTournament') || '{}');
         const currentIndex = parseInt(localStorage.getItem('currentGameIndex') || '0');
+        const currentRoundNumber = parseInt(localStorage.getItem('currentRound') || '0');
         
-        // Salva il risultato
-        if (!tournament.results) tournament.results = [];
-        tournament.results.push({
-            game: tournament.games[currentIndex],
-            winner: winner
-        });
+        console.log(`Tournament game end: Winner=${winner}, Round=${currentRoundNumber}, Game=${currentIndex}`);
         
-        // Aggiorna l'indice per la prossima partita
+        // Salva il risultato nel round corrente usando la nuova struttura
+        if (!tournament.rounds || !tournament.rounds[currentRoundNumber]) {
+            console.error('Tournament round structure is invalid');
+            window.location.hash = '#/tournament';
+            return;
+        }
+        
+        if (!tournament.rounds[currentRoundNumber].results) {
+            tournament.rounds[currentRoundNumber].results = [];
+        }
+        
+        const result = {
+            game: tournament.rounds[currentRoundNumber].games[currentIndex],
+            winner: winner,
+            round: currentRoundNumber
+        };
+        
+        tournament.rounds[currentRoundNumber].results.push(result);
+        
+        // Aggiorna l'indice per la prossima partita del round corrente
         tournament.currentGameIndex = currentIndex + 1;
         
         // Salva lo stato aggiornato del torneo
         localStorage.setItem('activeTournament', JSON.stringify(tournament));
         
-        console.log(`Tournament: Game ${currentIndex + 1} completed. Winner: ${winner}`);
-        console.log(`Tournament: ${tournament.results.length}/${tournament.games.length} games completed`);
+        console.log(`Tournament: Round ${currentRoundNumber} Game ${currentIndex + 1} completed. Winner: ${winner}`);
+        console.log(`Tournament: Round has ${tournament.rounds[currentRoundNumber].results.length}/${tournament.rounds[currentRoundNumber].games.length} games completed`);
         
         // Torna alla pagina del torneo che gestirà la prossima partita o i risultati finali
         window.location.hash = '#/tournament?continue=true';
