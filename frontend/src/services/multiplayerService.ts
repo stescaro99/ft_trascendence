@@ -11,40 +11,38 @@ export class MultiplayerService {
 	connect() {
 		// Se già connesso, non riconnettersi
 		if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-			console.log("[WebSocket] Già connesso, usando connessione esistente");
+			console.log("[MultiplayerService] Già connesso, usando connessione esistente");
 			return;
 		}
 
         const token = localStorage.getItem("token");
-        console.log("[WebSocket] Token trovato:", !!token);
-        console.log("[WebSocket] Token preview:", token ? token.substring(0, 20) + "..." : "null");
+        console.log("[MultiplayerService] Token trovato:", !!token);
+        console.log("[MultiplayerService] Token preview:", token ? token.substring(0, 20) + "..." : "null");
         if (!token)
         {
-            console.error("[WebSocket] Token JWT mancante. Impossibile connettersi.");
+            console.error("[MultiplayerService] Token JWT mancante. Impossibile connettersi.");
             return ;
         }
 
 		const wsUrl = `wss://transcendence.be:9443/ws/game?token=${token}`;
-		console.log("[WebSocket] Tentativo di connessione a:", wsUrl);
+		console.log("[MultiplayerService] Tentativo di connessione a:", wsUrl);
 		this.socket = new WebSocket(wsUrl);
 
 		this.socket.onopen = () => {
-			console.log("[WebSocket] Connesso con successo!");
+			console.log("[MultiplayerService] Connesso con successo!");
 			// Avvia heartbeat ogni 10 secondi
 			this.startHeartbeat();
 		};
 
 		this.socket.onmessage = (event) => {
 			const data = JSON.parse(event.data);
-			console.log("[WebSocket] Messaggio ricevuto:", data);
 	
 			if (data.type === "gameUpdate" && this.gameUpdateCallback) {
-				console.log("[WebSocket] Gestendo gameUpdate");
 				this.gameUpdateCallback(data.gameState);
 			}
 
 			if (data.type === "waitingForPlayers") {
-				console.log("[WebSocket] In attesa di altri giocatori...", data);
+				console.log("[MultiplayerService] In attesa di altri giocatori...", data);
 				this.currentRoomId = data.roomId;
 				if (this.waitingCallback) {
 					this.waitingCallback(data);
@@ -52,24 +50,24 @@ export class MultiplayerService {
 			}
 
 			if (data.type === "matchFound") {
-				console.log("[WebSocket] Partita trovata! Room ID:", data.roomId);
+				console.log("[MultiplayerService] Partita trovata! Room ID:", data.roomId);
 				this.currentRoomId = data.roomId;
 				// Non avviare il gioco qui, aspetta gameStarted
 			}
 
 			if (data.type === "gameStarted") {
-				console.log("[WebSocket] Gioco iniziato!");
+				console.log("[MultiplayerService] Gioco iniziato!");
 				this.gameStartCallback?.(data.gameState);
 			}
 		};
 
 		this.socket.onerror = (err) => {
-			console.error("[WebSocket] Errore di connessione:", err);
-			console.error("[WebSocket] ReadyState:", this.socket?.readyState);
+			console.error("[MultiplayerService] Errore di connessione:", err);
+			console.error("[MultiplayerService] ReadyState:", this.socket?.readyState);
 		};
 
 		this.socket.onclose = (event) => {
-			console.warn("[WebSocket] Disconnesso - Codice:", event.code, "Reason:", event.reason);
+			console.warn("[MultiplayerService] Disconnesso - Codice:", event.code, "Reason:", event.reason);
 			this.stopHeartbeat();
 		};
 	}
@@ -78,7 +76,7 @@ export class MultiplayerService {
 		this.stopHeartbeat(); // Pulisce eventuali interval precedenti
 		this.heartbeatInterval = setInterval(() => {
 			if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-				console.log("[WebSocket] Inviando ping heartbeat");
+				console.log("[MultiplayerService] Inviando ping heartbeat");
 				this.socket.send(JSON.stringify({
 					type: 'ping',
 					timestamp: Date.now()
@@ -95,14 +93,24 @@ export class MultiplayerService {
 	}
 
 	sendInput(input: { direction: 'up' | 'down'; timestamp: number }) {
+		console.log("[MultiplayerService] sendInput chiamato");
+		console.log("[MultiplayerService] currentRoomId:", this.currentRoomId);
+		console.log("[MultiplayerService] socket.readyState:", this.socket?.readyState);
+		console.log("[MultiplayerService] Inviando input:", input);
+		
 		if (this.socket && this.socket.readyState === WebSocket.OPEN && this.currentRoomId) {
-			this.socket.send(JSON.stringify({ 
+			const message = { 
 				type: "playerInput", 
 				roomId: this.currentRoomId,
-				input: input 
-			}));
+				input: {
+					direction: input.direction === "up" ? -1 : 1,
+					timestamp: input.timestamp
+				}
+			};
+			console.log("[MultiplayerService] Messaggio completo:", JSON.stringify(message));
+			this.socket.send(JSON.stringify(message));
 		} else {
-			console.error("[WebSocket] Impossibile inviare input:", {
+			console.error("[MultiplayerService] Impossibile inviare input:", {
 				socketReady: this.socket?.readyState === WebSocket.OPEN,
 				roomId: this.currentRoomId
 			});
@@ -110,15 +118,15 @@ export class MultiplayerService {
 	}
 
 	findMatch(gameType: 'two' | 'four' = 'two') {
-		console.log("[WebSocket] Cercando partita tipo:", gameType);
+		console.log("[MultiplayerService] Cercando partita tipo:", gameType);
 		if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-			console.log("[WebSocket] Inviando richiesta findMatch");
+			console.log("[MultiplayerService] Inviando richiesta findMatch");
 			this.socket.send(JSON.stringify({ 
 				type: "findMatch", 
 				gameType: gameType 
 			}));
 		} else {
-			console.error("[WebSocket] Socket non connesso! ReadyState:", this.socket?.readyState);
+			console.error("[MultiplayerService] Socket non connesso! ReadyState:", this.socket?.readyState);
 		}
 	}
 

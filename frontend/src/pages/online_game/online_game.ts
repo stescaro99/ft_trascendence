@@ -73,9 +73,21 @@ export class OnlineGamePage {
 				findMatchBtn.classList.remove("bg-gray-400", "cursor-not-allowed");
 				findMatchBtn.classList.add("bg-blue-500", "hover:bg-blue-700");
 				findMatchBtn.textContent = "Cerca Partita";
+				findMatchBtn.style.display = "block";
+			}
+			
+			// Nascondi il canvas se visibile
+			canvas.classList.add("hidden");
+			canvas.style.display = "none !important";
+			
+			// Nascondi le istruzioni di gioco
+			const gameInstructions = document.getElementById("gameInstructions");
+			if (gameInstructions) {
+				gameInstructions.classList.add("hidden");
 			}
 			
 			status.textContent = "Premi il pulsante per cercare una partita";
+			matchInfo.classList.add("hidden");
 		};
 
 		console.log("[OnlineGame] 🎯 Aggiungendo listener al pulsante Cerca Partita");
@@ -126,32 +138,69 @@ export class OnlineGamePage {
 		// Callback quando la partita inizia
 		multiplayerService.onGameStart((initialState) => {
 			console.log("[OnlineGame] 🎉 Partita trovata! Callback onGameStart chiamato!", initialState);
-			
-			// Ferma il timer di ricerca
+
+			// FERMA IL TIMER DI RICERCA
 			if (searchTimer) {
 				clearInterval(searchTimer);
 				searchTimer = null;
+				console.log("[OnlineGame] Timer di ricerca fermato");
+			}
+
+			// AGGIORNA GLI ELEMENTI UI
+			const status = document.getElementById("status");
+			const matchInfo = document.getElementById("matchInfo");
+			const findMatchBtn = document.getElementById("findMatchBtn");
+			const cancelBtn = document.getElementById("cancelMatchBtn");
+			const gameInstructions = document.getElementById("gameInstructions");
+
+			// Nascondi i pulsanti
+			if (findMatchBtn) {
+				findMatchBtn.style.display = "none";
+				console.log("[OnlineGame] Pulsante 'Cerca Partita' nascosto");
 			}
 			
-			// Nascondi il pulsante di annullamento
-			const cancelBtn = document.getElementById("cancelMatchBtn");
-			if (cancelBtn)
+			if (cancelBtn) {
 				cancelBtn.classList.add("hidden");
-			
-			status.textContent = "Partita trovata!";
-			matchInfo.classList.remove("hidden");
+				console.log("[OnlineGame] Pulsante 'Annulla Ricerca' nascosto");
+			}
 
-			// FORZA la visualizzazione del canvas
-			canvas.style.display = "block";
-			canvas.classList.remove("hidden");
+			// Aggiorna il testo di status
+			if (status) {
+				status.textContent = "Partita trovata!";
+				status.className = "text-green-500 text-sm"; // Cambia colore in verde
+				console.log("[OnlineGame] Status aggiornato");
+			}
 
-			if (findMatchBtn)
-				findMatchBtn.style.display = "none";
+			// Mostra "Partita trovata!"
+			if (matchInfo) {
+				matchInfo.classList.remove("hidden");
+				matchInfo.textContent = "Partita trovata!";
+				console.log("[OnlineGame] MatchInfo mostrato");
+			}
 
+			// Mostra le istruzioni
+			if (gameInstructions) {
+				gameInstructions.classList.remove("hidden");
+				console.log("[OnlineGame] Istruzioni di gioco mostrate");
+			}
+
+			// GESTISCI IL CANVAS
+			const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
+			if (!canvas) {
+				console.error("[OnlineGame] ❌ Canvas non trovato nel DOM!");
+				// Logica di creazione canvas...
+			} else {
+				// Il canvas esiste, mostralo
+				canvas.classList.remove("hidden");
+				canvas.style.display = "block";
+				canvas.style.visibility = "visible";
+				console.log("[OnlineGame] Canvas mostrato");
+			}
+
+			// AVVIA IL CONTROLLER DI GIOCO
 			new RemoteController("gameCanvas", initialState);
+			console.log("[OnlineGame] RemoteController avviato");
 		});
-
-		console.log("[OnlineGame] ✅ Inizializzazione completata!");
 	}
 
 	render () {
@@ -168,6 +217,11 @@ export class OnlineGamePage {
 		if (screen)
 			screen.classList.add('visible');
 		
-		console.log("[OnlineGame] ✅ HTML renderizzato!");
+		// Nascondi completamente la sezione di ricerca
+		const searchSection = document.querySelector('.screen > div:first-child');
+
+		if (searchSection) {
+			searchSection.style.display = "none";
+		}
 	}
 }

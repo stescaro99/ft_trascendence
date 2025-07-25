@@ -1,5 +1,4 @@
 <div class="screen flex flex-col items-center mt-8 space-y-4 pl-20">
-	<h2 class="text-xl font-bold">Online Game</h2>
 
 	<div id="nickname" class="text-blue-600 font-medium"></div>
 	<div id="status" class="text-gray-500 text-sm">Premi il pulsante per cercare una partita</div>
@@ -11,11 +10,8 @@
 	<canvas id="gameCanvas"
 		width="1200"
 		height="750"
-		class="block border border-gray-400 shadow-md"
-		style="display: block !important;">
+		tabindex="0"
+		class="block border border-gray-400 shadow-md focus:border-blue-500 hidden mx-auto"
+		style="display: none; outline: none;">
 	</canvas>
-
-	<div id="matchInfo" class="text-green-500 text-sm hidden">
-		Partita trovata!
-	</div>
 </div>

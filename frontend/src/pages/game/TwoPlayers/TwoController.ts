@@ -64,8 +64,8 @@ function createInitialGameState(canvas: HTMLCanvasElement): GameState {
 	  }
 	],
 	powerUp: {
-	  x: Math.random() * canvas.width / 2 + canvas.width / 4,
-	  y: Math.random() * canvas.height / 2 + canvas.height / 4,
+	  x: Math.random() * (canvas.width - 200) + 100,
+	  y: Math.random() * (canvas.height - 200) + 100,
 	  width: 20,
 	  height: 20,
 	  active: true,

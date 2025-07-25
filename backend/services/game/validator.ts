@@ -4,10 +4,12 @@ export class GameValidator {
   private static lastInputTime: Map<string, number> = new Map();
 
   static validatePaddleInput(input: any): boolean {
-    if (!input || typeof input !== 'object') return false;
+    if (!input || typeof input !== 'object') 
+      return false;
     if (typeof input.direction !== 'number' || 
         isNaN(input.direction) || 
-        Math.abs(input.direction) > 1) {
+        Math.abs(input.direction) > 1)
+    {
       return false;
     }
     return true;

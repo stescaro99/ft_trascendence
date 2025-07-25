@@ -17,51 +17,68 @@ export class RemoteController {
   
     private setupListeners() {
       multiplayerService.onGameUpdate((state: GameState) => {
-        console.log('[RemoteController] Ricevuto gameUpdate', state);
         this.draw(state);
       });
     }
   
     private setupInput() {
-      document.addEventListener("keydown", (e) => {
+      console.log('[RemoteController] Setup input listeners');
+    
+      // Assicurati che il canvas possa ricevere il focus
+      this.canvas.tabIndex = 0;
+      this.canvas.focus();
+    
+      // Aggiungi listener sia al document che al canvas
+      const handleKeyDown = (e: KeyboardEvent) => {
+        console.log('[RemoteController] Key down:', e.key);
         if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+          console.log('[RemoteController] Sending input for:', e.key);
           multiplayerService.sendInput({
             direction: e.key === "ArrowUp" ? "up" : "down",
             timestamp: Date.now()
           });
         }
+      };
+    
+      document.addEventListener("keydown", handleKeyDown);
+      this.canvas.addEventListener("keydown", handleKeyDown);
+    
+      // Assicurati che il canvas mantenga il focus quando cliccato
+      this.canvas.addEventListener("click", () => {
+        console.log('[RemoteController] Canvas clicked, setting focus');
+        this.canvas.focus();
       });
     }
   
     private draw(state: GameState) {
-        console.log('[RemoteController] Drawing state:', {
-            ball: state.ball,
-            leftPaddle: state.leftPaddle,
-            rightPaddle: state.rightPaddle,
-            paddleWidth: state.paddleWidth
-        });
-  
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       
         drawField(this.ctx, this.canvas);
         
-        // Prova a disegnare la palla con un colore più visibile
-        if (state.ball) {
-            console.log('[RemoteController] Drawing ball at:', state.ball.x, state.ball.y);
+        // Solo disegna la palla se non è in attesa
+        if (state.ball && !state.waitingForStart) {
             drawBall(this.ctx, state.ball);
+        } else if (state.waitingForStart) {
+            // Mostra countdown o messaggio
+            this.ctx.fillStyle = "white";
+            this.ctx.font = "24px Arial";
+            this.ctx.textAlign = "center";
+            this.ctx.fillText("Get Ready!", this.canvas.width / 2, this.canvas.height / 2 - 30);
         }
         
-        drawPowerUp(this.ctx, state.powerUp);
-  
-        // Test temporaneo - sostituisci le linee delle racchette con:
+        // Disegna powerup se attivo
+        if (state.powerUp && state.powerUp.active) {
+            drawPowerUp(this.ctx, state.powerUp);
+        }
+
         state.leftPaddle.forEach(p =>
-            drawRect(this.ctx, p.x, p.y, state.paddleWidth, p.height, "#FF0000") // ROSSO
+            drawRect(this.ctx, p.x, p.y, state.paddleWidth, p.height, "#FF0000")
         );
-  
+
         state.rightPaddle.forEach(p =>
-            drawRect(this.ctx, p.x, p.y, state.paddleWidth, p.height, "#00FF00") // VERDE
+            drawRect(this.ctx, p.x, p.y, state.paddleWidth, p.height, "#00FF00")
         );
-  
+
         drawScore(this.ctx, this.canvas, state.scoreLeft, state.scoreRight);
     }
   }

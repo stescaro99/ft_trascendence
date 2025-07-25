@@ -94,30 +94,63 @@ export class RoomManager {
   }
 
   assignPlayersToPositions(room: GameRoom): void {
+    console.log('[RoomManager] Assigning players to positions...');
     room.players.forEach((player, index) => {
-      if (room.type === 'two') {
-        if (index === 0) {
-          room.gameState.leftPaddle[0].nickname = player.nickname;
-        } else if (index === 1) {
-          room.gameState.rightPaddle[0].nickname = player.nickname;
-        }
-      } else {
-        if (index < 2) {
-          room.gameState.leftPaddle[index].nickname = player.nickname;
-        } else {
-          room.gameState.rightPaddle[index - 2].nickname = player.nickname;
-        }
+        if (room.type === 'two')
+          {
+            if (index === 0)
+            {
+              room.gameState.leftPaddle[0].nickname = player.nickname;
+              console.log(`[RoomManager] Player ${player.nickname} assigned to LEFT paddle`);
+            }
+            else if (index === 1)
+            {
+              room.gameState.rightPaddle[0].nickname = player.nickname;
+              console.log(`[RoomManager] Player ${player.nickname} assigned to RIGHT paddle`);
+            }
+          }
+        else {
+          if (index === 0)
+          {
+            room.gameState.leftPaddle[0].nickname = player.nickname;
+            console.log(`[RoomManager] Player ${player.nickname} assigned to LEFT TOP paddle`);
+          }
+          else if (index === 1)
+          {
+            room.gameState.leftPaddle[1].nickname = player.nickname;
+            console.log(`[RoomManager] Player ${player.nickname} assigned to LEFT BOTTOM paddle`);
+          }
+          else if (index === 2)
+          {
+            room.gameState.rightPaddle[0].nickname = player.nickname;
+            console.log(`[RoomManager] Player ${player.nickname} assigned to RIGHT TOP paddle`);
+          }
+          else if (index === 3)
+          {
+            room.gameState.rightPaddle[1].nickname = player.nickname;
+            console.log(`[RoomManager] Player ${player.nickname} assigned to RIGHT BOTTOM paddle`);
+          }
       }
     });
   }
 
-  getPlayerSide(room: GameRoom, player: Player): string {
+  getPlayerSide(room: GameRoom, player: Player): string
+  {
     const playerIndex = room.players.indexOf(player);
-    if (room.type === 'two') {
+    if (room.type === 'two')
       return playerIndex === 0 ? 'left' : 'right';
-    } else {
+    else
       return playerIndex < 2 ? 'left' : 'right';
-    }
+  }
+
+
+  getPlayerPaddleIndex(room: GameRoom, player: Player): number
+  {
+    const playerIndex = room.players.indexOf(player);
+    if (room.type === 'two')
+      return 0;
+    else
+      return playerIndex % 2;
   }
 
   private generateRoomId(): string {
@@ -147,13 +180,13 @@ export class RoomManager {
       leftPaddle: [],
       rightPaddle: [],
       powerUp: {
-        x: 0,
-        y: 0,
+        x: Math.random() * (GAME_CONSTANTS.CANVAS_WIDTH - 200) + 100,
+        y: Math.random() * (GAME_CONSTANTS.CANVAS_HEIGHT - 200) + 100,
         width: 20,
         height: 20,
-        active: false,
-        type: "",
-        color: ""
+        active: true,
+        type: this.getRandomPowerUpType(),
+        color: this.getPowerUpColor("")
       },
       scoreLeft: 0,
       scoreRight: 0,
@@ -224,5 +257,19 @@ export class RoomManager {
 
     console.log('[RoomManager] Final gameState:', baseState);
     return baseState;
+  }
+
+  private getRandomPowerUpType(): string {
+    const types = ["SizeIncrease", "SizeDecrease", "SpeedBoost"];
+    return types[Math.floor(Math.random() * types.length)];
+  }
+
+  private getPowerUpColor(type: string): string {
+    switch(type) {
+        case "SizeIncrease": return "#00FF00";
+        case "SizeDecrease": return "#FF0000";
+        case "SpeedBoost": return "#0000FF";
+        default: return "#FFFF00";
+    }
   }
 }

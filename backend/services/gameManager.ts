@@ -43,12 +43,12 @@ class GameManager {
   {
     console.log('[GameManager] Finding match for player:', player.nickname, 'gameType:', gameType);
     const roomId = this.roomManager.findMatch(player, gameType);
-    console.log('[GameManager] roomManager.findMatch returned:', roomId); // ← AGGIUNGI
+    console.log('[GameManager] roomManager.findMatch returned:', roomId);
     let isRoomFull = false;
     
     if (roomId) {
       const room = this.roomManager.getRoom(roomId);
-      console.log('[GameManager] Room details:', { // ← AGGIUNGI
+      console.log('[GameManager] Room details:', {
         id: room?.id,
         playersCount: room?.players.length,
         maxPlayers: room?.maxPlayers,
@@ -56,10 +56,10 @@ class GameManager {
       });
       if (room && room.players.length === room.maxPlayers) {
         isRoomFull = true;
-        console.log('[GameManager] Room is full, returning isRoomFull=true'); // ← AGGIUNGI
+        console.log('[GameManager] Room is full, returning isRoomFull=true');
       }
     }
-    console.log('[GameManager] findMatch returning:', { roomId, isRoomFull }); // ← AGGIUNGI
+    console.log('[GameManager] findMatch returning:', { roomId, isRoomFull });
     return { roomId, isRoomFull };
   }
 
@@ -90,9 +90,9 @@ class GameManager {
   startGame(roomId: string): void {
     console.log('[GameManager] startGame called for roomId:', roomId);
     const room = this.roomManager.getRoom(roomId);
-    console.log('[GameManager] Got room:', room ? 'found' : 'not found'); // ← AGGIUNGI
+    console.log('[GameManager] Got room:', room ? 'found' : 'not found');
     if (!room || room.players.length !== room.maxPlayers) {
-      console.log('[GameManager] Cannot start game:', { // ← AGGIUNGI
+      console.log('[GameManager] Cannot start game:', {
         roomExists: !!room,
         playersCount: room?.players.length,
         maxPlayers: room?.maxPlayers
@@ -101,9 +101,9 @@ class GameManager {
     }
 
     room.isActive = true;
-    console.log('[GameManager] About to call createInitialGameState...'); // ← AGGIUNGI
+    console.log('[GameManager] About to call createInitialGameState...');
     room.gameState = this.roomManager.createInitialGameState(room.type);
-    console.log('[GameManager] createInitialGameState completed'); // ← AGGIUNGI
+    console.log('[GameManager] createInitialGameState completed');
     this.roomManager.assignPlayersToPositions(room);
     this.broadcastToRoom(roomId, {
       type: 'gameStarted',
@@ -188,22 +188,31 @@ class GameManager {
   // ===== METODI PRIVATI =====
 
   private updatePaddleMovement(room: GameRoom, player: Player, input: any): void {
-    const playerIndex = room.players.indexOf(player);
     const maxSpeed = room.gameState.paddleSpeed;
     const validatedDirection = GameValidator.sanitizeDirection(input.direction);
     
+    const playerSide = this.roomManager.getPlayerSide(room, player);
+    const paddleIndex = this.roomManager.getPlayerPaddleIndex(room, player);
+    
+    console.log(`[GameManager] Player ${player.nickname} side: ${playerSide}, direction: ${validatedDirection}`);
+    
     if (room.type === 'two') {
-      if (playerIndex === 0) {
-        room.gameState.leftPaddle[0].dy = validatedDirection * maxSpeed;
-      } else if (playerIndex === 1) {
-        room.gameState.rightPaddle[0].dy = validatedDirection * maxSpeed;
-      }
+        if (playerSide === 'left') {
+            room.gameState.leftPaddle[0].dy += validatedDirection * maxSpeed;
+            room.gameState.leftPaddle[0].dy = Math.max(-maxSpeed, Math.min(maxSpeed, room.gameState.leftPaddle[0].dy));
+        } else if (playerSide === 'right') {
+            room.gameState.rightPaddle[0].dy += validatedDirection * maxSpeed;
+            room.gameState.rightPaddle[0].dy = Math.max(-maxSpeed, Math.min(maxSpeed, room.gameState.rightPaddle[0].dy));
+        }
     } else {
-      if (playerIndex < 2) {
-        room.gameState.leftPaddle[playerIndex].dy = validatedDirection * maxSpeed;
-      } else {
-        room.gameState.rightPaddle[playerIndex - 2].dy = validatedDirection * maxSpeed;
-      }
+        // Logica per 4 giocatori
+        if (playerSide === 'left') {
+            room.gameState.leftPaddle[paddleIndex].dy += validatedDirection * maxSpeed;
+            room.gameState.leftPaddle[paddleIndex].dy = Math.max(-maxSpeed, Math.min(maxSpeed, room.gameState.leftPaddle[paddleIndex].dy));
+        } else {
+            room.gameState.rightPaddle[paddleIndex].dy += validatedDirection * maxSpeed;
+            room.gameState.rightPaddle[paddleIndex].dy = Math.max(-maxSpeed, Math.min(maxSpeed, room.gameState.rightPaddle[paddleIndex].dy));
+        }
     }
   }
 

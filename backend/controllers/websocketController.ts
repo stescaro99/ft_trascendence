@@ -69,6 +69,8 @@ function handlePlayerMessage(player: Player, message: any) {
         handleCreateRoom(player, data);
         break;
       case 'playerInput':
+        console.log('[WebSocket] 📨 Ricevuto messaggio playerInput');
+        console.log('[WebSocket] Dati completi:', JSON.stringify(data, null, 2));
         handlePlayerInputWithValidation(player, data);
         break;
       case 'playerReady':
@@ -290,10 +292,23 @@ function sendToPlayer(player: Player, message: any) {
 }
 
 function handlePlayerInputWithValidation(player: Player, data: any) {
+  console.log('[WebSocket] 🎮 handlePlayerInputWithValidation chiamato');
+  console.log('[WebSocket] Player:', player.nickname, '| ID:', player.id);
+  console.log('[WebSocket] Data ricevuta:', data);
+  console.log('[WebSocket] Input:', data.input);
+  console.log('[WebSocket] RoomId:', data.roomId);
+  
   if (!data.input.timestamp) {
     data.input.timestamp = Date.now();
   }
-  gameManager.handlePlayerInput(data.roomId, player.id, data.input);
+  
+  console.log('[WebSocket] Chiamando gameManager.handlePlayerInput...');
+  try {
+    gameManager.handlePlayerInput(data.roomId, player.id, data.input);
+    console.log('[WebSocket] ✅ gameManager.handlePlayerInput completato');
+  } catch (error) {
+    console.error('[WebSocket] ❌ Errore in gameManager.handlePlayerInput:', error);
+  }
 }
 
 function handlePing(player: Player, data: any) {
