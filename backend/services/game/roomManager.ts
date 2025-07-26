@@ -49,9 +49,9 @@ export class RoomManager {
     } else {
       if (room.isActive) {
         room.isActive = false;
-      }
+        }
     }
-  }
+    }
 
   findMatch(player: Player, gameType: 'two' | 'four' = 'two'): string | null {
     console.log('[RoomManager] findMatch called for:', player.nickname, 'gameType:', gameType);
@@ -158,118 +158,105 @@ export class RoomManager {
   }
 
   createInitialGameState(type: 'two' | 'four'): GameState {
-    console.log('[RoomManager] createInitialGameState called with type:', type);
-    const paddleHeight = GAME_CONSTANTS.CANVAS_HEIGHT / 5;
+    const paddleHeight = GAME_CONSTANTS.CANVAS_HEIGHT / 5; // ← STESSO CALCOLO DEL FRONTEND
     const paddleWidth = GAME_CONSTANTS.PADDLE_WIDTH;
 
-    console.log('[RoomManager] Creating game state with:', {
-      paddleWidth,
-      PADDLE_WIDTH: GAME_CONSTANTS.PADDLE_WIDTH,
-      paddleHeight
-    });
-
     const baseState: GameState = {
-      ball: {
-        x: GAME_CONSTANTS.CANVAS_WIDTH / 2,
-        y: GAME_CONSTANTS.CANVAS_HEIGHT / 2,
-        dx: 5,
-        dy: -5,
-        radius: GAME_CONSTANTS.BALL_RADIUS,
-        speed: 1.5
-      },
-      leftPaddle: [],
-      rightPaddle: [],
-      powerUp: {
-        x: Math.random() * (GAME_CONSTANTS.CANVAS_WIDTH - 200) + 100,
-        y: Math.random() * (GAME_CONSTANTS.CANVAS_HEIGHT - 200) + 100,
-        width: 20,
-        height: 20,
-        active: true,
-        type: this.getRandomPowerUpType(),
-        color: this.getPowerUpColor("")
-      },
-      scoreLeft: 0,
-      scoreRight: 0,
-      paddleHeight: paddleHeight,
-      paddleWidth: paddleWidth,
-      waitingForStart: false,
-      maxScore: 5,
-      paddleSpeed: 6
+        ball: {
+            x: GAME_CONSTANTS.CANVAS_WIDTH / 2,
+            y: GAME_CONSTANTS.CANVAS_HEIGHT / 2,
+            dx: 5,        
+            dy: 5,        
+            radius: GAME_CONSTANTS.BALL_RADIUS,
+            speed: 1.5
+        },
+        leftPaddle: [
+            {
+                x: 30,    
+                y: GAME_CONSTANTS.CANVAS_HEIGHT / 2 - paddleHeight / 2,
+                dy: 0,
+                speed: 6, 
+                height: paddleHeight,
+                nickname: ""
+            }
+        ],
+        rightPaddle: [
+            {
+                x: GAME_CONSTANTS.CANVAS_WIDTH - paddleWidth - 30,
+                y: GAME_CONSTANTS.CANVAS_HEIGHT / 2 - paddleHeight / 2,
+                dy: 0,
+                speed: 6, 
+                height: paddleHeight,
+                nickname: ""
+            }
+        ],
+        powerUp: {
+            x: Math.random() * (GAME_CONSTANTS.CANVAS_WIDTH - 200) + 100, 
+            y: Math.random() * (GAME_CONSTANTS.CANVAS_HEIGHT - 200) + 100,
+            width: 20,
+            height: 20,
+            active: true,
+            type: "", 
+            color: "" 
+        },
+        scoreLeft: 0,
+        scoreRight: 0,
+        paddleHeight: paddleHeight,
+        paddleWidth: paddleWidth,
+        waitingForStart: false,     
+        maxScore: 5,                
+        paddleSpeed: 6              
     };
 
-    console.log('[RoomManager] Created baseState.paddleWidth:', baseState.paddleWidth);
+    this.randomizePowerUp(baseState);
 
-    if (type === 'two') {
-      baseState.leftPaddle = [{
-        x: 30,  // ← Come nel TwoController
-        y: GAME_CONSTANTS.CANVAS_HEIGHT / 2 - paddleHeight / 2,
-        dy: 0,
-        speed: 6,
-        height: paddleHeight,
-        nickname: ''
-      }];
-      baseState.rightPaddle = [{
-        x: GAME_CONSTANTS.CANVAS_WIDTH - paddleWidth - 30,  // ← Usa paddleWidth invece di GAME_CONSTANTS.PADDLE_WIDTH
-        y: GAME_CONSTANTS.CANVAS_HEIGHT / 2 - paddleHeight / 2,
-        dy: 0,
-        speed: 6,
-        height: paddleHeight,
-        nickname: ''
-      }];
-    } else {
-      baseState.leftPaddle = [
-        {
-          x: 30,
-          y: GAME_CONSTANTS.CANVAS_HEIGHT / 4 - paddleHeight / 4,
-          dy: 0,
-          speed: 6,
-          height: paddleHeight / 2,
-          nickname: ''
-        },
-        {
-          x: 30,
-          y: 3 * GAME_CONSTANTS.CANVAS_HEIGHT / 4 - paddleHeight / 4,
-          dy: 0,
-          speed: 6,
-          height: paddleHeight / 2,
-          nickname: ''
-        }
-      ];
-      baseState.rightPaddle = [
-        {
-          x: GAME_CONSTANTS.CANVAS_WIDTH - GAME_CONSTANTS.PADDLE_WIDTH - 30,
-          y: GAME_CONSTANTS.CANVAS_HEIGHT / 4 - paddleHeight / 4,
-          dy: 0,
-          speed: 6,
-          height: paddleHeight / 2,
-          nickname: ''
-        },
-        {
-          x: GAME_CONSTANTS.CANVAS_WIDTH - GAME_CONSTANTS.PADDLE_WIDTH - 30,
-          y: 3 * GAME_CONSTANTS.CANVAS_HEIGHT / 4 - paddleHeight / 4,
-          dy: 0,
-          speed: 6,
-          height: paddleHeight / 2,
-          nickname: ''
-        }
-      ];
+    if (type === 'four') {
+        baseState.leftPaddle.push({
+            x: 30,
+            y: GAME_CONSTANTS.CANVAS_HEIGHT / 2 + paddleHeight,
+            dy: 0,
+            speed: 6,
+            height: paddleHeight,
+            nickname: ""
+        });
+
+        baseState.rightPaddle.push({
+            x: GAME_CONSTANTS.CANVAS_WIDTH - paddleWidth - 30,
+            y: GAME_CONSTANTS.CANVAS_HEIGHT / 2 + paddleHeight,
+            dy: 0,
+            speed: 6,
+            height: paddleHeight,
+            nickname: ""
+        });
     }
 
-    console.log('[RoomManager] Final gameState:', baseState);
     return baseState;
-  }
+}
 
-  private getRandomPowerUpType(): string {
+private randomizePowerUp(gameState: GameState): void
+{
+    const rectWidth = GAME_CONSTANTS.CANVAS_WIDTH / 2;
+    const rectHeight = GAME_CONSTANTS.CANVAS_HEIGHT / 2;
+    const rectX = GAME_CONSTANTS.CANVAS_WIDTH / 4;
+    const rectY = GAME_CONSTANTS.CANVAS_HEIGHT / 4; 
+
+    gameState.powerUp.x = Math.random() * rectWidth + rectX;
+    gameState.powerUp.y = Math.random() * rectHeight + rectY;
+
     const types = ["SizeIncrease", "SizeDecrease", "SpeedBoost"];
-    return types[Math.floor(Math.random() * types.length)];
-  }
+    const index = Math.floor(Math.random() * types.length);
+    gameState.powerUp.type = types[index];
 
-  private getPowerUpColor(type: string): string {
-    switch(type) {
-        case "SizeIncrease": return "#00FF00";
-        case "SizeDecrease": return "#FF0000";
-        case "SpeedBoost": return "#0000FF";
-        default: return "#FFFF00";
+    switch (gameState.powerUp.type) {
+        case "SizeIncrease":
+            gameState.powerUp.color = "#00ff00"; // verde
+            break;
+        case "SizeDecrease":
+            gameState.powerUp.color = "#ff0000"; // rosso
+            break;
+        case "SpeedBoost":
+            gameState.powerUp.color = "#ffff00"; // giallo
+            break;
     }
   }
 }

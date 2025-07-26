@@ -4,7 +4,6 @@ import { drawBall, drawRect, drawScore, drawPowerUp, drawField } from "../common
 import { getBotActive, predictBallY, moveBot } from "../common/BotState";
 
 
-// Helper per ottenere canvas e ctx in modo sicuro
 function getCanvasAndCtx() {
   const canvas = document.getElementById("pong") as HTMLCanvasElement | null;
   if (!canvas) throw new Error("Canvas not found!");
@@ -12,8 +11,8 @@ function getCanvasAndCtx() {
   return { canvas, ctx };
 }
 
-function getPlayerNick(index: number, side: "left" | "right") {
-  // Prova prima a prendere dall'utente loggato
+function getPlayerNick(index: number, side: "left" | "right")
+{
   const userStr = localStorage.getItem('user');
   if (userStr) {
     try {

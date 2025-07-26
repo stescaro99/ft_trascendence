@@ -188,31 +188,23 @@ class GameManager {
   // ===== METODI PRIVATI =====
 
   private updatePaddleMovement(room: GameRoom, player: Player, input: any): void {
-    const maxSpeed = room.gameState.paddleSpeed;
     const validatedDirection = GameValidator.sanitizeDirection(input.direction);
-    
     const playerSide = this.roomManager.getPlayerSide(room, player);
     const paddleIndex = this.roomManager.getPlayerPaddleIndex(room, player);
     
-    console.log(`[GameManager] Player ${player.nickname} side: ${playerSide}, direction: ${validatedDirection}`);
-    
-    if (room.type === 'two') {
-        if (playerSide === 'left') {
-            room.gameState.leftPaddle[0].dy += validatedDirection * maxSpeed;
-            room.gameState.leftPaddle[0].dy = Math.max(-maxSpeed, Math.min(maxSpeed, room.gameState.leftPaddle[0].dy));
-        } else if (playerSide === 'right') {
-            room.gameState.rightPaddle[0].dy += validatedDirection * maxSpeed;
-            room.gameState.rightPaddle[0].dy = Math.max(-maxSpeed, Math.min(maxSpeed, room.gameState.rightPaddle[0].dy));
-        }
-    } else {
-        // Logica per 4 giocatori
-        if (playerSide === 'left') {
-            room.gameState.leftPaddle[paddleIndex].dy += validatedDirection * maxSpeed;
-            room.gameState.leftPaddle[paddleIndex].dy = Math.max(-maxSpeed, Math.min(maxSpeed, room.gameState.leftPaddle[paddleIndex].dy));
-        } else {
-            room.gameState.rightPaddle[paddleIndex].dy += validatedDirection * maxSpeed;
-            room.gameState.rightPaddle[paddleIndex].dy = Math.max(-maxSpeed, Math.min(maxSpeed, room.gameState.rightPaddle[paddleIndex].dy));
-        }
+    if (room.type === 'two')
+    {
+        if (playerSide === 'left')
+            room.gameState.leftPaddle[0].dy = validatedDirection * room.gameState.leftPaddle[0].speed;
+        else if (playerSide === 'right')
+            room.gameState.rightPaddle[0].dy = validatedDirection * room.gameState.rightPaddle[0].speed;
+    }
+    else
+    {
+        if (playerSide === 'left')
+            room.gameState.leftPaddle[paddleIndex].dy = validatedDirection * room.gameState.leftPaddle[paddleIndex].speed;
+        else
+            room.gameState.rightPaddle[paddleIndex].dy = validatedDirection * room.gameState.rightPaddle[paddleIndex].speed;
     }
   }
 

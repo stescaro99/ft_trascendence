@@ -1,258 +1,277 @@
-import { GameState, GAME_CONSTANTS } from './types';
+import { GameState } from './types';
+import { GAME_CONSTANTS } from './types';
 
 export class GamePhysics {
   static updateGameStateWithDelta(gameState: GameState, deltaTime: number): void {
-    const normalizedDelta = deltaTime / (1000 / GAME_CONSTANTS.TARGET_FPS);
-
-    gameState.ball.x += (gameState.ball.dx * gameState.ball.speed) * normalizedDelta;
-    gameState.ball.y += (gameState.ball.dy * gameState.ball.speed) * normalizedDelta;
-    gameState.leftPaddle.forEach(paddle => {
-      paddle.y += paddle.dy * normalizedDelta;
-      paddle.y = Math.max(0, Math.min(GAME_CONSTANTS.CANVAS_HEIGHT - paddle.height, paddle.y));
-    });
-    gameState.rightPaddle.forEach(paddle => {
-      paddle.y += paddle.dy * normalizedDelta;
-      paddle.y = Math.max(0, Math.min(GAME_CONSTANTS.CANVAS_HEIGHT - paddle.height, paddle.y));
-    });
-    if (gameState.ball.y <= gameState.ball.radius || 
-        gameState.ball.y >= GAME_CONSTANTS.CANVAS_HEIGHT - gameState.ball.radius) {
-      gameState.ball.dy = -gameState.ball.dy;
-      gameState.ball.y = Math.max(gameState.ball.radius, 
-        Math.min(GAME_CONSTANTS.CANVAS_HEIGHT - gameState.ball.radius, gameState.ball.y));
-    }
-    this.checkPaddleCollisions(gameState);
-    this.checkPowerUpCollision(gameState);
-    if (gameState.ball.x <= -gameState.ball.radius) {
-      this.handleScore(gameState, 'right');
-    } else if (gameState.ball.x >= GAME_CONSTANTS.CANVAS_WIDTH + gameState.ball.radius) {
-      this.handleScore(gameState, 'left');
-    }
+    if (gameState.waitingForStart) return;
+    
+    // Usa le stesse funzioni del gioco offline in ordine
+    this.handleBallMovement(gameState);
+    this.handlePowerUpCollision(gameState);
+    this.handleWallCollision(gameState);
+    this.handleTriangleCollision(gameState);
+    this.handlePaddleCollision(gameState);
+    this.updatePaddleMovement(gameState);
+    this.checkScore(gameState);
   }
 
-  static checkPaddleCollisions(gameState: GameState): void {
-    gameState.leftPaddle.forEach(paddle => {
-      if (this.isColliding(gameState.ball, paddle, gameState)) {
-        this.handlePaddleCollision(gameState, paddle, 'left');
+  // === COPIA ESATTA DAL GAMEUPDATE OFFLINE ===
+  static handleBallMovement(gameState: GameState): void {
+    gameState.ball.x += gameState.ball.dx * gameState.ball.speed;
+    gameState.ball.y += gameState.ball.dy * gameState.ball.speed;
+  }
+
+  static handlePowerUpCollision(gameState: GameState): void {
+    if (
+      gameState.powerUp.active &&
+      gameState.ball.x + gameState.ball.radius > gameState.powerUp.x &&
+      gameState.ball.x - gameState.ball.radius < gameState.powerUp.x + gameState.powerUp.width &&
+      gameState.ball.y + gameState.ball.radius > gameState.powerUp.y &&
+      gameState.ball.y - gameState.ball.radius < gameState.powerUp.y + gameState.powerUp.height
+    ) {
+      const isLeft = gameState.ball.dx < 0;
+      const affectedTeam = isLeft ? gameState.rightPaddle : gameState.leftPaddle;
+      const oppositeTeam = isLeft ? gameState.leftPaddle : gameState.rightPaddle;
+
+      affectedTeam.forEach(p => {
+        if (gameState.powerUp.type === "SizeIncrease") {
+          p.height += p.height / 2;
+        } else if (gameState.powerUp.type === "SpeedBoost") {
+          p.speed *= 1.5;
+        }
+      });
+
+      if (gameState.powerUp.type === "SizeDecrease") {
+        oppositeTeam.forEach(p => {
+          p.height -= p.height / 3;
+        });
       }
-    });
-    gameState.rightPaddle.forEach(paddle => {
-      if (this.isColliding(gameState.ball, paddle, gameState)) {
-        this.handlePaddleCollision(gameState, paddle, 'right');
+
+      gameState.powerUp.active = false;
+
+      // Reset effetti dopo 10 secondi
+      setTimeout(() => {
+        gameState.leftPaddle.forEach(p => p.height = gameState.paddleHeight);
+        gameState.rightPaddle.forEach(p => p.height = gameState.paddleHeight);
+        gameState.leftPaddle.forEach(p => p.speed = gameState.paddleSpeed);
+        gameState.rightPaddle.forEach(p => p.speed = gameState.paddleSpeed);
+        
+        // Nuovo powerup dopo 5 secondi
+        setTimeout(() => {
+          this.randomizePowerUp(gameState);
+          gameState.powerUp.active = true;
+        }, 5000);
+      }, 10000);
+    }
+  }
+
+  static handleWallCollision(gameState: GameState): void {
+    const ball = gameState.ball;
+    const triangleSize = GAME_CONSTANTS.TRIANGLE_SIZE;
+
+    const isInTriangleZone =
+      ball.x - ball.radius < triangleSize || 
+      ball.x + ball.radius > GAME_CONSTANTS.CANVAS_WIDTH - triangleSize;
+
+    if (isInTriangleZone) return;
+
+    if (
+      ball.y - ball.radius < 0 ||
+      ball.y + ball.radius > GAME_CONSTANTS.CANVAS_HEIGHT
+    ) {
+      ball.dy *= -1;
+
+      if (ball.y < GAME_CONSTANTS.CANVAS_HEIGHT / 2)
+        ball.y = ball.radius + 1;
+      else
+        ball.y = GAME_CONSTANTS.CANVAS_HEIGHT - ball.radius - 1;
+    }
+  }
+
+  static handleTriangleCollision(gameState: GameState): void {
+    const ball = gameState.ball;
+    const w = GAME_CONSTANTS.CANVAS_WIDTH;
+    const h = GAME_CONSTANTS.CANVAS_HEIGHT;
+    const s = GAME_CONSTANTS.TRIANGLE_SIZE;
+
+    // TOP-LEFT
+    if (this.ballIntersectsTriangle(ball, 0, 0, s, 0, 0, s)) 
+      this.bounceFromTriangle(ball, s / 2, s / 2, w, s);
+
+    // TOP-RIGHT
+    if (this.ballIntersectsTriangle(ball, w, 0, w - s, 0, w, s))
+      this.bounceFromTriangle(ball, w - s / 2, s / 2, w, s);
+
+    // BOTTOM-LEFT
+    if (this.ballIntersectsTriangle(ball, 0, h, s, h, 0, h - s))
+      this.bounceFromTriangle(ball, s / 2, h - s / 2, w, s);
+
+    // BOTTOM-RIGHT
+    if (this.ballIntersectsTriangle(ball, w, h, w - s, h, w, h - s))
+      this.bounceFromTriangle(ball, w - s / 2, h - s / 2, w, s);
+  }
+
+  static isPointInTriangle(px: number, py: number, ax: number, ay: number, bx: number, by: number, cx: number, cy: number): boolean {
+    const area = 0.5 * (-by * cx + ay * (-bx + cx) + ax * (by - cy) + bx * cy);
+    const s = 1 / (2 * area) * (ay * cx - ax * cy + (cy - ay) * px + (ax - cx) * py);
+    const t = 1 / (2 * area) * (ax * by - ay * bx + (ay - by) * px + (bx - ax) * py);
+    const u = 1 - s - t;
+    return (s >= 0 && t >= 0 && u >= 0);
+  }
+
+  static ballIntersectsTriangle(ball: any, ax: number, ay: number, bx: number, by: number, cx: number, cy: number): boolean {
+    const { x, y, radius } = ball;
+    const points = [
+      [x, y],           // centro
+      [x - radius, y],  // sinistra
+      [x + radius, y],  // destra
+      [x, y - radius],  // sopra
+      [x, y + radius],  // sotto
+    ];
+    return points.some(([px, py]) => this.isPointInTriangle(px, py, ax, ay, bx, by, cx, cy));
+  }
+
+  static bounceFromTriangle(ball: any, centerX: number, centerY: number, canvasWidth: number, triangleSize: number): void {
+    const maxBounceAngle = Math.PI / 3;
+    const speed = Math.sqrt(ball.dx ** 2 + ball.dy ** 2);
+    const relativeY = centerY - ball.y;
+    const normalized = relativeY / (triangleSize / 2);
+    const bounceAngle = normalized * maxBounceAngle;
+    const dirX = ball.x < canvasWidth / 2 ? 1 : -1;
+
+    ball.dx = dirX * speed * Math.cos(bounceAngle);
+    ball.dy = -speed * Math.sin(bounceAngle);
+  }
+
+  static handlePaddleCollision(gameState: GameState): void {
+    // Collisione con paddle sinistri
+    for (let i = 0; i < gameState.leftPaddle.length; i++) {
+      const paddle = gameState.leftPaddle[i];
+      
+      if (gameState.ball.dx > 0 && i === 1) continue;
+      if (i === 1 && gameState.ball.x < paddle.x) continue;
+
+      if (
+        gameState.ball.x - gameState.ball.radius < paddle.x + gameState.paddleWidth &&
+        gameState.ball.y > paddle.y &&
+        gameState.ball.y < paddle.y + paddle.height
+      ) {
+        const relativeY = (paddle.y + paddle.height / 2) - gameState.ball.y;
+        const normalized = relativeY / (paddle.height / 2);
+        const maxBounceAngle = Math.PI / 3;
+        const bounceAngle = normalized * maxBounceAngle;
+        const speed = Math.sqrt(gameState.ball.dx ** 2 + gameState.ball.dy ** 2);
+        
+        gameState.ball.dx = Math.abs(speed * Math.cos(bounceAngle));
+        gameState.ball.dy = -speed * Math.sin(bounceAngle);
+        return;
       }
+    }
+
+    // Collisione con paddle destri
+    for (let i = 0; i < gameState.rightPaddle.length; i++) {
+      const paddle = gameState.rightPaddle[i];
+
+      if (gameState.ball.dx < 0 && i === 1) continue;
+      if (i === 1 && gameState.ball.x < paddle.x) continue;
+
+      if (
+        gameState.ball.x + gameState.ball.radius > paddle.x &&
+        gameState.ball.y > paddle.y &&
+        gameState.ball.y < paddle.y + paddle.height
+      ) {
+        const relativeY = (paddle.y + paddle.height / 2) - gameState.ball.y;
+        const normalized = relativeY / (paddle.height / 2);
+        const maxBounceAngle = Math.PI / 3;
+        const bounceAngle = normalized * maxBounceAngle;
+        const speed = Math.sqrt(gameState.ball.dx ** 2 + gameState.ball.dy ** 2);
+
+        gameState.ball.dx = -Math.abs(speed * Math.cos(bounceAngle));
+        gameState.ball.dy = -speed * Math.sin(bounceAngle);
+        return;
+      }
+    }
+  }
+
+  static updatePaddleMovement(gameState: GameState): void {
+    const size = GAME_CONSTANTS.TRIANGLE_SIZE / 2;
+    
+    gameState.leftPaddle.forEach(paddle => {
+      paddle.y += paddle.dy;
+      if (paddle.y < size)
+        paddle.y = size;
+      if (paddle.y + paddle.height > GAME_CONSTANTS.CANVAS_HEIGHT - size)
+        paddle.y = GAME_CONSTANTS.CANVAS_HEIGHT - size - paddle.height;
+    });
+    
+    gameState.rightPaddle.forEach(paddle => {
+      paddle.y += paddle.dy;
+      if (paddle.y < size)
+        paddle.y = size;
+      if (paddle.y + paddle.height > GAME_CONSTANTS.CANVAS_HEIGHT - size)
+        paddle.y = GAME_CONSTANTS.CANVAS_HEIGHT - size - paddle.height;
     });
   }
 
-  static isColliding(ball: any, paddle: any, gameState: GameState): boolean {
-    const ballLeft = ball.x - ball.radius;
-    const ballRight = ball.x + ball.radius;
-    const ballTop = ball.y - ball.radius;
-    const ballBottom = ball.y + ball.radius;
-    const paddleLeft = paddle.x;
-    const paddleRight = paddle.x + gameState.paddleWidth;
-    const paddleTop = paddle.y;
-    const paddleBottom = paddle.y + paddle.height;
-
-    return ballRight >= paddleLeft &&
-           ballLeft <= paddleRight &&
-           ballBottom >= paddleTop &&
-           ballTop <= paddleBottom;
-  }
-
-  static handlePaddleCollision(gameState: GameState, paddle: any, side: 'left' | 'right'): void {
-    const relativeIntersectY = (paddle.y + (paddle.height / 2)) - gameState.ball.y;
-    const normalizedRelativeIntersection = relativeIntersectY / (paddle.height / 2);
-    const bounceAngle = normalizedRelativeIntersection * Math.PI / 4;
-    const speed = Math.sqrt(gameState.ball.dx * gameState.ball.dx + gameState.ball.dy * gameState.ball.dy);
+  static checkScore(gameState: GameState): void {
+    if (gameState.ball.x - gameState.ball.radius < 0) {
+      gameState.scoreRight++;
+      this.resetAfterPoint(0, gameState);
+    }
     
-    if (side === 'left') {
-      gameState.ball.dx = speed * Math.cos(bounceAngle);
-    } else {
-      gameState.ball.dx = -speed * Math.cos(bounceAngle);
-    }
-    gameState.ball.dy = speed * -Math.sin(bounceAngle);
-    if (Math.abs(paddle.dy) > 0) {
-      gameState.ball.dy += paddle.dy * 0.1;
-    }
-    if (side === 'left') {
-      gameState.ball.x = paddle.x + gameState.paddleWidth + gameState.ball.radius + 1;
-    } else {
-      gameState.ball.x = paddle.x - gameState.ball.radius - 1;
-    }
-    gameState.ball.dx *= GAME_CONSTANTS.SPEED_INCREASE_FACTOR;
-    gameState.ball.dy *= GAME_CONSTANTS.SPEED_INCREASE_FACTOR;
-    const currentSpeed = Math.sqrt(gameState.ball.dx * gameState.ball.dx + gameState.ball.dy * gameState.ball.dy);
-    
-    if (currentSpeed > GAME_CONSTANTS.MAX_BALL_SPEED) {
-      gameState.ball.dx = (gameState.ball.dx / currentSpeed) * GAME_CONSTANTS.MAX_BALL_SPEED;
-      gameState.ball.dy = (gameState.ball.dy / currentSpeed) * GAME_CONSTANTS.MAX_BALL_SPEED;
+    if (gameState.ball.x + gameState.ball.radius > GAME_CONSTANTS.CANVAS_WIDTH) {
+      gameState.scoreLeft++;
+      this.resetAfterPoint(1, gameState);
     }
   }
 
-  static handleScore(gameState: GameState, winner: 'left' | 'right'): void {
-    if (winner === 'left') {
-        gameState.scoreLeft++;
-    } else {
-        gameState.scoreRight++;
-    }
-    
-    this.resetAfterPoint(gameState);
-}
-
-static resetAfterPoint(gameState: GameState): void {
-    // Ferma la palla al centro
+  static resetAfterPoint(x: number, gameState: GameState): void {
     gameState.waitingForStart = true;
     gameState.ball.dx = 0;
     gameState.ball.dy = 0;
     gameState.ball.x = GAME_CONSTANTS.CANVAS_WIDTH / 2;
     gameState.ball.y = GAME_CONSTANTS.CANVAS_HEIGHT / 2;
 
-    // Riposiziona paddle al centro e ferma movimento
-    gameState.leftPaddle.forEach(paddle => {
-        paddle.y = GAME_CONSTANTS.CANVAS_HEIGHT / 2 - paddle.height / 2;
-        paddle.dy = 0;
+    gameState.leftPaddle.forEach(p => {
+      p.y = GAME_CONSTANTS.CANVAS_HEIGHT / 2 - p.height / 2;
+      p.dy = 0;
     });
 
-    gameState.rightPaddle.forEach(paddle => {
-        paddle.y = GAME_CONSTANTS.CANVAS_HEIGHT / 2 - paddle.height / 2;
-        paddle.dy = 0;
+    gameState.rightPaddle.forEach(p => {
+      p.y = GAME_CONSTANTS.CANVAS_HEIGHT / 2 - p.height / 2;
+      p.dy = 0;
     });
 
-    // Riavvia dopo 2 secondi
     setTimeout(() => {
-        const direction = Math.random() > 0.5 ? 1 : -1;
-        gameState.ball.dx = direction * 5;
-        gameState.ball.dy = (Math.random() - 0.5) * 5;
-        gameState.waitingForStart = false;
-    }, 2000);
-}
-
-  static resetBall(gameState: GameState): void {
-    gameState.ball.x = GAME_CONSTANTS.CANVAS_WIDTH / 2;
-    gameState.ball.y = GAME_CONSTANTS.CANVAS_HEIGHT / 2;
-    gameState.ball.dx = Math.random() > 0.5 ? 5 : -5;
-    gameState.ball.dy = Math.random() > 0.5 ? 5 : -5;
+      gameState.ball.dx = x === 0 ? 5 : -5;
+      gameState.ball.dy = 5;
+      gameState.waitingForStart = false;
+    }, 1000);
   }
 
-  static createGameUpdateData(gameState: GameState, frameId: number): any {
-    return {
-      ball: {
-        x: Math.round(gameState.ball.x * 100) / 100,
-        y: Math.round(gameState.ball.y * 100) / 100,
-        dx: gameState.ball.dx,
-        dy: gameState.ball.dy,
-        radius: gameState.ball.radius,
-        speed: gameState.ball.speed
-      },
-      leftPaddle: gameState.leftPaddle.map(p => ({
-        x: p.x,
-        y: Math.round(p.y * 100) / 100,
-        dy: p.dy,
-        height: p.height,
-        speed: p.speed,
-        nickname: p.nickname
-      })),
-      rightPaddle: gameState.rightPaddle.map(p => ({
-        x: p.x,
-        y: Math.round(p.y * 100) / 100,
-        dy: p.dy,
-        height: p.height,
-        speed: p.speed,
-        nickname: p.nickname
-      })),
-      powerUp: gameState.powerUp,
-      scoreLeft: gameState.scoreLeft,
-      scoreRight: gameState.scoreRight,
-      paddleWidth: gameState.paddleWidth,
-      paddleHeight: gameState.paddleHeight,
-      waitingForStart: gameState.waitingForStart,
-      maxScore: gameState.maxScore,
-      paddleSpeed: gameState.paddleSpeed,
-      frameId: frameId
-    };
+  static randomizePowerUp(gameState: GameState): void {
+    const rectWidth = GAME_CONSTANTS.CANVAS_WIDTH / 2;
+    const rectHeight = GAME_CONSTANTS.CANVAS_HEIGHT / 2;
+    const rectX = GAME_CONSTANTS.CANVAS_WIDTH / 4;
+    const rectY = GAME_CONSTANTS.CANVAS_HEIGHT / 4; 
+
+    gameState.powerUp.x = Math.random() * rectWidth + rectX;
+    gameState.powerUp.y = Math.random() * rectHeight + rectY;
+
+    const types = ["SizeIncrease", "SizeDecrease", "SpeedBoost"];
+    const index = Math.floor(Math.random() * types.length);
+    gameState.powerUp.type = types[index];
+
+    switch (gameState.powerUp.type) {
+      case "SizeIncrease":
+        gameState.powerUp.color = "#00ff00"; // verde
+        break;
+      case "SizeDecrease":
+        gameState.powerUp.color = "#ff0000"; // rosso
+        break;
+      case "SpeedBoost":
+        gameState.powerUp.color = "#ffff00"; // giallo
+        break;
+    }
   }
-
-  static checkPowerUpCollision(gameState: GameState): void {
-    if (!gameState.powerUp.active) return;
-    
-    const ball = gameState.ball;
-    const powerUp = gameState.powerUp;
-    
-    if (ball.x + ball.radius > powerUp.x &&
-        ball.x - ball.radius < powerUp.x + powerUp.width &&
-        ball.y + ball.radius > powerUp.y &&
-        ball.y - ball.radius < powerUp.y + powerUp.height) {
-        
-        this.applyPowerUp(gameState);
-        gameState.powerUp.active = false;
-        
-        // Spawna nuovo powerup dopo 5 secondi
-        setTimeout(() => {
-            this.spawnNewPowerUp(gameState);
-        }, 5000);
-    }
-}
-
-static applyPowerUp(gameState: GameState): void {
-    const isLeft = gameState.ball.dx < 0;
-    const affectedTeam = isLeft ? gameState.rightPaddle : gameState.leftPaddle;
-    const oppositeTeam = isLeft ? gameState.leftPaddle : gameState.rightPaddle;
-
-    switch(gameState.powerUp.type) {
-        case "SizeIncrease":
-            affectedTeam.forEach(paddle => paddle.height += paddle.height / 2);
-            break;
-        case "SpeedBoost":
-            affectedTeam.forEach(paddle => paddle.speed *= 1.5);
-            break;
-        case "SizeDecrease":
-            oppositeTeam.forEach(paddle => paddle.height -= paddle.height / 3);
-            break;
-    }
-    
-    // Reset effetti dopo 10 secondi
-    setTimeout(() => {
-        this.resetPaddleEffects(gameState);
-    }, 10000);
-}
-
-static spawnNewPowerUp(gameState: GameState): void {
-    gameState.powerUp = {
-        x: Math.random() * (GAME_CONSTANTS.CANVAS_WIDTH - 200) + 100,
-        y: Math.random() * (GAME_CONSTANTS.CANVAS_HEIGHT - 200) + 100,
-        width: 20,
-        height: 20,
-        active: true,
-        type: this.getRandomPowerUpType(),
-        color: this.getPowerUpColor(gameState.powerUp.type)
-    };
-}
-
-static getRandomPowerUpType(): string {
-    const powerUpTypes = ["SizeIncrease", "SpeedBoost", "SizeDecrease"];
-    return powerUpTypes[Math.floor(Math.random() * powerUpTypes.length)];
-}
-
-static getPowerUpColor(type: string): string {
-    switch (type) {
-        case "SizeIncrease":
-            return "green";
-        case "SpeedBoost":
-            return "blue";
-        case "SizeDecrease":
-            return "red";
-        default:
-            return "gray";
-    }
-}
-
-static resetPaddleEffects(gameState: GameState): void {
-    gameState.leftPaddle.forEach(paddle => {
-        paddle.height = gameState.paddleHeight;
-        paddle.speed = gameState.paddleSpeed;
-    });
-    gameState.rightPaddle.forEach(paddle => {
-        paddle.height = gameState.paddleHeight;
-        paddle.speed = gameState.paddleSpeed;
-    });
-}
 }

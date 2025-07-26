@@ -27,7 +27,11 @@ export class GameLoop {
 
       lastUpdate = now;
       GamePhysics.updateGameStateWithDelta(room.gameState, deltaTime);
-      const gameUpdateData = GamePhysics.createGameUpdateData(room.gameState, frameCounter);
+      const gameUpdateData = {
+        ...room.gameState,
+        frameId: frameCounter,
+        timestamp: now
+      };
       
       broadcastCallback(roomId, {
         type: 'gameUpdate',
