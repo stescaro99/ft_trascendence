@@ -30,7 +30,7 @@ export class HomePage {
         });
 		this.homeScreen.show();
 
-		this.setTheme('cyan');
+		this.setTheme('pink');
 		this.initializeBall();
 		this.btnGlow();
 		
@@ -147,6 +147,9 @@ export class HomePage {
 				
 				playButton4.style.setProperty('background', 'linear-gradient(145deg, #22c55e, #16a34a)', 'important');
 				playButton4.style.setProperty('box-shadow', '0 8px 0 #15803d, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2), 0 0 20px rgba(34, 197, 94, 0.5)', 'important');
+
+				// Setto tema navbar per match con bottoni
+				this.setTheme('light-green');
 			} else {
 				console.log('🔍 Setting RED gradient');
 				// Modalità Offline - Bottoni rossi (colori originali)
@@ -155,6 +158,9 @@ export class HomePage {
 				
 				playButton4.style.setProperty('background', 'linear-gradient(145deg, #ff4757, #c44569)', 'important');
 				playButton4.style.setProperty('box-shadow', '0 8px 0 #a5334a, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2), 0 0 20px rgba(255, 71, 87, 0.5)', 'important');
+
+				// Setto tema navbar per match con bottoni
+				this.setTheme('pink');
 			}
 		}
 	}
