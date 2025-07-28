@@ -12,6 +12,7 @@
     <div id="app" class="h-screen"></div>
     <script type="module" src="./src/index.ts"></script>
 
+    <!-- minimizer-icon -->
     <i id="is-minimized-icon">
         <img class="h-6" src="./src/utils/icons/menu.svg" alt="">
     </i>
@@ -20,11 +21,9 @@
             shadow-lg bg-body
             top-1/2 fixed left-0 -translate-y-1/2 w-20 z-10 py-4 rounded-r-3xl" id="navbar">
 
-    <i class="sidebar-icon">
-      <a href="#/">
-        <img class="h-6 hover:text-black" src="./src/utils/icons/puzzle-alt.svg" alt="">
-      </a>
-    </i>
+    <a href="#/" class="sidebar-icon">
+      <img class="h-6 hover:text-black" src="./src/utils/icons/puzzle-alt.svg" alt="">
+    </a>
     <i class="sidebar-icon">
       <img class="h-6 hover:text-black" src="./src/utils/icons/console-controller.svg" alt="">
     </i>
@@ -41,11 +40,9 @@
 
     <div class="group flex flex-col text-center">
       
-      <i class="sidebar-icon">
-        <a href="#/profile">
-          <img class="h-6 hover:text-black" src="./src/utils/icons/user.svg" alt="">
-        </a>
-      </i>
+      <a href="#/profile" class="sidebar-icon">
+        <img class="h-6 hover:text-black" src="./src/utils/icons/user.svg" alt="">
+      </a>
 
       <div class="sub-menu">
         <i class="sub-icon">
@@ -54,8 +51,8 @@
       </div>
     </div>
 
-    <i class="sidebar-icon">
-      <img class="h-6 hover:text-black" src="./src/utils/icons/minimize.svg" alt="" id="minimizer">
+    <i class="sidebar-icon" id="minimizer">
+      <img class="h-6 hover:text-black" src="./src/utils/icons/minimize.svg" alt="">
     </i>
 
   </nav>

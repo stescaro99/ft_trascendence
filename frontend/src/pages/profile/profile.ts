@@ -14,6 +14,7 @@ export class ProfilePage {
 	
 	constructor(lang: string) {
 		this.currentLang = lang;
+		this.setTheme('blue');
 		
 		console.log('🔍 ProfilePage Debug:');
 		console.log('localStorage user:', localStorage.getItem('user'));
@@ -139,4 +140,11 @@ export class ProfilePage {
 			};
 		}
 	}
+
+	// Setta il tema della pagina / colore della navbar
+	private setTheme(theme: string) {
+		const element = document.querySelector('[data-theme]') as HTMLElement;
+
+		element.dataset.theme = theme;
+	} 
 }
