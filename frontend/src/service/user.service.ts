@@ -151,12 +151,10 @@ export class UserService {
 
 	async addFriend(user1: string, user2: string): Promise<any> {
 		const url =`${this.apiUrl}/add_friend`;
-		console.log('🔗 AddFriend URL:', url);
-		console.log('🔗 User1 (sender):', user1);
-		console.log('🔗 User2 (receiver):', user2);
+		
 		
 		const divToken = localStorage.getItem('token');
-		console.log('🔑 Token found:', !!divToken);
+
 		if (!divToken) 
 			console.log("No token found in localStorage");
 
@@ -164,7 +162,7 @@ export class UserService {
 			user1: user1,
 			user2: user2,
 		});
-		 console.log('📤 Request body:', body);
+
     
     try {
         const response = await fetch(url, {
@@ -176,14 +174,9 @@ export class UserService {
             body: body,
         });
         
-        // Log dettagli della risposta PRIMA di controllare se ok
-        console.log('📥 Response status:', response.status);
-        console.log('📥 Response statusText:', response.statusText);
-        console.log('📥 Response headers:', [...response.headers.entries()]);
-        
-        // Leggi il body della risposta per vedere il messaggio di errore
+
         const responseText = await response.text();
-        console.log('📥 Response body:', responseText);
+
         
         if (!response.ok) {
             let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
