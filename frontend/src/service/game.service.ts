@@ -4,22 +4,12 @@ export class GameService {
 	apiUrl = `${environment.apiUrl}`;
 	private token: string | null = null;
 	constructor() {
-		// Prima prova a recuperare dal localStorage.token
-		const directToken = localStorage.getItem('token');
-		if (directToken) {
-			this.token = directToken;
-		} else {
-			// Altrimenti prova a recuperare dal localStorage.user.token
-			const userDataString = localStorage.getItem('user');
-			if (userDataString) {
-				try {
-					const userData = JSON.parse(userDataString);
-					this.token = userData.token || null;
-				} catch (error) {
-					console.error('Error parsing user data from localStorage:', error);
-				}
-			}
+		const divToken = localStorage.getItem('token');
+		if (divToken) {
+			this.token = divToken;
 		}
+		else
+			console.log("No token found in localStorage");
 	}
 
 
@@ -88,7 +78,7 @@ export class GameService {
 		
 		// Recupera il token dall'oggetto user nel localStorage
 		
-		if (this.token) {
+		if (!this.token) {
 			throw new Error('No valid token found');
 		}
 		
@@ -104,9 +94,9 @@ export class GameService {
 		return res.json();
 	}
 
-	async upDateStat(name : string, game_id : number, result : number) {
+	async upDateStat(nickname : string, game_id : number, result : number) {
 
-		if (!name || !game_id || result === undefined) {
+		if (!nickname || !game_id || result === undefined) {
 			throw new Error("Invalid parameters for updating stat");
 		}
 		if (!this.token) {
@@ -114,12 +104,12 @@ export class GameService {
 		}
 
 		const body = {
-			name: name,
+			nickname: nickname,
 			game_id: game_id,
 			result: result,
 			index: 0
 		};
-		const res = await fetch(`${this.apiUrl}/update_stat`, {
+		const res = await fetch(`${this.apiUrl}/update_stats`, {
 			
 			method: "PUT",
 			headers:{

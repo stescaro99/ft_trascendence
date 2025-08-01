@@ -31,31 +31,22 @@ export class ProfilePage {
 		// 	}
 		// }
 
-		// this.userService.takeUserFromApi(localStorage.getItem('nickname') || '') 
-		// 	.then((userData) => {
-		// 		console.log('🔍 API call successful:', userData);
-		// 		// ... resto del codice
-		// 	})
-		// 	.catch((error) => {
-		// 		console.error('🔍 API call failed:', error);
-		// 		console.error('🔍 This might be a token/auth issue');
-		// 	});
-
-		// this.userService.takeUserFromApi(localStorage.getItem('nickname') || '') 
-		// 	.then((userData) => {
-		// 		this.user.name = userData.name || '';
-		// 		this.user.surname = userData.surname || '';
-		// 		this.user.nickname = userData.nickname;
-		// 		this.user.email = userData.email;
-		// 		this.user.image_url = userData.image_url;
-		// 		this.user.stats = userData.stats[0];
-		// 		this.user.id = userData.id;
-		// 		this.stats = this.user.stats || new Stats();
-		// 		this.render();
-		// 	})
-		// 	.catch((error) => {
-		// 		console.error('Error fetching user data:', error);
-		// 	});
+		this.userService.takeUserFromApi(localStorage.getItem('nickname') || '') 
+			.then((userData) => {
+				this.user.name = userData.name || '';
+				this.user.surname = userData.surname || '';
+				this.user.nickname = userData.nickname;
+				this.user.email = userData.email;
+				this.user.image_url = userData.image_url;
+				this.user.stats = userData.stats[0];
+				this.user.id = userData.id;
+				this.stats = this.user.stats || new Stats();
+				this.render();
+			})
+			.catch((error) => {
+				console.error('Error fetching user data:', error);
+			});
+		
 
 		// Solo per lavorare sulla pagina user senza dati utente veri, per ucolla. NON CANCELLARE! 
 		this.user.name = 'Test';

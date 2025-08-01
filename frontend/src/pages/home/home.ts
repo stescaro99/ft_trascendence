@@ -7,7 +7,6 @@ import { HomeScreen } from '../../service/homeScreen.service';
 import './home.css';
 
 export class HomePage {
-	user: User | null;
 	userService: UserService = new UserService();
 	private currentLang: string;
 	private homeScreen: HomeScreen;
