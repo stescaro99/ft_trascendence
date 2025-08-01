@@ -7,6 +7,7 @@ import { ProfilePage } from './pages/profile/profile';
 import { GamePage } from './pages/game/game';
 import { TournamentPage } from './pages/tournament/tournament';
 import { OnlineGamePage } from './pages/online_game/online_game';
+import { friendPage } from './pages/friend/friend';
 
 console.log("Script caricato");
 
@@ -68,7 +69,9 @@ const routes: Record<string, () => string> = {
     return "";
   },
   '/profile': () => {
-    new ProfilePage(currentLang);
+
+    const nickname = location.hash.split('?')[1]?.split('=')[1] || localStorage.getItem('nickname') || '';
+    new ProfilePage(currentLang, nickname);
     return "";
   },
   '/game': () => {
@@ -115,6 +118,10 @@ const routes: Record<string, () => string> = {
     new TournamentPage();
     return "";
   },
+  '/friends': () => {
+    new friendPage(currentLang);
+    return "";
+  }
 };
 
 function router() {

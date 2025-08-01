@@ -12,7 +12,7 @@ export class ProfilePage {
 	private user: User = new User();
 	private currentLang: string;
 	
-	constructor(lang: string) {
+	constructor(lang: string, nickname: string) {
 		this.currentLang = lang;
 		this.setTheme('blue');
 		
@@ -31,7 +31,7 @@ export class ProfilePage {
 		// 	}
 		// }
 
-		this.userService.takeUserFromApi(localStorage.getItem('nickname') || '') 
+		this.userService.takeUserFromApi(nickname || '') 
 			.then((userData) => {
 				this.user.name = userData.name || '';
 				this.user.surname = userData.surname || '';
@@ -74,15 +74,15 @@ export class ProfilePage {
 			this.showValueProfile("surname");
 			this.showValueProfile("email");
 			
-			// this.showValueStats("number_of_games")
-			// this.showValueStats("number_of_wins")
-			// this.showValueStats("number_of_losses")
-			// this.showValueStats("number_of_draws")
-			// this.showValueStats("number_of_points")
-			// this.showValueStats("average_score")
-			// this.showValueStats("percentage_wins")
-			// this.showValueStats("percentage_losses")
-			// this.showValueStats("percentage_draws")
+			this.showValueStats("number_of_games")
+			this.showValueStats("number_of_wins")
+			this.showValueStats("number_of_losses")
+			this.showValueStats("number_of_draws")
+			this.showValueStats("number_of_points")
+			this.showValueStats("average_score")
+			this.showValueStats("percentage_wins")
+			this.showValueStats("percentage_losses")
+			this.showValueStats("percentage_draws")
 			
 			setTimeout(() => {
 				const imgElement = document.getElementById('profile_image') as HTMLImageElement;

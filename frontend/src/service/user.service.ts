@@ -149,4 +149,73 @@ export class UserService {
 		return response.json();
 	}
 
+	async addFriend(user1: string, user2: string): Promise<any> {
+		const url =`${this.apiUrl}/add_friend`;
+		console.log('🔗 AddFriend URL:', url);
+		console.log('🔗 User1 (sender):', user1);
+		console.log('🔗 User2 (receiver):', user2);
+		
+		const divToken = localStorage.getItem('token');
+		console.log('🔑 Token found:', !!divToken);
+		if (!divToken) 
+			console.log("No token found in localStorage");
+
+		const body = JSON.stringify({
+			user1: user1,
+			user2: user2,
+		});
+		 console.log('📤 Request body:', body);
+    
+    try {
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                "Authorization": `Bearer ${divToken}`,
+                'Content-Type': 'application/json',
+            },
+            body: body,
+        });
+        
+        // Log dettagli della risposta PRIMA di controllare se ok
+        console.log('📥 Response status:', response.status);
+        console.log('📥 Response statusText:', response.statusText);
+        console.log('📥 Response headers:', [...response.headers.entries()]);
+        
+        // Leggi il body della risposta per vedere il messaggio di errore
+        const responseText = await response.text();
+        console.log('📥 Response body:', responseText);
+        
+        if (!response.ok) {
+            let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+            
+            // Prova a parsare la risposta per ottenere il messaggio di errore dettagliato
+            try {
+                const errorData = JSON.parse(responseText);
+                if (errorData.error) {
+                    errorMessage += ` - ${errorData.error}`;
+                }
+            } catch (parseError) {
+                // Se non riesce a parsare, usa il testo grezzo
+                errorMessage += ` - ${responseText}`;
+            }
+            
+            console.error('❌ AddFriend failed:', errorMessage);
+            throw new Error(errorMessage);
+        }
+        
+        // Parsa la risposta di successo
+        try {
+            const result = JSON.parse(responseText);
+            console.log('✅ AddFriend success:', result);
+            return result;
+        } catch (parseError) {
+            console.error('❌ Failed to parse success response:', responseText);
+            throw new Error('Invalid JSON response');
+        }
+        
+    } catch (networkError) {
+        console.error('💥 Network error in addFriend:', networkError);
+        throw networkError;
+    }
+	}
 }

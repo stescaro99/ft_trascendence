@@ -10,4 +10,7 @@ export class User {
 	language: string = '';
 	image_url: string = '';
 	stats: Stats = {}
+	friends?: string[];
+	fr_request?: string[];
+	online?: boolean;
 }
