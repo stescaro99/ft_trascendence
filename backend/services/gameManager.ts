@@ -7,7 +7,7 @@ import { HeartbeatManager } from './game/heartbeat';
 import Game from '../models/game';
 
 class GameManager {
-  private roomManager: RoomManager;
+  public roomManager: RoomManager;
   private heartbeatManager: HeartbeatManager;
   private waitingPlayers: Player[] = [];
 
@@ -192,19 +192,22 @@ class GameManager {
     const playerSide = this.roomManager.getPlayerSide(room, player);
     const paddleIndex = this.roomManager.getPlayerPaddleIndex(room, player);
     
-    if (room.type === 'two')
-    {
-        if (playerSide === 'left')
+    console.log(`[GameManager] Player ${player.nickname} side: ${playerSide}, direction: ${validatedDirection}`);
+    
+    if (room.type === 'two') {
+        if (playerSide === 'left') {
+            // CAMBIA: assegna direttamente invece di aggiungere
             room.gameState.leftPaddle[0].dy = validatedDirection * room.gameState.leftPaddle[0].speed;
-        else if (playerSide === 'right')
+        } else if (playerSide === 'right') {
             room.gameState.rightPaddle[0].dy = validatedDirection * room.gameState.rightPaddle[0].speed;
-    }
-    else
-    {
-        if (playerSide === 'left')
+        }
+    } else {
+        // Logica per 4 giocatori
+        if (playerSide === 'left') {
             room.gameState.leftPaddle[paddleIndex].dy = validatedDirection * room.gameState.leftPaddle[paddleIndex].speed;
-        else
+        } else {
             room.gameState.rightPaddle[paddleIndex].dy = validatedDirection * room.gameState.rightPaddle[paddleIndex].speed;
+        }
     }
   }
 

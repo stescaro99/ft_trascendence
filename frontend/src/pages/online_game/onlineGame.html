@@ -1,17 +1,41 @@
-<div class="screen flex flex-col items-center mt-8 space-y-4 pl-20">
+<div class="bb">
+  <div id="onlineSetup-screen" class="screen column-screen">
+    
+    <!-- Header con titolo -->
+    <div class="column">
+      <h1 class="title">PONG ONLINE</h1>
+      <div id="nickname" class="text-cyan-400 font-medium text-2xl mb-4"></div>
+    </div>
 
-	<div id="nickname" class="text-blue-600 font-medium"></div>
-	<div id="status" class="text-gray-500 text-sm">Premi il pulsante per cercare una partita</div>
+    <!-- Status e controlli -->
+    <div class="column">
+      <div id="status" class="text-white text-xl mb-6">Premi il pulsante per cercare una partita</div>
+      
+      <button id="findMatchBtn" class="btn-large">
+        Cerca Partita
+      </button>
+      
+      <!-- Messaggio di istruzioni (nascosto inizialmente) -->
+      <div id="gameInstructions" class="text-cyan-400 text-lg mt-6 text-center hidden">
+        🎮 Usa W/S per muovere la racchetta<br>
+        (clicca sul canvas per dare il focus)
+      </div>
+      
+      <!-- Info partita (nascosto inizialmente) -->
+      <div id="matchInfo" class="text-green-400 text-xl mt-4 hidden">
+        Partita trovata!
+      </div>
+    </div>
 
-	<button id="findMatchBtn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-		Cerca Partita
-	</button>
+  </div>
+  <div id="gameScreen" class="screen" style="display: none;">
+    <div class="game-wrapper">
+      <div id="playerNames" class="player-names">
+        <div id="player1Name"></div>
+        <div id="player2Name"></div>
+      </div>
+      <canvas id="gameCanvas" width="1200" height="750" tabindex="0" style="outline: none;"></canvas>
+    </div>
+  </div>
 
-	<canvas id="gameCanvas"
-		width="1200"
-		height="750"
-		tabindex="0"
-		class="block border border-gray-400 shadow-md focus:border-blue-500 hidden mx-auto"
-		style="display: none; outline: none;">
-	</canvas>
 </div>

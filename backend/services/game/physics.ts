@@ -5,7 +5,6 @@ export class GamePhysics {
   static updateGameStateWithDelta(gameState: GameState, deltaTime: number): void {
     if (gameState.waitingForStart) return;
     
-    // Usa le stesse funzioni del gioco offline in ordine
     this.handleBallMovement(gameState);
     this.handlePowerUpCollision(gameState);
     this.handleWallCollision(gameState);
@@ -15,7 +14,6 @@ export class GamePhysics {
     this.checkScore(gameState);
   }
 
-  // === COPIA ESATTA DAL GAMEUPDATE OFFLINE ===
   static handleBallMovement(gameState: GameState): void {
     gameState.ball.x += gameState.ball.dx * gameState.ball.speed;
     gameState.ball.y += gameState.ball.dy * gameState.ball.speed;
@@ -49,14 +47,12 @@ export class GamePhysics {
 
       gameState.powerUp.active = false;
 
-      // Reset effetti dopo 10 secondi
       setTimeout(() => {
         gameState.leftPaddle.forEach(p => p.height = gameState.paddleHeight);
         gameState.rightPaddle.forEach(p => p.height = gameState.paddleHeight);
         gameState.leftPaddle.forEach(p => p.speed = gameState.paddleSpeed);
         gameState.rightPaddle.forEach(p => p.speed = gameState.paddleSpeed);
         
-        // Nuovo powerup dopo 5 secondi
         setTimeout(() => {
           this.randomizePowerUp(gameState);
           gameState.powerUp.active = true;
@@ -94,19 +90,15 @@ export class GamePhysics {
     const h = GAME_CONSTANTS.CANVAS_HEIGHT;
     const s = GAME_CONSTANTS.TRIANGLE_SIZE;
 
-    // TOP-LEFT
     if (this.ballIntersectsTriangle(ball, 0, 0, s, 0, 0, s)) 
       this.bounceFromTriangle(ball, s / 2, s / 2, w, s);
 
-    // TOP-RIGHT
     if (this.ballIntersectsTriangle(ball, w, 0, w - s, 0, w, s))
       this.bounceFromTriangle(ball, w - s / 2, s / 2, w, s);
 
-    // BOTTOM-LEFT
     if (this.ballIntersectsTriangle(ball, 0, h, s, h, 0, h - s))
       this.bounceFromTriangle(ball, s / 2, h - s / 2, w, s);
 
-    // BOTTOM-RIGHT
     if (this.ballIntersectsTriangle(ball, w, h, w - s, h, w, h - s))
       this.bounceFromTriangle(ball, w - s / 2, h - s / 2, w, s);
   }

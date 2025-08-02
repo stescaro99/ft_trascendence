@@ -158,7 +158,7 @@ export class RoomManager {
   }
 
   createInitialGameState(type: 'two' | 'four'): GameState {
-    const paddleHeight = GAME_CONSTANTS.CANVAS_HEIGHT / 5; // ← STESSO CALCOLO DEL FRONTEND
+    const paddleHeight = GAME_CONSTANTS.CANVAS_HEIGHT / 5;
     const paddleWidth = GAME_CONSTANTS.PADDLE_WIDTH;
 
     const baseState: GameState = {
@@ -203,7 +203,7 @@ export class RoomManager {
         scoreRight: 0,
         paddleHeight: paddleHeight,
         paddleWidth: paddleWidth,
-        waitingForStart: false,     
+        waitingForStart: true,
         maxScore: 5,                
         paddleSpeed: 6              
     };

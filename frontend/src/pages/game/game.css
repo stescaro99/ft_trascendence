@@ -115,9 +115,18 @@
 .player-names {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
-  font-size: 20px;
-  font-family: Arial, sans-serif;
+  width: 1200px;
+  margin-bottom: 20px;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+#player1Name {
+  color: white;
+}
+
+#player2Name {
   color: white;
 }
 
@@ -129,8 +138,9 @@
 .game-wrapper {
   position: relative;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   height: 100vh;
 }
 
@@ -181,4 +191,43 @@ canvas[style*="display: block"] ~ #playerNames {
   content: " (BOT)";
   font-size: 14px;
   color: #4caf50;
+}
+
+#gameScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100vw;
+    background: #111;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 99;
+}
+
+.game-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#gameCanvas {
+    width: 1200px !important;
+    height: 750px !important;
+    border: 2px solid #00ffff;
+    box-shadow: 0 0 20px #00ffff;
+    outline: none;
+    display: block;
+    margin: auto;
+    background: #111;
+}
+
+.bb {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  background: #111;
 }

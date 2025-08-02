@@ -92,18 +92,41 @@ export class MultiplayerService {
 		}
 	}
 
-	sendInput(input: { direction: 'up' | 'down'; timestamp: number }) {
-		console.log("[MultiplayerService] sendInput chiamato");
-		console.log("[MultiplayerService] currentRoomId:", this.currentRoomId);
-		console.log("[MultiplayerService] socket.readyState:", this.socket?.readyState);
-		console.log("[MultiplayerService] Inviando input:", input);
-		
+	sendInput(input: any) {
+		if (input.type === "countdownFinished") {
+			if (this.socket && this.socket.readyState === WebSocket.OPEN && this.currentRoomId) {
+				const message = {
+					type: "playerInput",
+					roomId: this.currentRoomId,
+					input: { type: "countdownFinished" }
+				};
+				this.socket.send(JSON.stringify(message));
+			}
+			return;
+		}
 		if (this.socket && this.socket.readyState === WebSocket.OPEN && this.currentRoomId) {
+			let directionValue: number;
+			
+			// Converti la direzione stringa in numero
+			switch (input.direction) {
+				case "up":
+					directionValue = -1;
+					break;
+				case "down":
+					directionValue = 1;
+					break;
+				case "stop":
+					directionValue = 0;
+					break;
+				default:
+					directionValue = 0;
+			}
+			
 			const message = { 
 				type: "playerInput", 
 				roomId: this.currentRoomId,
 				input: {
-					direction: input.direction === "up" ? -1 : 1,
+					direction: directionValue,
 					timestamp: input.timestamp
 				}
 			};

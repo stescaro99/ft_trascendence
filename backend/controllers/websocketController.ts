@@ -172,10 +172,6 @@ function handleCreateRoom(player: Player, data: any) {
   });
 }
 
-function handlePlayerInput(player: Player, data: any) {
-  gameManager.handlePlayerInput(data.roomId, player.id, data.input);
-}
-
 function handlePlayerReady(player: Player, data: any) {
   player.ready = data.ready;
   const room = gameManager.getRoomInfo(data.roomId);
@@ -298,14 +294,21 @@ function handlePlayerInputWithValidation(player: Player, data: any) {
   console.log('[WebSocket] Input:', data.input);
   console.log('[WebSocket] RoomId:', data.roomId);
   
+  if (data.input && data.input.type === "countdownFinished") {
+    const room = gameManager.roomManager.getRoom(data.roomId);
+    if (room) {
+      room.gameState.waitingForStart = false;
+      console.log(`[WebSocket] Countdown finito, partita avviata per room ${data.roomId}`);
+    }
+    return;
+  }
+
   if (!data.input.timestamp) {
     data.input.timestamp = Date.now();
   }
-  
-  console.log('[WebSocket] Chiamando gameManager.handlePlayerInput...');
+
   try {
     gameManager.handlePlayerInput(data.roomId, player.id, data.input);
-    console.log('[WebSocket] ✅ gameManager.handlePlayerInput completato');
   } catch (error) {
     console.error('[WebSocket] ❌ Errore in gameManager.handlePlayerInput:', error);
   }

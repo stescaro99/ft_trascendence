@@ -43,8 +43,21 @@ export class GameValidator {
     return true;
   }
 
-  static sanitizeDirection(direction: number): number {
-    return Math.max(-1, Math.min(1, direction || 0));
+  static sanitizeDirection(direction: any): number {
+    if (typeof direction === 'number') {
+        return Math.max(-1, Math.min(1, direction));
+    }
+    
+    if (typeof direction === 'string') {
+        switch (direction.toLowerCase()) {
+            case 'up': return -1;
+            case 'down': return 1;
+            case 'stop': return 0;
+            default: return 0;
+        }
+    }
+    
+    return 0;
   }
 
   static clearPlayerInputHistory(playerId: string): void {
