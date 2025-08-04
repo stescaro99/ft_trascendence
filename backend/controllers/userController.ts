@@ -152,8 +152,8 @@ export async function addFriend(request: FastifyRequest, reply: FastifyReply) {
 
 		const friends1 = new Set(first_user.friends || []);
 		const friends2 = new Set(second_user.friends || []);
+		const requests1 = new Set(first_user.fr_request  || []);
 		const requests2 = new Set(second_user.fr_request || []);
-		const requests1 = new Set(first_user.fr_request || []);
 
 		if (friends1.has(user2) && friends2.has(user1)) {
 			friends1.delete(user2);
