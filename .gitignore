@@ -1,3 +1,4 @@
 /backend/db/
 .env
 /backend/uploads/
+CLAUDE.md
