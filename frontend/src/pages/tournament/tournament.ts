@@ -1,17 +1,21 @@
 import tournamentHtml from './tournament.html?raw';
 import { Tournament, TournamentRound, TournamentResult } from '../../model/touranment.model';
+import { TranslationService } from '../../service/translation.service';
 
 export class TournamentPage {
     private tournament: Tournament = new Tournament();
-
+    private currentLang: string;
 
 	private render() {
 		const appDiv = document.getElementById('app');
-
+        
 		if (appDiv) {
-			appDiv.innerHTML = tournamentHtml;
-			}
-		}
+            const translation = new TranslationService(this.currentLang);
+            const translatedHtml = translation.translateTemplate(tournamentHtml);
+            appDiv.innerHTML = translatedHtml;
+        }
+    }
+
 	private addEventListeners() {
 		const tournamentList = document.getElementById('tournamentList') as HTMLSelectElement;
 
@@ -37,7 +41,7 @@ export class TournamentPage {
             // Aggiungi un titolo
             const title = document.createElement('h3');
             title.className = 'text-cyan-400 text-2xl font-black mb-6 text-center drop-shadow-lg';
-            title.textContent = '⚡ Partecipanti al torneo:';
+            title.textContent = 'Partecipanti al torneo:';
             title.style.textShadow = '0 0 10px rgba(34, 211, 238, 0.8)';
             tournamentName.appendChild(title);
 
@@ -432,8 +436,9 @@ private checkTournamentContinuation() {
     }
 }
 
-    constructor() {
+    constructor(lang: string) {
         console.log('🔍 TournamentPage Debug:');
+        this.currentLang = lang;
         this.render();
         this.addEventListeners();
         this.checkTournamentContinuation(); // Aggiungi questa chiamata
