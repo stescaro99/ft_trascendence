@@ -46,5 +46,9 @@ export default {
         "add_bot": "Add Bot",
         "team": "Team",
         "bot_active": "BOT ACTIVE"
+    },
+    tournament: {
+        "tournament": "Tournament",
+        "player": "Player"
     }
 }

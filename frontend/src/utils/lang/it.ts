@@ -46,5 +46,9 @@ export default {
         "add_bot": "Aggiungi Bot",
         "team": "Squadra",
         "bot_active": "BOT ATTIVO"
+    },
+    tournament: {
+        "tournament": "Torneo",
+        "player": "Giocatore"
     }
 }

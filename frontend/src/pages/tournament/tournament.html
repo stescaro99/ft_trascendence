@@ -8,34 +8,39 @@
 		<div class="absolute bottom-1/4 left-1/2 w-20 h-20 bg-neon-green rounded-full blur-lg opacity-35 animate-pulse"></div>
 	</div>
 
-	<!-- Contenuto principale -->
-	<div class="relative z-10 flex flex-col items-center">
-		<h1 class="text-6xl font-black mb-8 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 animate-pulse drop-shadow-2xl">
-			{{tournament}}
+	<!-- Titolo -->
+	<div class="relative z-10 flex flex-col items-center mb-8">
+		<h1 class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 animate-pulse drop-shadow-2xl">
+			{{tournament.tournament}}
 		</h1>
 		
 		<!-- Effetto glow per il titolo -->
 		<div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-4">
 			<h1 class="text-6xl font-black text-cyan-400 opacity-30 blur-sm animate-pulse">
-				{{tournament}}
+				{{tournament.tournament}}
 			</h1>
 		</div>
-		
-		<div class="relative group">
-			<select class="text-white text-2xl font-bold mb-8 bg-gray-900/80 border-2 border-cyan-400 rounded-lg px-6 py-4 backdrop-blur-sm
-						   shadow-[0_0_20px_rgba(34,211,238,0.5)] hover:shadow-[0_0_30px_rgba(34,211,238,0.8)] 
-						   focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent
-						   transition-all duration-300 cursor-pointer" id="tournamentList">
-				<option value="4" class="bg-gray-900 text-white">⚡ 4 giocatori</option>
-				<option value="8" class="bg-gray-900 text-white">🔥 8 giocatori</option>
-				<option value="16" class="bg-gray-900 text-white">💫 16 giocatori</option>
-			</select>
-			
-			<!-- Glow effect per select -->
-			<div class="absolute inset-0 bg-cyan-400/20 rounded-lg blur-md -z-10 group-hover:bg-cyan-400/30 transition-all duration-300"></div>
-		</div>
+	</div>
+	
+	<!-- Contenuto principale -->
+	<div class="relative z-10 w-full tournament-content">
+		<div class="flex flex-col items-center">
+			<div class="relative group">
+				<select class="text-white text-2xl font-bold mb-8 bg-gray-900/80 border-2 border-cyan-400 rounded-lg px-6 py-4 backdrop-blur-sm
+							   shadow-[0_0_20px_rgba(34,211,238,0.5)] hover:shadow-[0_0_30px_rgba(34,211,238,0.8)] 
+							   focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent
+							   transition-all duration-300 cursor-pointer" id="tournamentList">
+					<option value="4" class="bg-gray-900 text-white">⚡ 4 {{tournament.player}}</option>
+					<option value="8" class="bg-gray-900 text-white">🔥 8 {{tournament.player}}</option>
+					<option value="16" class="bg-gray-900 text-white">💫 16 {{tournament.player}}</option>
+				</select>
+				
+				<!-- Glow effect per select -->
+				<div class="absolute inset-0 bg-cyan-400/20 rounded-lg blur-md -z-10 group-hover:bg-cyan-400/30 transition-all duration-300"></div>
+			</div>
 
-		<div id="tournamentName" class="w-full max-w-4xl px-4"></div>
+			<div id="tournamentName" class="w-full px-4"></div>
+		</div>
 	</div>
 
 	<!-- Effetti decorativi -->
@@ -50,32 +55,4 @@
 	</div>
 
 </div>
-
-<style>
-	@keyframes glow {
-		0%, 100% { opacity: 1; }
-		50% { opacity: 0.5; }
-	}
-	
-	.animation-delay-1000 {
-		animation-delay: 1s;
-	}
-	
-	.animation-delay-2000 {
-		animation-delay: 2s;
-	}
-	
-	/* Colori neon personalizzati */
-	.bg-neon-pink {
-		background-color: #ff0080;
-	}
-	
-	.bg-neon-blue {
-		background-color: #00ffff;
-	}
-	
-	.bg-neon-green {
-		background-color: #00ff80;
-	}
-</style>
 	

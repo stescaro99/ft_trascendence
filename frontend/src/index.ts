@@ -115,7 +115,7 @@ const routes: Record<string, () => string> = {
     return "";
   },
   '/tournament': () => {
-    new TournamentPage();
+    new TournamentPage(currentLang);
     return "";
   },
   '/friends': () => {

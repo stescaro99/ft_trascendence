@@ -1,0 +1,29 @@
+@keyframes glow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+	
+.animation-delay-1000 {
+    animation-delay: 1s;
+}
+
+.animation-delay-2000 {
+    animation-delay: 2s;
+}
+
+.tournament-content {
+    @apply w-1/2 mx-auto;
+}
+
+/* Colori neon personalizzati */
+.bg-neon-pink {
+    background-color: #ff0080;
+}
+
+.bg-neon-blue {
+    background-color: #00ffff;
+}
+
+.bg-neon-green {
+    background-color: #00ff80;
+}

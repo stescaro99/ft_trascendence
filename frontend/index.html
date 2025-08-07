@@ -13,7 +13,7 @@
     <script type="module" src="./src/index.ts"></script>
 
     <!-- minimizer-icon -->
-    <i id="is-minimized-icon">
+    <i id="is-minimized-icon" title="Expand navigation bar">
         <img class="h-6" src="./src/utils/icons/menu.svg" alt="">
     </i>
 
@@ -21,22 +21,22 @@
             shadow-lg bg-body
             top-1/2 fixed left-0 -translate-y-1/2 w-20 z-10 py-4 rounded-r-3xl" id="navbar">
 
-      <i class="sidebar-icon">
+      <i class="sidebar-icon" title="Home">
         <a href="#/">
           <img class="h-6 text-white hover:text-black" src="./src/utils/icons/puzzle-alt.svg" alt="">
         </a>
       </i>
-      <i class="sidebar-icon">
+      <!-- <i class="sidebar-icon">
         <img class="h-6 text-white hover:text-black" src="./src/utils/icons/console-controller.svg" alt="">
-      </i>
-      <i class="sidebar-icon">
+      </i> -->
+      <i class="sidebar-icon" title="Tournament">
         <a href="#/tournament">
           <img class="h-6 text-white hover:text-black" src="./src/utils/icons/chart-tree.svg" alt="">
         </a>
       </i>
-      <i class="sidebar-icon">
+      <i class="sidebar-icon" title="Friends">
         <a href="#/friends">
-          <img class="h-6 text-white hover:text-black" src="./src/utils/icons/users.svg" alt="">
+          <img class="h-6 text-white hover:text-black" src="./src/utils/icons/user-group.svg" alt="">
         </a>
       </i>
 
@@ -46,18 +46,18 @@
 
     <div class="group flex flex-col text-center">
       
-      <a href="#/profile" class="sidebar-icon" id="profileLink">
+      <a href="#/profile" class="sidebar-icon" id="profileLink" title="Profile">
         <img class="h-6 hover:text-black" src="./src/utils/icons/user.svg" alt="">
       </a>
 
       <div class="sub-menu">
-        <i class="sub-icon">
+        <i class="sub-icon" title="Power off">
           <img class="h-5" id="powerBtn" src="./src/utils/icons/power.svg" alt="">
         </i>
       </div>
     </div>
 
-    <i class="sidebar-icon" id="minimizer">
+    <i class="sidebar-icon" id="minimizer" title="Minimize navigation bar">
       <img class="h-6 hover:text-black" src="./src/utils/icons/minimize.svg" alt="">
     </i>
 
