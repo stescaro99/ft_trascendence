@@ -167,6 +167,14 @@
   --shadow-lateral: 0 0 35px var(--secondary);
 }
 
+[data-theme="tournament"] {
+  --primary: #06b6d4;
+  --secondary: #22d3ee;
+  --hover: #0891b2;
+  --shadow-glow: 0 0 20px var(--secondary);
+  --shadow-lateral: 0 0 35px var(--secondary);
+}
+
 body {
   overflow-x: hidden;
 }

@@ -1,10 +1,17 @@
 import tournamentHtml from './tournament.html?raw';
 import { Tournament, TournamentRound, TournamentResult } from '../../model/touranment.model';
 import { TranslationService } from '../../service/translation.service';
+import './tournament.css';
 
 export class TournamentPage {
     private tournament: Tournament = new Tournament();
     private currentLang: string;
+
+    private setTheme(theme: string) {
+		const element = document.querySelector('[data-theme]') as HTMLElement;
+
+		element.dataset.theme = theme;
+	} 
 
 	private render() {
 		const appDiv = document.getElementById('app');
@@ -441,6 +448,7 @@ private checkTournamentContinuation() {
         this.currentLang = lang;
         this.render();
         this.addEventListeners();
+        this.setTheme('tournament');
         this.checkTournamentContinuation(); // Aggiungi questa chiamata
         
         // Carica automaticamente i campi per 4 giocatori (valore di default)
