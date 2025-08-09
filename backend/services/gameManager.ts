@@ -110,6 +110,24 @@ class GameManager {
       gameState: room.gameState
     });
 
+    room.players.forEach(player => {
+      const mySide = this.roomManager.getPlayerSide(room, player); 
+      const myPaddleIndex = this.roomManager.getPlayerPaddleIndex(room, player);
+      const initialState = {
+          ...room.gameState,
+          mySide,
+          myPaddleIndex
+      };
+
+      // Invia solo a questo player
+      if (player.socket.readyState === 1) {
+          player.socket.send(JSON.stringify({
+              type: 'gameStarted',
+              gameState: initialState
+          }));
+      }
+  });
+
     GameLoop.startGameLoop(roomId, room, (roomId, message) => {
       this.broadcastToRoom(roomId, message);
     });

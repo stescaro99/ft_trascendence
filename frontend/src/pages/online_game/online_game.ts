@@ -3,6 +3,7 @@ import { UserService } from '../../service/user.service';
 import { User } from '../../model/user.model';
 import { TranslationService } from '../../service/translation.service';
 import { RemoteController } from "./RemoteController";
+import { FourRemoteController } from "./FourRemoteController";
 import multiplayerService from '../../services/multiplayerService';
 import '../game/game.css';
 
@@ -131,7 +132,17 @@ export class OnlineGamePage {
 			
 			// Avvia la ricerca
 			console.log("[OnlineGame] 🔍 Avviando ricerca partita...");
-			multiplayerService.findMatch('two');
+			
+			let paramsString = "";
+			if (window.location.hash.includes("?")) {
+				paramsString = window.location.hash.split("?")[1];
+			}
+			const urlParams = new URLSearchParams(paramsString);
+			console.log("[OnlineGame] 🚀 Parametri URL:", urlParams.toString());
+			const players = urlParams.get('players');
+			const gameType = players === '4' ? 'four' : 'two';
+			console.log("[OnlineGame] 🚀 Cerco partita con gameType:", gameType);
+			multiplayerService.findMatch(gameType as 'two' | 'four');
 		});
 
 		const cancelBtn = document.createElement("button");
@@ -173,31 +184,69 @@ export class OnlineGamePage {
 				gameScreen.classList.add("visible");
 			}
 
+			const playerNames = document.getElementById("playerNames");
+			if (playerNames) playerNames.style.display = "flex";
+
 			const player1Name = document.getElementById("player1Name");
 			const player2Name = document.getElementById("player2Name");
-			if (player1Name && initialState.leftPaddle && initialState.leftPaddle[0])
-				player1Name.textContent = initialState.leftPaddle[0].nickname;
-			if (player2Name && initialState.rightPaddle && initialState.rightPaddle[0])
-				player2Name.textContent = initialState.rightPaddle[0].nickname;
+			const player3Name = document.getElementById("player3Name");
+			const player4Name = document.getElementById("player4Name");
 
-			const mySide = initialState.mySide;
-			if (mySide === "left") {
-				if (player1Name) {
-					player1Name.style.color = "#ff4444";
-					player1Name.style.fontWeight = "bold";
+			const isFourPlayers = initialState.leftPaddle.length === 2 && initialState.rightPaddle.length === 2;
+
+			if (isFourPlayers) {
+				// Mostra tutti e 4 i nomi
+				if (player1Name && initialState.leftPaddle[0]) {
+					player1Name.textContent = initialState.leftPaddle[0].nickname;
+					player1Name.style.display = "block";
 				}
-				if (player2Name) {
-					player2Name.style.color = "#44ff44";
-					player2Name.style.fontWeight = "normal";
+				if (player2Name && initialState.leftPaddle[1]) {
+					player2Name.textContent = initialState.leftPaddle[1].nickname;
+					player2Name.style.display = "block";
+				}
+				if (player3Name && initialState.rightPaddle[0]) {
+					player3Name.textContent = initialState.rightPaddle[0].nickname;
+					player3Name.style.display = "block";
+				}
+				if (player4Name && initialState.rightPaddle[1]) {
+					player4Name.textContent = initialState.rightPaddle[1].nickname;
+					player4Name.style.display = "block";
 				}
 			} else {
-				if (player1Name) {
-					player1Name.style.color = "#44ff44";
-					player1Name.style.fontWeight = "normal";
+				// Mostra solo i primi 2 nomi
+				if (player1Name && initialState.leftPaddle[0]) {
+					player1Name.textContent = initialState.leftPaddle[0].nickname;
+					player1Name.style.display = "block";
 				}
-				if (player2Name) {
-					player2Name.style.color = "#ff4444";
-					player2Name.style.fontWeight = "bold";
+				if (player2Name && initialState.rightPaddle[0]) {
+					player2Name.textContent = initialState.rightPaddle[0].nickname;
+					player2Name.style.display = "block";
+				}
+				if (player3Name) player3Name.style.display = "none";
+				if (player4Name) player4Name.style.display = "none";
+			}
+
+			// Evidenzia il lato del giocatore locale (solo per 2 giocatori, puoi adattare per 4)
+			const mySide = initialState.mySide;
+			if (!isFourPlayers) {
+				if (mySide === "left") {
+					if (player1Name) {
+						player1Name.style.color = "#ff4444";
+						player1Name.style.fontWeight = "bold";
+					}
+					if (player2Name) {
+						player2Name.style.color = "#44ff44";
+						player2Name.style.fontWeight = "normal";
+					}
+				} else {
+					if (player1Name) {
+						player1Name.style.color = "#44ff44";
+						player1Name.style.fontWeight = "normal";
+					}
+					if (player2Name) {
+						player2Name.style.color = "#ff4444";
+						player2Name.style.fontWeight = "bold";
+					}
 				}
 			}
 
@@ -242,6 +291,7 @@ export class OnlineGamePage {
 
 	private startCountdown(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, initialState: any) {
     let countdown = 3;
+    const isFourPlayers = initialState.leftPaddle.length === 2 && initialState.rightPaddle.length === 2;
     const interval = setInterval(() => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "white";
@@ -254,8 +304,11 @@ export class OnlineGamePage {
             ctx.fillText("GO!", canvas.width / 2, canvas.height / 2);
         } else {
             clearInterval(interval);
-			multiplayerService.sendInput({ type: "countdownFinished" });
-            new RemoteController("gameCanvas", initialState);
+            multiplayerService.sendInput({ type: "countdownFinished" });
+            if (isFourPlayers)
+                new FourRemoteController("gameCanvas", initialState);
+            else
+                new RemoteController("gameCanvas", initialState);
         }
         countdown--;
     }, 1000);

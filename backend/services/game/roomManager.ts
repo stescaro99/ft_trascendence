@@ -211,18 +211,20 @@ export class RoomManager {
     this.randomizePowerUp(baseState);
 
     if (type === 'four') {
+        // Paddle sinistra (secondo paddle più avanti)
         baseState.leftPaddle.push({
-            x: 30,
-            y: GAME_CONSTANTS.CANVAS_HEIGHT / 2 + paddleHeight,
+            x: GAME_CONSTANTS.CANVAS_WIDTH / 7,
+            y: GAME_CONSTANTS.CANVAS_HEIGHT / 2 - paddleHeight / 2,
             dy: 0,
             speed: 6,
             height: paddleHeight,
             nickname: ""
         });
 
+        // Paddle destra (secondo paddle più avanti)
         baseState.rightPaddle.push({
-            x: GAME_CONSTANTS.CANVAS_WIDTH - paddleWidth - 30,
-            y: GAME_CONSTANTS.CANVAS_HEIGHT / 2 + paddleHeight,
+            x: GAME_CONSTANTS.CANVAS_WIDTH - GAME_CONSTANTS.CANVAS_WIDTH / 7 - paddleWidth,
+            y: GAME_CONSTANTS.CANVAS_HEIGHT / 2 - paddleHeight / 2,
             dy: 0,
             speed: 6,
             height: paddleHeight,

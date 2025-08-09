@@ -16,8 +16,6 @@ export class MultiplayerService {
 		}
 
         const token = localStorage.getItem("token");
-        console.log("[MultiplayerService] Token trovato:", !!token);
-        console.log("[MultiplayerService] Token preview:", token ? token.substring(0, 20) + "..." : "null");
         if (!token)
         {
             console.error("[MultiplayerService] Token JWT mancante. Impossibile connettersi.");
@@ -25,12 +23,9 @@ export class MultiplayerService {
         }
 
 		const wsUrl = `wss://transcendence.be:9443/ws/game?token=${token}`;
-		console.log("[MultiplayerService] Tentativo di connessione a:", wsUrl);
 		this.socket = new WebSocket(wsUrl);
 
 		this.socket.onopen = () => {
-			console.log("[MultiplayerService] Connesso con successo!");
-			// Avvia heartbeat ogni 10 secondi
 			this.startHeartbeat();
 		};
 
@@ -73,7 +68,7 @@ export class MultiplayerService {
 	}
 
 	private startHeartbeat() {
-		this.stopHeartbeat(); // Pulisce eventuali interval precedenti
+		this.stopHeartbeat();
 		this.heartbeatInterval = setInterval(() => {
 			if (this.socket && this.socket.readyState === WebSocket.OPEN) {
 				console.log("[MultiplayerService] Inviando ping heartbeat");
@@ -82,7 +77,7 @@ export class MultiplayerService {
 					timestamp: Date.now()
 				}));
 			}
-		}, 10000); // Ogni 10 secondi
+		}, 10000);
 	}
 
 	private stopHeartbeat() {
@@ -141,7 +136,7 @@ export class MultiplayerService {
 	}
 
 	findMatch(gameType: 'two' | 'four' = 'two') {
-		console.log("[MultiplayerService] Cercando partita tipo:", gameType);
+		console.log("[MultiplayerService] Inviando richiesta findMatch con gameType:", gameType);
 		if (this.socket && this.socket.readyState === WebSocket.OPEN) {
 			console.log("[MultiplayerService] Inviando richiesta findMatch");
 			this.socket.send(JSON.stringify({ 

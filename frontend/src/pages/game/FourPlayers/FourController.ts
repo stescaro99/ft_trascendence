@@ -82,7 +82,7 @@ function createInitialGameState(canvas: HTMLCanvasElement): GameState {
 	canvas: canvas,
 	waitingForStart: false,
 	maxScore: 5,
-	paddleSpeed: 1.5
+	paddleSpeed: 4
   };
 }
 

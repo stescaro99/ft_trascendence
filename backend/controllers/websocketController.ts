@@ -127,7 +127,7 @@ function handleJoinRoom(player: Player, data: any) {
 }
 
 function handleFindMatch(player: Player, data: any) {
-  console.log('[WebSocket] handleFindMatch called for player:', player.nickname);
+  console.log('[WebSocket] handleFindMatch called for player:', player.nickname, 'gameType:', data.gameType);
   const result = gameManager.findMatch(player, data.gameType || 'two');
   console.log('[WebSocket] findMatch result:', result);
 
@@ -287,13 +287,7 @@ function sendToPlayer(player: Player, message: any) {
   }
 }
 
-function handlePlayerInputWithValidation(player: Player, data: any) {
-  console.log('[WebSocket] 🎮 handlePlayerInputWithValidation chiamato');
-  console.log('[WebSocket] Player:', player.nickname, '| ID:', player.id);
-  console.log('[WebSocket] Data ricevuta:', data);
-  console.log('[WebSocket] Input:', data.input);
-  console.log('[WebSocket] RoomId:', data.roomId);
-  
+function handlePlayerInputWithValidation(player: Player, data: any) { 
   if (data.input && data.input.type === "countdownFinished") {
     const room = gameManager.roomManager.getRoom(data.roomId);
     if (room) {

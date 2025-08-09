@@ -1,16 +1,21 @@
 import { GameState } from "../game/common/types";
-import { drawBall, drawField, drawPowerUp, drawRect, drawScore } from "../game/common/Draw"
+import { drawBall, drawField, drawPowerUp, drawRect, drawScore } from "../game/common/Draw";
 import multiplayerService from "../../services/multiplayerService";
 
-export class RemoteController {
+export class FourRemoteController {
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D;
     private keys: { [key: string]: boolean } = {};
     private animationFrameId: number | null = null;
+    private mySide: "left" | "right";
+    private myPaddleIndex: number;
 
-    constructor(canvasId: string, initialState: GameState) {
+    constructor(canvasId: string, initialState: GameState & { mySide: "left" | "right"; myPaddleIndex: number }) {
         this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
         this.ctx = this.canvas.getContext('2d')!;
+
+        this.mySide = initialState.mySide;
+        this.myPaddleIndex = initialState.myPaddleIndex;
 
         this.draw(initialState);
         this.setupListeners();
@@ -57,7 +62,9 @@ export class RemoteController {
 
         multiplayerService.sendInput({
             direction,
-            timestamp: Date.now()
+            timestamp: Date.now(),
+            paddleIndex: this.myPaddleIndex,
+            side: this.mySide
         });
 
         this.animationFrameId = requestAnimationFrame(this.gameLoop);
