@@ -17,8 +17,20 @@ export class LogInPage{
 		this.currentLang = lang;
 		this.render();
 		this.setTheme('green');
+		this.saveGoogleTokenIfPresent();
 		this.addEventListeners();
 		this.checkHostConfiguration();
+	}
+
+	// Salva il token Google se presente nei parametri URL
+	saveGoogleTokenIfPresent() {
+		const urlParams = new URLSearchParams(window.location.search);
+		const token = urlParams.get('token');
+		if (token) {
+			this.authenticationService.saveGoogleToken(token);
+			console.log('Google token salvato in localStorage.token:', token);
+			// Puoi anche fare redirect o altre azioni qui
+		}
 	}
 	private render() {
 		const appDiv = document.getElementById('app');
@@ -136,7 +148,21 @@ export class LogInPage{
 		}
 		const debugButton = document.getElementById('debugLogin');
 		if (debugButton) {
-			debugButton.addEventListener('click', () => {
+			debugButton.addEventListener('click', async () => {
+				// Chiama backend per forzare offline
+				const nickname = localStorage.getItem('nickname');
+				if (nickname) {
+					try {
+						await fetch('https://transcendence.be:9443/api/force_offline', {
+							method: 'POST',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify({ nickname })
+						});
+					} catch (e) { console.error('force_offline error:', e); }
+				}
+				localStorage.removeItem('user');
+				localStorage.removeItem('token');
+				localStorage.removeItem('nickname');
 				localStorage.setItem('user', 'debug');
 				localStorage.setItem('nickname', 'fgori');
 				window.location.hash = '#/';

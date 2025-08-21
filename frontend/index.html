@@ -12,59 +12,99 @@
     <div id="app" class="h-screen"></div>
     <script type="module" src="./src/index.ts"></script>
 
-    <nav class="flex flex-col text-center
-              shadow-lg bg-body
-              top-0 fixed left-0 h-screen w-20 z-10" id="navbar">
+    <!-- minimizer-icon -->
+    <i id="is-minimized-icon" title="Expand navigation bar">
+        <img class="h-6" src="./src/utils/icons/menu.svg" alt="">
+    </i>
 
-      <i class="sidebar-icon">
+    <nav class="flex flex-col text-center
+            shadow-lg bg-body
+            top-1/2 fixed left-0 -translate-y-1/2 w-20 z-10 py-4 rounded-r-3xl" id="navbar">
+
+      <i class="sidebar-icon" title="Home">
         <a href="#/">
           <img class="h-6 text-white hover:text-black" src="./src/utils/icons/puzzle-alt.svg" alt="">
         </a>
       </i>
-      <i class="sidebar-icon">
+      <!-- <i class="sidebar-icon">
         <img class="h-6 text-white hover:text-black" src="./src/utils/icons/console-controller.svg" alt="">
+      </i> -->
+      <i class="sidebar-icon" title="Tournament">
+        <a href="#/tournament">
+          <img class="h-6 text-white hover:text-black" src="./src/utils/icons/chart-tree.svg" alt="">
+        </a>
       </i>
-      <i class="sidebar-icon">
-        <img class="h-6 text-white hover:text-black" src="./src/utils/icons/chart-tree.svg" alt="">
-      </i>
-      <i class="sidebar-icon">
-        <img class="h-6 text-white hover:text-black" src="./src/utils/icons/info.svg" alt="">
+      <i class="sidebar-icon" title="Friends">
+        <a href="#/friends">
+          <img class="h-6 text-white hover:text-black" src="./src/utils/icons/user-group.svg" alt="">
+        </a>
       </i>
 
-      <div class="w-full text-center">
-        <div class="bg-[color:var(--primary)] h-1 w-5/6 mx-auto"></div>
-      </div>
+    <div class="w-full text-center py-2">
+      <div class="bg-[color:var(--primary)] h-1 w-5/6 mx-auto"></div>
+    </div>
 
-      <div class="group flex flex-col text-center">
-        
-        <i class="sidebar-icon">
-          <a href="#/profile">
-            <img class="h-6 text-white hover:text-black" src="./src/utils/icons/user.svg" alt="">
-          </a>
+    <div class="group flex flex-col text-center">
+      
+      <a href="#/profile" class="sidebar-icon" id="profileLink" title="Profile">
+        <img class="h-6 hover:text-black" src="./src/utils/icons/user.svg" alt="">
+      </a>
+
+      <div class="sub-menu">
+        <i class="sub-icon" title="Power off">
+          <img class="h-5" id="powerBtn" src="./src/utils/icons/power.svg" alt="">
         </i>
-
-        <div class="max-h-0 group-hover:max-h-20 transition-all duration-300 ease-out">
-          <!-- <i class="sub-icon opacity-0 group-hover:opacity-100">
-            <a href="#/stats">
-              <img class="h-5" src="./src/utils/icons/stats.svg" alt="">
-            </a>
-          </i> -->
-          <i class="sub-icon opacity-0 group-hover:opacity-100">
-            <img class="h-5" id="powerBtn" src="./src/utils/icons/power.svg" alt="">
-          </i>
-        </div>
       </div>
+    </div>
 
-      </nav>
+    <i class="sidebar-icon" id="minimizer" title="Minimize navigation bar">
+      <img class="h-6 hover:text-black" src="./src/utils/icons/minimize.svg" alt="">
+    </i>
+
+  </nav>
       
   </body>
 
-  <script>
+  <!-- <script>
     var navbar = document.getElementById('navbar')
     if (localStorage.getItem('user')) {
       navbar.style.display = 'block'
     } else {
       navbar.style.display = 'none'
     }
+  </script> -->
+  
+  <script>
+    var isMinimizedIcon = document.getElementById('is-minimized-icon')
+    var minimizer = document.getElementById('minimizer')
+    var navbar = document.getElementById('navbar');
+
+    // Possibile salvataggio della scelta nel local storage
+    // var isMinimized = localStorage.getItem('navbarMinimized') === 'true';
+
+    // if (isMinimized) {
+    //     isMinimizedIcon.style.display = 'block';
+    //     minimizer.style.display = 'none';
+    //     navbar.style.display = 'none';
+    // } else {
+    //     isMinimizedIcon.style.display = 'none';
+    //     minimizer.style.display = 'block';
+    //     navbar.style.display = 'block';
+    // }
+
+    isMinimizedIcon.style.display = 'none';
+
+    minimizer.addEventListener('click', function() {
+      isMinimizedIcon.style.display = 'flex';
+      isMinimized = true;
+      navbar.style.display = 'none';
+    });
+
+    isMinimizedIcon.addEventListener('click', function() {
+      isMinimizedIcon.style.display = 'none';
+      isMinimized = false;
+      navbar.style.display = 'block';
+    });
+    
   </script>
 </html>

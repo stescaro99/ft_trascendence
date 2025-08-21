@@ -9,8 +9,8 @@ class User extends Model {
 	public nickname!: string;
 	public email!: string;
 	public password!: string;
-	public language?: string;
-	public image_url?: string;
+	public language!: string;
+	public image_url!: string;
 	public setStats!: (stats: Stats[] | number[]) => Promise<void>;
 	public stats?: Stats[];
 	public tfa_code?: string;
@@ -57,7 +57,7 @@ User.init(
 		},
 		image_url: {
 			type: DataTypes.STRING,
-			allowNull: true,
+			allowNull: false,
 		},
 		tfa_code: {
 			type: DataTypes.STRING,

@@ -2,6 +2,8 @@ export default {
     homepage: {
         "login": "accedi",
         "play": "gioca",
+        "profile": "profilo",
+        "welcome": "Ready to play!"
     },
     loginpage: {
         "LOGIN": "ACCEDI",
@@ -44,5 +46,9 @@ export default {
         "add_bot": "Aggiungi Bot",
         "team": "Squadra",
         "bot_active": "BOT ATTIVO"
+    },
+    tournament: {
+        "tournament": "Torneo",
+        "player": "Giocatore"
     }
 }

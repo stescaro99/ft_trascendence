@@ -2,10 +2,29 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { MultipartFile } from '@fastify/multipart';
 import User from '../models/user';
 import Stats from '../models/stats';
+import Game from '../models/game';
 import sequelize from '../db';
 import bcrypt from 'bcrypt';
 import path from 'path';
 import fs from 'fs';
+
+export async function forceOffline(request: FastifyRequest, reply: FastifyReply) {
+	const { nickname } = request.body as { nickname: string };
+	try {
+		const user = await User.findOne({ where: { nickname } });
+		if (user) {
+			user.online = false;
+			user.last_seen = new Date();
+			user.current_room = "";
+			await user.save();
+			reply.code(200).send({ message: 'User set offline', user });
+		} else {
+			reply.code(404).send({ error: 'User not found' });
+		}
+	} catch (error) {
+		reply.code(500).send({ error: 'Failed to set user offline', details: error });
+	}
+}
 
 export async function addUser(request: FastifyRequest, reply: FastifyReply) {
 	const { name, surname, nickname, email, password, image_url } = request.body as {
@@ -18,13 +37,16 @@ export async function addUser(request: FastifyRequest, reply: FastifyReply) {
 	};
 	try {
 		const hashedPassword = await bcrypt.hash(password, 10);
+		const defaultImage = 'https://transcendence.fe:8443/user.jpg';
 		const user = await User.create({
 			name,
 			surname,
 			nickname,
 			email,
 			password: hashedPassword,
-			image_url,
+			image_url: (image_url === undefined || image_url === '') ? defaultImage : image_url,
+			online: true,
+			last_seen: new Date(),
 		});
 
 		const stats_pong = await Stats.create({ nickname: nickname });
@@ -55,24 +77,32 @@ export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {
 }
 
 export async function getUser(request: FastifyRequest, reply: FastifyReply) {
-	const { nickname } = request.query as { nickname: string };
-	console.log("[getUser] Richiesta ricevuta per nickname:", nickname);
-	try {
+    const { nickname } = request.query as { nickname: string };
+    try {
+        console.log('[forceOffline] Ricevuto nickname:', nickname);
 		const user = await User.findOne({
-			where: sequelize.where(
-			  sequelize.fn('lower', sequelize.col('nickname')),
-			  nickname.trim().toLowerCase()
-			),
-			include: [{ model: Stats, as: 'stats' }],
-		  });
-		if (user) {
-			reply.code(200).send(user);
-		} else {
-			reply.code(404).send({ error: 'User not found' });
-		}
-	} catch (error) {
-		reply.code(500).send({ error: 'Failed to get user', details: error });
-	}
+			where: { nickname: nickname },
+			include: [
+			{
+				model: Stats,
+				as: 'stats',
+				include: [
+				{ model: Game, as: 'games' }
+				]
+			}
+			],
+			attributes: { exclude: ['password'] }
+		});
+        const defaultImage = 'https://transcendence.fe:8443/image/user.jpg';
+        if (user) {
+            if (user.image_url === undefined || user.image_url === '') user.image_url = defaultImage;
+            reply.code(200).send(user);
+        } else {
+            reply.code(404).send({ error: 'User not found' });
+        }
+    } catch (error) {
+        reply.code(500).send({ error: 'Failed to get user', details: error });
+    }
 }
 
 export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
@@ -156,8 +186,8 @@ export async function addFriend(request: FastifyRequest, reply: FastifyReply) {
 
 		const friends1 = new Set(first_user.friends || []);
 		const friends2 = new Set(second_user.friends || []);
+		const requests1 = new Set(first_user.fr_request  || []);
 		const requests2 = new Set(second_user.fr_request || []);
-		const requests1 = new Set(first_user.fr_request || []);
 
 		if (friends1.has(user2) && friends2.has(user1)) {
 			friends1.delete(user2);

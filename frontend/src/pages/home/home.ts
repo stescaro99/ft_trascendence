@@ -7,7 +7,18 @@ import { HomeScreen } from '../../service/homeScreen.service';
 import './home.css';
 
 export class HomePage {
-	user: User | null;
+	async updateOnlineUsers() {
+		try {
+			const response = await fetch('https://transcendence.be:9443/getOnlineUsers');
+			if (!response.ok) throw new Error('Errore nel recupero utenti online');
+			const data = await response.json();
+			// Aggiorna la visualizzazione degli utenti online qui
+			// Esempio: console.log('Utenti online:', data.online_users);
+			// Puoi aggiornare lo stato o la UI come preferisci
+		} catch (error) {
+			console.error('Errore updateOnlineUsers:', error);
+		}
+	}
 	userService: UserService = new UserService();
 	private currentLang: string;
 	private homeScreen: HomeScreen;
@@ -16,7 +27,6 @@ export class HomePage {
 
 	constructor(lang: string) {
 		this.currentLang = lang;
-
 
 		// if (this.user) {
 		// 	this.welcomeText = "Welcome back " + this.user.name;
@@ -31,15 +41,29 @@ export class HomePage {
         });
 		this.homeScreen.show();
 
-		this.setTheme('cyan');
+		this.setTheme('pink');
 		this.initializeBall();
 		this.btnGlow();
 		
 		const logoutButton = document.getElementById('logoutButton');
 		if (logoutButton) {
-			logoutButton.addEventListener('click', () => {
+			logoutButton.addEventListener('click', async () => {
+				await this.userService.logout();
+				// Chiama backend per forzare offline
+				const nickname = localStorage.getItem('nickname');
+				if (nickname) {
+					try {
+						await fetch('https://transcendence.be:9443/api/force_offline', {
+							method: 'POST',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify({ nickname })
+						});
+					} catch (e) { console.error('force_offline error:', e); }
+				}
 				localStorage.removeItem('user');
-				window.location.hash = '/identification'; // o dove vuoi reindirizzare
+				localStorage.removeItem('token');
+				localStorage.removeItem('nickname');
+				window.location.reload(); // ricarica la pagina per aggiornare la lista utenti online
 			});
 		}
 		
@@ -56,6 +80,7 @@ export class HomePage {
             button.classList.remove('glow');
         }, 300);
     }
+
 	private addlisteners() {
 		console.log('Adding event listeners...');
 		const playButton = document.getElementById('playButton');
@@ -69,6 +94,7 @@ export class HomePage {
 					window.location.hash = '#/online_game?players=2'
 			});
 		}
+		
 		const playButton4 = document.getElementById('playButton4');
 		console.log('playButton4 found:', playButton4);
 		if (playButton4) {
@@ -80,80 +106,88 @@ export class HomePage {
 					window.location.hash = '#/online_game?players=4'
 			});
 		}
+
 		const joystickStick = document.getElementById('joystickStick');
-    const ledOffline = document.getElementById('ledOffline');
-    const ledOnline = document.getElementById('ledOnline');
-    
-    if (joystickStick && ledOffline && ledOnline) {
-			joystickStick.addEventListener('click', () => {
-				this.onlineStatus = !this.onlineStatus;
-				
-				if (this.onlineStatus) {
-					// Sposta a destra (online)
-					joystickStick.classList.remove('-translate-x-12');
-					joystickStick.classList.add('translate-x-12');
-					
-					// LED offline spento
-					ledOffline.classList.remove('animate-pulse', 'opacity-80');
-					ledOffline.classList.add('opacity-30');
-					ledOffline.children[0].classList.add('opacity-0');
-					ledOffline.children[1].classList.add('opacity-0');
-					
-					// LED online acceso
-					ledOnline.classList.remove('opacity-30');
-					ledOnline.classList.add('animate-pulse', 'opacity-80');
-					ledOnline.children[0].classList.remove('opacity-0');
-					ledOnline.children[0].classList.add('animate-pulse', 'opacity-80');
-					ledOnline.children[1].classList.remove('opacity-0');
-					ledOnline.children[1].classList.add('opacity-50');
-					
-				} else {
-					// Sposta a sinistra (offline)
-					joystickStick.classList.remove('translate-x-12');
-					joystickStick.classList.add('-translate-x-12');
-					
-					// LED online spento
-					ledOnline.classList.remove('animate-pulse', 'opacity-80');
-					ledOnline.classList.add('opacity-30');
-					ledOnline.children[0].classList.add('opacity-0');
-					ledOnline.children[1].classList.add('opacity-0');
-					
-					// LED offline acceso
-					ledOffline.classList.remove('opacity-30');
-					ledOffline.classList.add('animate-pulse', 'opacity-80');
-					ledOffline.children[0].classList.remove('opacity-0');
-					ledOffline.children[0].classList.add('animate-pulse', 'opacity-80');
-					ledOffline.children[1].classList.remove('opacity-0');
-					ledOffline.children[1].classList.add('opacity-50');
-				}
-				
-				this.updatePlayButtonColors();
-			});
-		}
-	}
-	private updatePlayButtonColors() {
-		const playButton = document.getElementById('playButton');
-		const playButton4 = document.getElementById('playButton4');
+		const ledOffline = document.getElementById('ledOffline');
+		const ledOnline = document.getElementById('ledOnline');
 		
-		if (playButton && playButton4) {
-        if (this.onlineStatus) {
-            // Modalità Online - Bottoni verdi
-            console.log('🔍 Setting GREEN gradient');
-            playButton.style.setProperty('background', 'linear-gradient(145deg, #22c55e, #16a34a)', 'important');
-            playButton.style.setProperty('box-shadow', '0 8px 0 #15803d, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2), 0 0 20px rgba(34, 197, 94, 0.5)', 'important');
-            
-            playButton4.style.setProperty('background', 'linear-gradient(145deg, #22c55e, #16a34a)', 'important');
-            playButton4.style.setProperty('box-shadow', '0 8px 0 #15803d, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2), 0 0 20px rgba(34, 197, 94, 0.5)', 'important');
-        } else {
-            console.log('🔍 Setting RED gradient');
-            // Modalità Offline - Bottoni rossi (colori originali)
-            playButton.style.setProperty('background', 'linear-gradient(145deg, #ff4757, #c44569)', 'important');
-            playButton.style.setProperty('box-shadow', '0 8px 0 #a5334a, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2), 0 0 20px rgba(255, 71, 87, 0.5)', 'important');
-            
-            playButton4.style.setProperty('background', 'linear-gradient(145deg, #ff4757, #c44569)', 'important');
-            playButton4.style.setProperty('box-shadow', '0 8px 0 #a5334a, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2), 0 0 20px rgba(255, 71, 87, 0.5)', 'important');
-        }
-    }
+		if (joystickStick && ledOffline && ledOnline) {
+				joystickStick.addEventListener('click', () => {
+					this.onlineStatus = !this.onlineStatus;
+					
+					if (this.onlineStatus) {
+						// Sposta a destra (online)
+						joystickStick.classList.remove('-translate-x-14');
+						joystickStick.classList.add('translate-x-14');
+						
+						// LED offline spento
+						ledOffline.classList.remove('animate-pulse', 'opacity-80');
+						ledOffline.classList.add('opacity-30');
+						ledOffline.children[0].classList.add('opacity-0');
+						ledOffline.children[1].classList.add('opacity-0');
+						
+						// LED online acceso
+						ledOnline.classList.remove('opacity-30');
+						ledOnline.classList.add('animate-pulse', 'opacity-80');
+						ledOnline.children[0].classList.remove('opacity-0');
+						ledOnline.children[0].classList.add('animate-pulse', 'opacity-80');
+						ledOnline.children[1].classList.remove('opacity-0');
+						ledOnline.children[1].classList.add('opacity-50');
+						
+					} else {
+						// Sposta a sinistra (offline)
+						joystickStick.classList.remove('translate-x-14');
+						joystickStick.classList.add('-translate-x-14');
+						
+						// LED online spento
+						ledOnline.classList.remove('animate-pulse', 'opacity-80');
+						ledOnline.classList.add('opacity-30');
+						ledOnline.children[0].classList.add('opacity-0');
+						ledOnline.children[1].classList.add('opacity-0');
+						
+						// LED offline acceso
+						ledOffline.classList.remove('opacity-30');
+						ledOffline.classList.add('animate-pulse', 'opacity-80');
+						ledOffline.children[0].classList.remove('opacity-0');
+						ledOffline.children[0].classList.add('animate-pulse', 'opacity-80');
+						ledOffline.children[1].classList.remove('opacity-0');
+						ledOffline.children[1].classList.add('opacity-50');
+					}
+					
+					this.updatePlayButtonColors();
+				});
+			}
+		}
+		
+		private updatePlayButtonColors() {
+			const playButton = document.getElementById('playButton');
+			const playButton4 = document.getElementById('playButton4');
+			
+			if (playButton && playButton4) {
+			if (this.onlineStatus) {
+				// Modalità Online - Bottoni verdi
+				console.log('🔍 Setting GREEN gradient');
+				playButton.style.setProperty('background', 'linear-gradient(145deg, #22c55e, #16a34a)', 'important');
+				playButton.style.setProperty('box-shadow', '0 8px 0 #15803d, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2), 0 0 20px rgba(34, 197, 94, 0.5)', 'important');
+				
+				playButton4.style.setProperty('background', 'linear-gradient(145deg, #22c55e, #16a34a)', 'important');
+				playButton4.style.setProperty('box-shadow', '0 8px 0 #15803d, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2), 0 0 20px rgba(34, 197, 94, 0.5)', 'important');
+
+				// Setto tema navbar per match con bottoni
+				this.setTheme('light-green');
+			} else {
+				console.log('🔍 Setting RED gradient');
+				// Modalità Offline - Bottoni rossi (colori originali)
+				playButton.style.setProperty('background', 'linear-gradient(145deg, #ff4757, #c44569)', 'important');
+				playButton.style.setProperty('box-shadow', '0 8px 0 #a5334a, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2), 0 0 20px rgba(255, 71, 87, 0.5)', 'important');
+				
+				playButton4.style.setProperty('background', 'linear-gradient(145deg, #ff4757, #c44569)', 'important');
+				playButton4.style.setProperty('box-shadow', '0 8px 0 #a5334a, 0 12px 20px rgba(0,0,0,0.4), inset 0 4px 0 rgba(255,255,255,0.3), inset 0 -4px 0 rgba(0,0,0,0.2), 0 0 20px rgba(255, 71, 87, 0.5)', 'important');
+
+				// Setto tema navbar per match con bottoni
+				this.setTheme('pink');
+			}
+		}
 	}
 
 	private btnGlow() {
@@ -259,6 +293,10 @@ export class HomePage {
 				if (this.x <= 0 || this.x >= containerWidth - this.ballSize) {
 					this.vx = -this.vx;
 					collisionOccurred = true;
+						// Aggiorna la lista utenti online senza reload
+						if (typeof this.updateOnlineUsers === 'function') {
+							this.updateOnlineUsers();
+						}
 					if (this.x <= 0) this.x = 0;
 					if (this.x >= containerWidth - this.ballSize) {
 						this.x = containerWidth - this.ballSize;

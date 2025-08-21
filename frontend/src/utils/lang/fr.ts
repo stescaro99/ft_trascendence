@@ -2,7 +2,8 @@ export default {
     homepage: {
         "login": "se connecter",
         "play": "jouer",
-        "profile": "profil"
+        "profile": "profil",
+        "welcome": "Ready to play!"
     },
     loginpage: {
         "LOGIN": "SE CONNECTER",
@@ -45,5 +46,9 @@ export default {
         "add_bot": "Ajouter bot",
         "team": "Équipe",
         "bot_active": "BOT ACTIF"
+    },
+    tournament: {
+        "tournament": "Tournoi",
+        "player": "Joueur"
     }
 }

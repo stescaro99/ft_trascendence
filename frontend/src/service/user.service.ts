@@ -3,22 +3,56 @@ import { environment } from '../environments/environment';
 
 
 export class UserService {
+	async logout(): Promise<any> {
+		const token = localStorage.getItem('token');
+		if (!token) return;
+		try {
+			const response = await fetch(`${this.apiUrl}/logout`, {
+				method: 'POST',
+				headers: {
+					'Authorization': `Bearer ${token}`,
+					'Content-Type': 'application/json',
+				},
+			});
+			if (!response.ok) {
+				throw new Error('Logout failed');
+			}
+			return await response.json();
+		} catch (error) {
+			console.error('Logout error:', error);
+		}
+	}
 	private user: User = new User();
 
 	private apiUrl = `${environment.apiUrl}`; 
 	
-	getUser(): User | null {
+	async getUser(): Promise<User | null >{
 		const nickname = localStorage.getItem('nickname');
-		console.log('[UserService] getUser() chiamato');
-		console.log('[UserService] localStorage.nickname:', nickname);
-		console.log('[UserService] localStorage.user:', localStorage.getItem('user'));
+		console.log('getUser called with nickname:', nickname);
+		
+		if (nickname) {
+			try {
+				const userData = await this.takeUserFromApi(nickname);
+				this.user.name = userData.name || '';
+				this.user.surname = userData.surname;
+				this.user.nickname = userData.nickname;
+				this.user.email = userData.email;
+				this.user.image_url = userData.image_url;
+				this.user.stats = userData.stats;
+				this.user.id = userData.id;
+				return this.user;
+			} catch (error) {
+				console.error('Error fetching user data:', error);
+				return null;
+        }
+    }
+    
+    return null;
 
 		if (localStorage.getItem('user') || nickname) {
 			if (nickname) {
-				console.log('[UserService] Chiamo takeUserFromApi con nickname:', nickname);
 				this.takeUserFromApi(nickname)
 				.then((userData) => {
-					console.log('[UserService] Dati utente ricevuti da API:', userData);
 					this.user.name = userData.name || '';
 					this.user.surname = userData.surname;
 					this.user.nickname = userData.nickname;
@@ -153,4 +187,66 @@ export class UserService {
 		return response.json();
 	}
 
+	async addFriend(user1: string, user2: string): Promise<any> {
+		const url =`${this.apiUrl}/add_friend`;
+		
+		
+		const divToken = localStorage.getItem('token');
+
+		if (!divToken) 
+			console.log("No token found in localStorage");
+
+		const body = JSON.stringify({
+			user1: user1,
+			user2: user2,
+		});
+
+    
+    try {
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                "Authorization": `Bearer ${divToken}`,
+                'Content-Type': 'application/json',
+            },
+            body: body,
+        });
+        
+
+        const responseText = await response.text();
+
+        
+        if (!response.ok) {
+            let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+            
+            // Prova a parsare la risposta per ottenere il messaggio di errore dettagliato
+            try {
+                const errorData = JSON.parse(responseText);
+                if (errorData.error) {
+                    errorMessage += ` - ${errorData.error}`;
+                }
+            } catch (parseError) {
+                // Se non riesce a parsare, usa il testo grezzo
+                errorMessage += ` - ${responseText}`;
+            }
+            
+            console.error('❌ AddFriend failed:', errorMessage);
+            throw new Error(errorMessage);
+        }
+        
+        // Parsa la risposta di successo
+        try {
+            const result = JSON.parse(responseText);
+            console.log('✅ AddFriend success:', result);
+            return result;
+        } catch (parseError) {
+            console.error('❌ Failed to parse success response:', responseText);
+            throw new Error('Invalid JSON response');
+        }
+        
+    } catch (networkError) {
+        console.error('💥 Network error in addFriend:', networkError);
+        throw networkError;
+    }
+	}
 }

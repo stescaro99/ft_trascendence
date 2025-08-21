@@ -94,12 +94,61 @@
   --shadow-lateral: 0 0 35px var(--secondary);
 }
 
+[data-theme="red"] {
+  --primary: #BE2131;
+  --secondary: #E53E3E;
+  --hover: #DC2626;
+  --shadow-glow: 0 0 20px var(--secondary);
+  --shadow-lateral: 0 0 35px var(--secondary);
+}
+
+[data-theme="pink"] {
+  --primary: #c44569;
+  /* --primary: #E74A81; */
+  --secondary: #F472B6;
+  --hover: #EC4899;
+  --shadow-glow: 0 0 20px var(--secondary);
+  --shadow-lateral: 0 0 35px var(--secondary);
+}
+
+[data-theme="coral"] {
+  --primary: #ff4757;
+  --secondary: #ff6b7a;
+  --hover: #ff5722;
+  --shadow-glow: 0 0 20px var(--secondary);
+  --shadow-lateral: 0 0 35px var(--secondary);
+}
+
+[data-theme="purple"] {
+  --primary: #c44569;
+  --secondary: #e056fd;
+  --hover: #d63384;
+  --shadow-glow: 0 0 20px var(--secondary);
+  --shadow-lateral: 0 0 35px var(--secondary);
+}
+
 [data-theme="green"] {
   --primary: #22ff22;
   --secondary: #7bf1a8;
   --hover: #05df72;
   --shadow-glow: 0 0 20px var(--primary);
   --shadow-lateral: 0 0 35px var(--primary);
+}
+
+[data-theme="light-green"] {
+  --primary: #22c55e;
+  --secondary: #4ade80;
+  --hover: #16a34a;
+  --shadow-glow: 0 0 20px var(--secondary);
+  --shadow-lateral: 0 0 35px var(--secondary);
+}
+
+[data-theme="dark-green"] {
+  --primary: #16a34a;
+  --secondary: #22c55e;
+  --hover: #15803d;
+  --shadow-glow: 0 0 20px var(--secondary);
+  --shadow-lateral: 0 0 35px var(--secondary);
 }
 
 [data-theme="cyan"] {
@@ -118,7 +167,13 @@
   --shadow-lateral: 0 0 35px var(--secondary);
 }
 
-#00FFFF
+[data-theme="tournament"] {
+  --primary: #06b6d4;
+  --secondary: #22d3ee;
+  --hover: #0891b2;
+  --shadow-glow: 0 0 20px var(--secondary);
+  --shadow-lateral: 0 0 35px var(--secondary);
+}
 
 body {
   overflow-x: hidden;
@@ -133,15 +188,36 @@ nav {
   @apply shadow-[var(--shadow-lateral)] !shadow-[var(--shadow-lateral)];
 }
 
+.sub-menu {
+  @apply max-h-0 overflow-hidden transition-all duration-300 ease-out;
+}
+
+.group:hover .sub-menu {
+  @apply max-h-20;
+}
+
 .sidebar-icon {
   @apply relative flex items-center justify-center h-12 w-12 mx-auto my-2 bg-[color:var(--primary)]
           hover:bg-[color:var(--hover)] hover:shadow-[var(--shadow-glow)]
-          rounded-3xl 
+          rounded-3xl cursor-pointer
           transition-all duration-200 ease-linear;
 }
 
 .sub-icon {
   @apply relative flex items-center justify-center h-10 w-10 mx-auto my-2 bg-[color:var(--secondary)]
+          hover:bg-[color:var(--hover)] hover:shadow-[var(--shadow-glow)]
+          rounded-3xl cursor-pointer
+          transition-all duration-200 ease-linear
+          opacity-0;
+}
+
+.group:hover .sub-icon {
+  @apply opacity-100;
+}
+
+#is-minimized-icon {
+  @apply absolute top-3 left-3 cursor-pointer
+          flex items-center justify-center h-12 w-12 mx-auto my-2 bg-[color:var(--primary)]
           hover:bg-[color:var(--hover)] hover:shadow-[var(--shadow-glow)]
           rounded-3xl 
           transition-all duration-200 ease-linear;
