@@ -213,16 +213,24 @@ if (error) {
 document.addEventListener('DOMContentLoaded', () => {
   const powerBtn = document.getElementById('powerBtn');
   if (powerBtn) {
-	powerBtn.addEventListener('click', () => {
-	  localStorage.removeItem('user');
-	  localStorage.removeItem('nickname');
-	  // Nascondi la navbar
-	  const navbar = document.getElementById('navbar');
-	  if (navbar) {
-	    navbar.style.display = 'none';
-	  }
-	  window.location.hash = '/login';
-	});
+    powerBtn.addEventListener('click', async () => {
+      const nickname = localStorage.getItem('nickname');
+      if (nickname) {
+        try {
+          await fetch('https://transcendence.be:9443/force_offline', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nickname })
+          });
+        } catch (e) { console.error('force_offline error:', e); }
+      }
+      localStorage.removeItem('user');
+      localStorage.removeItem('nickname');
+      localStorage.removeItem('token');
+      const navbar = document.getElementById('navbar');
+      if (navbar) navbar.style.display = 'none';
+      window.location.hash = '/login';
+    });
   }
 });
 

@@ -3,6 +3,25 @@ import { environment } from '../environments/environment';
 
 
 export class UserService {
+	async logout(): Promise<any> {
+		const token = localStorage.getItem('token');
+		if (!token) return;
+		try {
+			const response = await fetch(`${this.apiUrl}/logout`, {
+				method: 'POST',
+				headers: {
+					'Authorization': `Bearer ${token}`,
+					'Content-Type': 'application/json',
+				},
+			});
+			if (!response.ok) {
+				throw new Error('Logout failed');
+			}
+			return await response.json();
+		} catch (error) {
+			console.error('Logout error:', error);
+		}
+	}
 	private user: User = new User();
 
 	private apiUrl = `${environment.apiUrl}`; 

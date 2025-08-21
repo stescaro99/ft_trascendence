@@ -58,6 +58,8 @@ export async function verify2FA(request: FastifyRequest, reply: FastifyReply) {
 		if (verified) {
 			const payload = { id: user.id, nickname: user.nickname };
 			const jwtToken = createJWT(payload);
+			user.online = true;
+			user.last_seen = new Date();
 			await user.save();
 			reply.code(200).send({ message: '2FA verified successfully, you are now logged in', token: jwtToken, user });
 		} else {
@@ -82,7 +84,10 @@ export async function login(request: FastifyRequest, reply: FastifyReply) {
 			reply.code(403).send({ error: '2FA not enabled. Complete 2FA setup.' });
 			return;
 		}
-		reply.code(200).send({ require2FA: true, message: '2FA required' });
+	user.online = true;
+	user.last_seen = new Date();
+	await user.save();
+	reply.code(200).send({ require2FA: true, message: '2FA required' });
 	}
 	catch (error) {
 		reply.code(500).send({ error: 'Failed to login', details: error });

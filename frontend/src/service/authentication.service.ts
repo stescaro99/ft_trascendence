@@ -45,19 +45,26 @@ export class AuthenticationService {
 		if (!response.ok) {
 			throw new Error('Network response was not ok');
 		}
-		console.log('Response from loginUserToApi:', response);
-		return response.json();
+		const result = await response.json();
+		if (result.token) {
+			localStorage.setItem('token', result.token);
+		}
+		console.log('Response from loginUserToApi:', result);
+		return result;
 	}
 
+	// Per login Google, la ricezione del token avviene dopo il redirect.
+	// Va chiamata questa funzione dopo aver ricevuto il token dal backend.
+	saveGoogleToken(token: string) {
+		localStorage.setItem('token', token);
+	}
 	loginUserWithGoogleToApi(): Promise<any> {
 		return new Promise((resolve, reject) => {
 			const authUrl = `${this.apiUrl}/google_login`;
 			console.log('Redirecting to Google auth URL:', authUrl);
-			
 			// Salva lo stato prima del redirect
 			localStorage.setItem('googleAuthPending', 'true');
 			localStorage.setItem('googleAuthResolve', 'pending');
-			
 			// Redirect diretto alla pagina di autenticazione Google
 			window.location.href = authUrl;
 		});

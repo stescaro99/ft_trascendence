@@ -7,6 +7,18 @@ import { HomeScreen } from '../../service/homeScreen.service';
 import './home.css';
 
 export class HomePage {
+	async updateOnlineUsers() {
+		try {
+			const response = await fetch('https://transcendence.be:9443/getOnlineUsers');
+			if (!response.ok) throw new Error('Errore nel recupero utenti online');
+			const data = await response.json();
+			// Aggiorna la visualizzazione degli utenti online qui
+			// Esempio: console.log('Utenti online:', data.online_users);
+			// Puoi aggiornare lo stato o la UI come preferisci
+		} catch (error) {
+			console.error('Errore updateOnlineUsers:', error);
+		}
+	}
 	userService: UserService = new UserService();
 	private currentLang: string;
 	private homeScreen: HomeScreen;
@@ -35,9 +47,23 @@ export class HomePage {
 		
 		const logoutButton = document.getElementById('logoutButton');
 		if (logoutButton) {
-			logoutButton.addEventListener('click', () => {
+			logoutButton.addEventListener('click', async () => {
+				await this.userService.logout();
+				// Chiama backend per forzare offline
+				const nickname = localStorage.getItem('nickname');
+				if (nickname) {
+					try {
+						await fetch('https://transcendence.be:9443/force_offline', {
+							method: 'POST',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify({ nickname })
+						});
+					} catch (e) { console.error('force_offline error:', e); }
+				}
 				localStorage.removeItem('user');
-				window.location.hash = '/identification'; // o dove vuoi reindirizzare
+				localStorage.removeItem('token');
+				localStorage.removeItem('nickname');
+				window.location.reload(); // ricarica la pagina per aggiornare la lista utenti online
 			});
 		}
 		
@@ -267,6 +293,10 @@ export class HomePage {
 				if (this.x <= 0 || this.x >= containerWidth - this.ballSize) {
 					this.vx = -this.vx;
 					collisionOccurred = true;
+						// Aggiorna la lista utenti online senza reload
+						if (typeof this.updateOnlineUsers === 'function') {
+							this.updateOnlineUsers();
+						}
 					if (this.x <= 0) this.x = 0;
 					if (this.x >= containerWidth - this.ballSize) {
 						this.x = containerWidth - this.ballSize;
