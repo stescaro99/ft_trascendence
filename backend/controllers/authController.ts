@@ -142,6 +142,11 @@ export async function GoogleOAuthCallback(request: FastifyRequest, reply: Fastif
 				last_seen: new Date(),
 			});
 		}
+		else {
+			user.online = true;
+			user.last_seen = new Date();
+			await user.save();
+		}
 		const jwtToken = createJWT({ id: user.id, nickname: user.nickname });
 
 		const frontendUrl = `${process.env.FRONTEND_URL}` ||'https://transcendence.fe:8443';
