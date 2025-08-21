@@ -2,6 +2,7 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { MultipartFile } from '@fastify/multipart';
 import User from '../models/user';
 import Stats from '../models/stats';
+import Game from '../models/game';
 import sequelize from '../db';
 import bcrypt from 'bcrypt';
 import path from 'path';
@@ -79,10 +80,19 @@ export async function getUser(request: FastifyRequest, reply: FastifyReply) {
     const { nickname } = request.query as { nickname: string };
     try {
         console.log('[forceOffline] Ricevuto nickname:', nickname);
-        const user = await User.findOne({
-            where: { nickname: nickname },
-            include: [{ model: Stats, as: 'stats' }]
-        });
+		const user = await User.findOne({
+			where: { nickname: nickname },
+			include: [
+			{
+				model: Stats,
+				as: 'stats',
+				include: [
+				{ model: Game, as: 'games' }
+				]
+			}
+			],
+			attributes: { exclude: ['password'] }
+		});
         const defaultImage = 'https://transcendence.fe:8443/image/user.jpg';
         if (user) {
             if (user.image_url === undefined || user.image_url === '') user.image_url = defaultImage;

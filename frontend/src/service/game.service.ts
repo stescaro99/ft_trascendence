@@ -2,14 +2,14 @@ import { environment } from '../environments/environment';
 
 export class GameService {
 	apiUrl = `${environment.apiUrl}`;
-	private token: string | null = null;
-	constructor() {
-		const divToken = localStorage.getItem('token');
-		if (divToken) {
-			this.token = divToken;
+
+	// Read token fresh each time to avoid stale value when login happens after construction
+	private getToken(): string {
+		const token = localStorage.getItem('token');
+		if (!token) {
+			throw new Error('No valid token found');
 		}
-		else
-			console.log("No token found in localStorage");
+		return token;
 	}
 
 
@@ -19,9 +19,7 @@ export class GameService {
 		}
 		const date = new Date().toISOString();
 		
-		if (!this.token) {
-			throw new Error('No valid token found');
-		}
+		const token = this.getToken();
 		
 		const body: any = { players };
 		if (date) body.date = date;
@@ -29,7 +27,7 @@ export class GameService {
 		const res = await fetch(`${this.apiUrl}/add_game`, {
 			method: "POST",
 			headers: {
-				"Authorization": `Bearer ${this.token}`,
+				"Authorization": `Bearer ${token}`,
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify(body),
@@ -45,14 +43,12 @@ export class GameService {
 		// Recupera il token dall'oggetto user nel localStorage
 		
 		
-		if (!this.token) {
-			throw new Error('No valid token found');
-		}
+		const token = this.getToken();
 		
 		const res = await fetch(`${this.apiUrl}/update_game`, {
 			method: "PUT",
 			headers: {
-				"Authorization": `Bearer ${this.token}`,
+				"Authorization": `Bearer ${token}`,
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({ game_id, field, new_value }),
@@ -78,14 +74,12 @@ export class GameService {
 		
 		// Recupera il token dall'oggetto user nel localStorage
 		
-		if (!this.token) {
-			throw new Error('No valid token found');
-		}
+		const token = this.getToken();
 		
 		const res = await fetch(`${this.apiUrl}/delete_game?game_id=${game_id}`, {
 			method: "DELETE",
 			headers: {
-				"Authorization": `Bearer ${this.token}`,
+				"Authorization": `Bearer ${token}`,
 			},
 		});
 		if (!res.ok) {
@@ -99,9 +93,7 @@ export class GameService {
 		if (!nickname || !game_id || result === undefined) {
 			throw new Error("Invalid parameters for updating stat");
 		}
-		if (!this.token) {
-			throw new Error('No valid token found');
-		}
+		const token = this.getToken();
 
 		const body = {
 			nickname: nickname,
@@ -113,13 +105,18 @@ export class GameService {
 			
 			method: "PUT",
 			headers:{
-				"Authorization": `Bearer ${this.token}`,
+				"Authorization": `Bearer ${token}`,
 				"Content-Type": "application/json",
 			},
 			body : JSON.stringify(body),
 		});
 		if (!res.ok) {
-			throw new Error(`Error updating stat for ${name} in game ${game_id}`);
+			let details = '';
+			try { details = await res.text(); } catch {}
+			if (res.status === 404) {
+				throw new Error(`Endpoint /update_stats not found (404). Backend might be outdated or route not registered. Details: ${details}`);
+			}
+			throw new Error(`Error updating stat for ${nickname} in game ${game_id}. HTTP ${res.status}. ${details}`);
 		}
 		return res.json();
 	}

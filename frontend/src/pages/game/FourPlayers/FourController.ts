@@ -16,7 +16,23 @@ function getCanvasAndCtx() {
   const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
   return { canvas, ctx };
 }
-const user : User = localStorage.getItem('user') || JSON.parse(localStorage.getItem('user') || '{}');
+// Parse user safely from localStorage, fallback to separate 'nickname'
+const user: User = (() => {
+	try {
+		const raw = localStorage.getItem('user');
+		const parsed = raw ? JSON.parse(raw) : {};
+		if (!parsed.nickname) {
+			const nick = localStorage.getItem('nickname');
+			if (nick) parsed.nickname = nick;
+		}
+		return parsed as User;
+	} catch {
+		const u = new User();
+		const nick = localStorage.getItem('nickname');
+		if (nick) u.nickname = nick;
+		return u;
+	}
+})();
 let gameRoom : Game = new Game();
 const gameService: GameService = new GameService();
 

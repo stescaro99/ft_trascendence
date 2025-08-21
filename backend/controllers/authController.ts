@@ -1,5 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import User from '../models/user';
+import Stats from '../models/stats';
 import bcrypt from 'bcrypt';
 import { createJWT } from '../utils/jwt';
 import speakeasy from 'speakeasy';
@@ -128,7 +129,10 @@ export async function GoogleOAuthCallback(request: FastifyRequest, reply: Fastif
 			return reply.status(401).send({ error: 'Google userinfo error', details: userInfo });
 		}
 
-		let user = await User.findOne({ where: { email: userInfo.email } });
+		let user = await User.findOne({ 
+			where: { email: userInfo.email },
+			include: [{ model: Stats, as: 'stats' }]
+		});
 		if (!user) {
 			user = await User.create({
 				name: userInfo.name,
@@ -141,11 +145,30 @@ export async function GoogleOAuthCallback(request: FastifyRequest, reply: Fastif
 				online: true,
 				last_seen: new Date(),
 			});
+
+			// Ensure stats exist for new OAuth user
+			const stats1 = await Stats.create({ nickname: user.nickname });
+			const stats2 = await Stats.create({ nickname: user.nickname });
+			await (user as any).setStats([stats1, stats2]);
+			await user.reload({ include: [{ model: Stats, as: 'stats' }] });
 		}
 		else {
 			user.online = true;
 			user.last_seen = new Date();
 			await user.save();
+			// If user exists but has no stats, create them
+			const hasStats = Array.isArray((user as any).stats) && (user as any).stats.length >= 1;
+			if (!hasStats) {
+				const existing = await Stats.findAll({ where: { nickname: user.nickname } });
+				if (existing.length >= 2) {
+					await (user as any).setStats(existing);
+				} else {
+					const s1 = await Stats.create({ nickname: user.nickname });
+					const s2 = await Stats.create({ nickname: user.nickname });
+					await (user as any).setStats([s1, s2]);
+				}
+				await user.reload({ include: [{ model: Stats, as: 'stats' }] });
+			}
 		}
 		const jwtToken = createJWT({ id: user.id, nickname: user.nickname });
 

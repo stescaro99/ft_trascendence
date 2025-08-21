@@ -23,6 +23,31 @@ const nickname = params.get('nickname');
 const error = params.get('error');
 let navigationStack: string[] = [];
 
+// Normalizza l'autenticazione nel localStorage per compatibilità
+// - Se esiste solo user.token, copia in token
+// - Se manca nickname ma è presente in URL o in user, salvalo
+try {
+  const existingToken = localStorage.getItem('token');
+  if (!existingToken) {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const userObj = JSON.parse(userStr);
+        if (userObj && typeof userObj.token === 'string' && userObj.token.length > 0) {
+          localStorage.setItem('token', userObj.token);
+        }
+        if (!localStorage.getItem('nickname')) {
+          const nickFromUser = typeof userObj?.nickname === 'string' ? userObj.nickname : null;
+          if (nickFromUser) localStorage.setItem('nickname', nickFromUser);
+        }
+      } catch {}
+    }
+  }
+  if (!localStorage.getItem('nickname') && nickname) {
+    localStorage.setItem('nickname', nickname);
+  }
+} catch {}
+
 export function navigateWithHistory(route: string) {
   const currentRoute = location.hash.slice(1) || '/';
   
@@ -189,7 +214,9 @@ if (error) {
   }
   
   // Salva i dati nel localStorage
-  localStorage.setItem('user', JSON.stringify({ token }));
+  // Manteniamo compatibilità salvando sia il token diretto sia l'oggetto user completo
+  localStorage.setItem('token', token);
+  localStorage.setItem('user', JSON.stringify({ token, nickname }));
   localStorage.setItem('nickname', nickname);
   
   // Mostra la navbar ora che l'utente è autenticato

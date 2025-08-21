@@ -21,10 +21,25 @@ export async function updateStats(request: FastifyRequest, reply: FastifyReply) 
 			return reply.code(404).send({ message: 'User not found' });
 		}
 
-		const statsArray = user.stats as Stats[];
-		const userStat = statsArray[index];
+		let statsArray = user.stats as Stats[];
+		let userStat = statsArray?.[index];
 		if (!userStat) {
-			return reply.code(404).send({ message: 'Stats not found for given index' });
+			// Auto-create missing stats for this user (useful for OAuth users created without stats)
+			const existing = await Stats.findAll({ where: { nickname } });
+			if (existing.length < 2) {
+				const needed = 2 - existing.length;
+				const created: Stats[] = [];
+				for (let i = 0; i < needed; i++) {
+					created.push(await Stats.create({ nickname }));
+				}
+				await (user as any).setStats([...existing, ...created]);
+			}
+			await user.reload({ include: [{ model: Stats, as: 'stats' }] });
+			statsArray = user.stats as Stats[];
+			userStat = statsArray?.[index];
+			if (!userStat) {
+				return reply.code(404).send({ message: 'Stats not found for given index' });
+			}
 		}
 		const game = await Game.findOne({ where: { game_id } });
 		if (!game) {
