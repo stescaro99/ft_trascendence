@@ -9,25 +9,31 @@ export class UserService {
 	
 	getUser(): User | null {
 		const nickname = localStorage.getItem('nickname');
+		console.log('[UserService] getUser() chiamato');
+		console.log('[UserService] localStorage.nickname:', nickname);
+		console.log('[UserService] localStorage.user:', localStorage.getItem('user'));
+
 		if (localStorage.getItem('user') || nickname) {
 			if (nickname) {
+				console.log('[UserService] Chiamo takeUserFromApi con nickname:', nickname);
 				this.takeUserFromApi(nickname)
 				.then((userData) => {
+					console.log('[UserService] Dati utente ricevuti da API:', userData);
 					this.user.name = userData.name || '';
 					this.user.surname = userData.surname;
-						this.user.nickname = userData.nickname;
-						this.user.email = userData.email;
-						this.user.image_url = userData.image_url;
-						this.user.stats = userData.stats;
-						this.user.id = userData.id;
-						return this.user;
-					})
-					.catch((error) => {
-						console.error('Error fetching user data:', error);
-					});
+					this.user.nickname = userData.nickname;
+					this.user.email = userData.email;
+					this.user.image_url = userData.image_url;
+					this.user.stats = userData.stats;
+					this.user.id = userData.id;
+					return this.user;
+				})
+				.catch((error) => {
+					console.error('[UserService] Errore nel recupero dati utente:', error);
+				});
 			}
 		} else {
-			console.warn('No user data found in localStorage');
+			console.warn('[UserService] Nessun dato utente trovato in localStorage');
 			return null;
 		}
 		return this.user;
@@ -38,31 +44,40 @@ export class UserService {
 		const baseUrl = apiEnv || environment.apiUrl;
 		const url = `${baseUrl}/get_user?nickname=${encodeURIComponent(nick)}`;
 
-		console.log('🌐 Fetching URL:', url);
-	
+		console.log('[UserService] 🌐 URL chiamato:', url);
+
 		let token: string | null = null;
-	
+
+		// 1) prova chiave diretta
 		const directToken = localStorage.getItem('token');
+		console.log('[UserService] Token diretto da localStorage:', directToken);
 		if (directToken) {
 			token = directToken;
 		} else {
+			// 2) fallback: estrai da localStorage.user
 			const userDataString = localStorage.getItem('user');
+			console.log('[UserService] userDataString:', userDataString);
 			if (userDataString) {
 				try {
 					const userData = JSON.parse(userDataString);
 					token = userData.token || null;
+					console.log('[UserService] Token trovato in userData:', token);
+					// Salva anche la chiave diretta per altri servizi (es. MultiplayerService)
+					if (token) {
+						localStorage.setItem('token', token);
+						console.log('[UserService] Token salvato come chiave diretta in localStorage.token');
+					}
 				} catch (error) {
-					console.error('Error parsing user data from localStorage:', error);
+					console.error('[UserService] Errore parsing userData:', error);
 				}
 			}
 		}
-	
-		console.log('UserService initialized with token:', token);
-	
+
+		console.log('[UserService] Token finale usato per la chiamata:', token);
 		if (!token) {
 			throw new Error('No valid token found');
 		}
-	
+
 		const response = await fetch(url, {
 			method: 'GET',
 			headers: {
@@ -70,27 +85,14 @@ export class UserService {
 				'Content-Type': 'application/json',
 			},
 		});
-	
-		console.log('Response status:', response.status);
-		console.log('Response headers:', [...response.headers.entries()]);
-	
-		const responseText = await response.text();
-		if (responseText.startsWith('<!doctype html>')) {
-			console.error('❌ Ricevuto HTML invece di JSON. Probabilmente la route è sbagliata.');
-			throw new Error('Expected JSON but received HTML');
-		}
-		console.log('Response body:', responseText);
-	
+
+		console.log('[UserService] Response status:', response.status);
+		const text = await response.text();
+		console.log('[UserService] Response body:', text);
 		if (!response.ok) {
-			throw new Error(`Network response was not ok: ${response.status} - ${responseText}`);
+			throw new Error(`Network response was not ok: ${response.status} - ${text}`);
 		}
-	
-		try {
-			return JSON.parse(responseText);
-		} catch (e) {
-			console.error('Failed to parse JSON:', responseText);
-			throw new Error('Invalid JSON response');
-		}
+		return JSON.parse(text);
 	}
 
 	async postUserToApi(user: User): Promise<any> {

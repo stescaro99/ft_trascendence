@@ -56,11 +56,15 @@ export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {
 
 export async function getUser(request: FastifyRequest, reply: FastifyReply) {
 	const { nickname } = request.query as { nickname: string };
+	console.log("[getUser] Richiesta ricevuta per nickname:", nickname);
 	try {
 		const user = await User.findOne({
-			where: { nickname: nickname },
+			where: sequelize.where(
+			  sequelize.fn('lower', sequelize.col('nickname')),
+			  nickname.trim().toLowerCase()
+			),
 			include: [{ model: Stats, as: 'stats' }],
-		});
+		  });
 		if (user) {
 			reply.code(200).send(user);
 		} else {

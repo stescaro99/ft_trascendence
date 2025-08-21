@@ -8,21 +8,33 @@ export class MultiplayerService {
 	private currentRoomId: string | null = null;
 	private heartbeatInterval: number | null = null; 
 
+	private getToken(): string | null {
+		const direct = localStorage.getItem('token');
+		if (direct) return direct;
+		const userStr = localStorage.getItem('user');
+		if (userStr) {
+			try {
+				const u = JSON.parse(userStr);
+				return u.token || null;
+			} catch {}
+		}
+		return null;
+	}
+
 	connect() {
 		// Se già connesso, non riconnettersi
 		if (this.socket && this.socket.readyState === WebSocket.OPEN) {
 			console.log("[MultiplayerService] Già connesso, usando connessione esistente");
 			return;
+		 }
+
+		const token = this.getToken();
+		if (!token) {
+			console.error('[MultiplayerService] Token JWT mancante. Impossibile connettersi.');
+			return;
 		}
-
-        const token = localStorage.getItem("token");
-        if (!token)
-        {
-            console.error("[MultiplayerService] Token JWT mancante. Impossibile connettersi.");
-            return ;
-        }
-
-		const wsUrl = `wss://transcendence.be:9443/ws/game?token=${token}`;
+		const wsUrl = `wss://transcendence.be:9443/ws/game?token=${encodeURIComponent(token)}`;
+		console.log('[MultiplayerService] Connessione WS a:', wsUrl);
 		this.socket = new WebSocket(wsUrl);
 
 		this.socket.onopen = () => {
