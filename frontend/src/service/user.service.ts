@@ -23,6 +23,7 @@ export class UserService {
 		}
 	}
 	private user: User = new User();
+	private token: string = localStorage.getItem('token') || '';
 
 	private apiUrl = `${environment.apiUrl}`; 
 	
@@ -48,30 +49,8 @@ export class UserService {
     }
     
     return null;
-
-		if (localStorage.getItem('user') || nickname) {
-			if (nickname) {
-				this.takeUserFromApi(nickname)
-				.then((userData) => {
-					this.user.name = userData.name || '';
-					this.user.surname = userData.surname;
-					this.user.nickname = userData.nickname;
-					this.user.email = userData.email;
-					this.user.image_url = userData.image_url;
-					this.user.stats = userData.stats;
-					this.user.id = userData.id;
-					return this.user;
-				})
-				.catch((error) => {
-					console.error('[UserService] Errore nel recupero dati utente:', error);
-				});
-			}
-		} else {
-			console.warn('[UserService] Nessun dato utente trovato in localStorage');
-			return null;
-		}
-		return this.user;
 	}
+
 
 	async takeUserFromApi(nick: string): Promise<any> {
 		const apiEnv = import.meta.env.VITE_BACKEND_URL;
@@ -171,6 +150,30 @@ export class UserService {
 		}
 		return response.json();
 	}
+
+
+	async UpdateUserToApi(nick: string, field: string, new_value: string): Promise<any> {
+		const url = `${this.apiUrl}/update_user`;
+		const body = JSON.stringify({
+			nickname: nick,
+			field: field,
+			new_value: new_value,
+		});
+		console.log('Request body:', body);
+		
+		const response = await fetch(url, {
+			method: 'PUT',
+			headers: {
+				'authorization': `Bearer ${this.token}`,
+				'Content-Type': 'application/json',
+			},
+			body: body,
+		});
+		if (!response.ok) {
+			throw new Error('Network response was not ok');
+		}
+		return response.json();
+	}	
 
 	async UpdateImageUrl(file: File): Promise<any> {
 		const url = `${this.apiUrl}/upload_image`;

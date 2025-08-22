@@ -6,18 +6,25 @@
             <h2 class="text-white arcade-font font-[500] text-5xl text-center pb-5">{{profilepage.profile}}</h1>
     
             <div class="flex-col justify-items-center h-full text-white w-full">
-                <div class="py-6">
-                    <img src="./src/utils/default.png" alt="" class="bg-c-400 h-[100px] w-full circle-image p-1" id="profile_image">
+                <div class="py-6 ">
+                    <div class="relative inline-block">
+                        <img src="./src/utils/default.png" alt="" class="bg-c-400 w-[100px] h-[100px] circle-image p-1" id="profile_image">
+                        <button class="absolute bottom-1 right-1 bg-cyan-400 text-black rounded-full w-8 h-8 text-sm hover:bg-cyan-300 hidden flex items-center justify-center" id="edit_image_btn">
+                            ✏️
+                        </button>
+                    </div>
                 </div>
     
                 <div class="profile-container container-shadow">
                     <div class="profile-element">
                         <p>{{profilepage.name}}:</p>
+                        <div id="profile_name_div"></div>
                         <p id="profile_name"></p>
                     </div>
   
-                    <div class="profile-element">
+                    <div class="profile-element" >
                         <p>{{profilepage.lastname}}:</p>
+                        <div id="profile_surname_div"></div>
                         <p id="profile_surname"></p>
                     </div>
 
@@ -26,10 +33,13 @@
                         <p id="profile_nickname"></p>
                     </div>
     
-                    <div class="profile-element">
+                    <div class="profile-element" >
                         <p>Email:</p>
+                        <div id="profile_email_div"></div>
                         <p id="profile_email"></p>
                     </div>
+
+                    <div id="password_div"></div>
                 </div>
             </div>
         </div>
@@ -93,6 +103,10 @@
         <button class="lang-btn" data-lang="it">🇮🇹 IT</button>
         <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
         <button class="lang-btn" data-lang="fr">🇫🇷 FR</button>
+    </div>
+    <br>
+    <div class="flex justify-end mt-10 ">
+        <button class="bg-c-400 text-black px-6 py-3 rounded arcade-font hover:bg-cyan-300 z-10 mr-23" id="change_profile">{{change profile}}</button>
     </div>
 
 </section>

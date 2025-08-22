@@ -294,7 +294,6 @@ export class GamePage {
 		}
 	  }
 
-	  // Aggiorna anche i nomi nel canvas overlay
 	  const player1Name = document.getElementById("player1Name");
 	  const player2Name = document.getElementById("player2Name");
 	  const player3Name = document.getElementById("player3Name");
