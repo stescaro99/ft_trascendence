@@ -1,15 +1,20 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import https from "https";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import helmet from "helmet";
 
-// Get __dirname equivalent in ES modules
+// __dirname replacement for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// Se compilato: __dirname termina con dist-server -> root = cartella superiore.
+// In dev (ts-node): __dirname è già la root del progetto.
+const isCompiled = path.basename(__dirname) === 'dist-server';
+const rootDir = isCompiled ? path.resolve(__dirname, '..') : __dirname;
 
 // Security headers
 app.use(helmet({
@@ -17,10 +22,10 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false
 }));
 
-// Middleware per iniettare HOST_ID
-app.use((req, res, next) => {
+// Inject HOST_ID into served index.html
+app.use((req: Request, res: Response, next: NextFunction) => {
   if (req.path === "/" || req.path.endsWith(".html")) {
-    const indexPath = path.join(__dirname, "dist", "index.html");
+  const indexPath = path.join(rootDir, "dist", "index.html");
     if (fs.existsSync(indexPath)) {
       let html = fs.readFileSync(indexPath, "utf8");
       const hostId = process.env.HOST_ID || "192.168.1.61";
@@ -32,15 +37,15 @@ app.use((req, res, next) => {
   next();
 });
 
-// Serve static files
-app.use(express.static(path.join(__dirname, "dist")));
+// Serve static build assets
+app.use(express.static(path.join(rootDir, "dist")));
 
-// Serve uploaded images (must be before the SPA fallback)
+// Expose uploads directory (inside container /app/uploads)
 app.use('/uploads', express.static('/app/uploads'));
 
 // SPA fallback
-app.get("*", (req, res) => {
-  const indexPath = path.join(__dirname, "dist", "index.html");
+app.get("*", (_req: Request, res: Response) => {
+  const indexPath = path.join(rootDir, "dist", "index.html");
   let html = fs.readFileSync(indexPath, "utf8");
   const hostId = process.env.HOST_ID || "192.168.1.61";
   html = html.replace("</head>", `<script>window.__HOST_ID__ = "${hostId}";</script></head>`);
@@ -48,16 +53,23 @@ app.get("*", (req, res) => {
   res.send(html);
 });
 
-const port = process.env.PORT || 8443;
+const port = Number(process.env.PORT) || 8443;
 const certPath = process.env.SSL_CERT_PATH || "/app/cert/cert.pem";
 const keyPath = process.env.SSL_KEY_PATH || "/app/cert/key.pem";
 
-const httpsOptions = {
+interface HttpsOptions {
+  key: Buffer;
+  cert: Buffer;
+}
+
+const httpsOptions: HttpsOptions = {
   key: fs.readFileSync(keyPath),
   cert: fs.readFileSync(certPath)
 };
 
 https.createServer(httpsOptions, app).listen(port, "0.0.0.0", () => {
+  // eslint-disable-next-line no-console
   console.log(`Frontend HTTPS server running on port ${port}`);
+  // eslint-disable-next-line no-console
   console.log(`HOST_ID injected: ${process.env.HOST_ID || "192.168.1.61"}`);
 });

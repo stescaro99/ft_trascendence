@@ -5,12 +5,19 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit --skipLibCheck || true && vite build",
-    "preview": "vite preview"
+    "build": "tsc --noEmit --skipLibCheck || true && vite build && tsc --project tsconfig.server.json",
+    "build:server": "tsc --project tsconfig.server.json",
+    "preview": "vite preview",
+    "dev:server": "ts-node --esm server.ts",
+    "start:server": "node dist-server/server.js"
   },
   "devDependencies": {
     "typescript": "~5.8.3",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "ts-node": "^10.9.2",
+    "@types/node": "^22.5.0",
+    "@types/express": "^4.17.21",
+    "@types/helmet": "^4.0.0"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.7",

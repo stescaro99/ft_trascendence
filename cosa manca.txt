@@ -22,3 +22,4 @@
 -BACKEND
     -aggiungere amicizia anche dal lato dell'altro che invia la richiesta
     -riguardare upload image (cambiare in path relativo da gestire nel frontend togli transcendence.fr:8443 dal link immagini)
+    -non permettere login se utente gia' online

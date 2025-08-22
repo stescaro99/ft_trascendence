@@ -12,6 +12,9 @@ COPY . .
 
 RUN npm run build
 
+# Build TypeScript server (emits to dist-server)
+RUN npm run build:server
+
 # Production stage
 FROM alpine:3.20
 
@@ -20,14 +23,15 @@ WORKDIR /app
 # Installa Node.js per servire l'app con HTTPS
 RUN apk add --no-cache nodejs npm
 
-# Copia i file build dal stage precedente
-COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/server.js ./
 
-# Installa solo le dipendenze di produzione necessarie per HTTPS server
-RUN npm install --only=production express helmet
+# Install only production dependencies
+RUN npm install --omit=dev
+
+# Copy built frontend and compiled server
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/dist-server ./dist-server
 
 EXPOSE 8443
 
-CMD ["node", "server.js"]
+CMD ["node", "dist-server/server.js"]
