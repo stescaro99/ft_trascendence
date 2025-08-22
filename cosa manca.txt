@@ -1,9 +1,8 @@
 -STANDARD USER MANAGEMENT:
-    -pagina per modificare utente
     -manca lo storico delle partite
 
 -ONLINE MULTIPLAYER:
-    -non riesco a far partire una partita (schermata bianca con scritto "online game" e "Nickname: X")
+    -
 
 -CUSTOMIZATION: (non necessario per 125%)
     -deve essere possibile giocare senza power up
@@ -19,3 +18,7 @@
 
     -Pagina gioco nel torneo
         -se nel nome c'e' uno spazio appare %20 al posto dello spazio e poi %2520 in finale
+
+-BACKEND
+    -aggiungere amicizia anche dal lato dell'altro che invia la richiesta
+    -riguardare upload image (cambiare in path relativo da gestire nel frontend togli transcendence.fr:8443 dal link immagini)
