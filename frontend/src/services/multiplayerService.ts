@@ -1,7 +1,7 @@
 import { GameState } from "../pages/game/common/types";
 
 export class MultiplayerService {
-	private socket: WebSocket | null = null;
+	public socket: WebSocket | null = null;
 	private gameUpdateCallback: ((state: GameState) => void) | null = null;
 	private gameStartCallback: ((state: any) => void) | null = null;
 	private waitingCallback: ((data: any) => void) | null = null;

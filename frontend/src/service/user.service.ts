@@ -49,6 +49,29 @@ export class UserService {
     }
     
     return null;
+
+		if (localStorage.getItem('user') || nickname) {
+			if (nickname) {
+				this.takeUserFromApi(nickname)
+				.then((userData) => {
+					this.user.name = userData.name || '';
+					this.user.surname = userData.surname;
+					this.user.nickname = userData.nickname;
+					this.user.email = userData.email;
+					this.user.image_url = userData.image_url;
+					this.user.stats = userData.stats;
+					this.user.id = userData.id;
+					return this.user;
+				})
+				.catch((error) => {
+					console.error('[UserService] Errore nel recupero dati utente:', error);
+				});
+			}
+		} else {
+			console.warn('[UserService] Nessun dato utente trovato in localStorage');
+			return null;
+		}
+		return this.user;
 	}
 
 

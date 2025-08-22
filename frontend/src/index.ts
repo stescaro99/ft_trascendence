@@ -9,13 +9,28 @@ import { TournamentPage } from './pages/tournament/tournament';
 import { OnlineGamePage } from './pages/online_game/online_game';
 import { friendPage } from './pages/friend/friend';
 
+
 console.log("Script caricato");
 
-export let currentLang = 'it';
+export let currentLang = (() => {
+  try {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      const userObj = JSON.parse(userStr);
+      if (userObj.language) {
+        console.log('🌐 Lingua caricata dal profilo:', userObj.language);
+        return userObj.language;
+      }
+    }
+  } catch (error) {
+    console.error('Errore lettura lingua:', error);
+  }
+  console.log('🌐 Lingua di default: it');
+  return 'it';
+})();
 export function setLang(lang: string) {
   currentLang = lang;
 }
-
 const appDiv = document.getElementById('app')!;
 const params = new URLSearchParams(window.location.search);
 const token = params.get('token');

@@ -6,7 +6,7 @@ export class User {
 	nickname: string = '';
 	email: string = '';
 	password: string = '';
-	surname: string = ''; // lastname?
+	surname: string = ''; 
 	language: string = '';
 	image_url: string = '';
 	stats: Stats = {}

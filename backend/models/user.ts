@@ -53,7 +53,7 @@ User.init(
 		language: {
 			type: DataTypes.STRING,
 			allowNull: true,
-			defaultValue: 'English',
+			defaultValue: 'en',
 		},
 		image_url: {
 			type: DataTypes.STRING,

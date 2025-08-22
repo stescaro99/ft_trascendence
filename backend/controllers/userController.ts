@@ -46,6 +46,7 @@ export async function addUser(request: FastifyRequest, reply: FastifyReply) {
 			password: hashedPassword,
 			image_url: (image_url === undefined || image_url === '') ? defaultImage : image_url,
 			online: true,
+			language: 'en',
 			last_seen: new Date(),
 		});
 

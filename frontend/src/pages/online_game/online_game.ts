@@ -16,7 +16,94 @@ export class OnlineGamePage {
 	constructor(_currentLang: string) {
 		console.log("[OnlineGame] 🚀 OnlineGamePage constructor chiamato!");
 		this.init();
+
+		window.addEventListener('beforeunload', () => {
+            this.cleanup();
+        });
+        
+        window.addEventListener('hashchange', () => {
+            this.cleanup();
+        });
 	}
+
+
+	private cleanup() {
+        console.log("[OnlineGame] 🧹 Cleanup in corso...");
+    
+    // ✅ Ferma ENTRAMBI i timer (locale e globale)
+    if (this.searchTimer) {
+        clearInterval(this.searchTimer);
+        this.searchTimer = null;
+    }
+    
+    // ✅ Ferma anche il timer globale se esiste ancora
+    if (searchTimer) {
+        clearInterval(searchTimer);
+        searchTimer = null;
+    }
+    
+    // ✅ Disconnetti il multiplayer correttamente
+    if (multiplayerService) {
+         try {
+            // Chiudi direttamente il socket
+            if (multiplayerService.socket && multiplayerService.socket.readyState === WebSocket.OPEN) {
+                multiplayerService.socket.close();
+                console.log("[OnlineGame] 🔌 Socket chiuso");
+            }
+        } catch (error) {
+            console.warn("[OnlineGame] ⚠️ Errore durante disconnessione:", error);
+        }
+    }
+    
+    // ✅ Rimuovi il pulsante cancel se esiste
+    const cancelBtn = document.getElementById("cancelMatchBtn");
+    if (cancelBtn) {
+        cancelBtn.remove();
+    }
+    
+    // ✅ Reset stato UI
+    this.resetUIState();
+    }
+
+	private resetUIState() {
+    // Reset del pulsante principale
+    const findMatchBtn = document.getElementById("findMatchBtn");
+    if (findMatchBtn) {
+        findMatchBtn.removeAttribute("disabled");
+        findMatchBtn.textContent = "Cerca Partita";
+        findMatchBtn.style.background = "";
+        findMatchBtn.style.cursor = "";
+    }
+    
+    // Reset status
+    const status = document.getElementById("status");
+    if (status) {
+        status.textContent = "Premi il pulsante per cercare una partita";
+        status.className = "text-white text-xl mb-6";
+    }
+    
+    // Nascondi canvas e elementi di gioco
+    const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
+    if (canvas) {
+        canvas.style.display = "none";
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    }
+    
+    // Nascondi schermate di gioco
+    const gameScreen = document.getElementById("gameScreen");
+    if (gameScreen) {
+        gameScreen.style.display = "none";
+    }
+    
+    const setupScreen = document.getElementById("onlineSetup-screen");
+    if (setupScreen) {
+        setupScreen.style.display = "flex";
+    }
+}
+
 	private init() {
 		this.render();
 		

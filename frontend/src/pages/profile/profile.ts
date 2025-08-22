@@ -49,17 +49,17 @@ export class ProfilePage {
 			})
 			.catch((error) => {
 				console.error('Error fetching user data:', error);
+				
+				
+				// Solo per lavorare sulla pagina user senza dati utente veri, per ucolla. NON CANCELLARE! 
+				this.user.name = 'Test';
+				this.user.surname = 'User';
+				this.user.nickname = /*localStorage.getItem('nickname') || */'testuser';
+				this.user.email = 'test@example.com';
+				this.user.image_url = './src/utils/default.png';
+				this.stats = new Stats();
+				this.render();
 			});
-		
-
-		// Solo per lavorare sulla pagina user senza dati utente veri, per ucolla. NON CANCELLARE! 
-		this.user.name = 'Test';
-		this.user.surname = 'User';
-		this.user.nickname = localStorage.getItem('nickname') || 'testuser';
-		this.user.email = 'test@example.com';
-		this.user.image_url = './src/utils/default.png';
-		this.stats = new Stats();
-		this.render();
 	}
 	
 	private render() {
@@ -88,6 +88,12 @@ export class ProfilePage {
 			this.showValueStats("percentage_losses")
 			this.showValueStats("percentage_draws")
 			
+			if (this.user.nickname !== localStorage.getItem('nickname')) {
+				const changeProfileBtn = document.getElementById('change_profile');
+				if (changeProfileBtn) {
+					changeProfileBtn.classList.add('hidden');
+				}
+			}
 			setTimeout(() => {
 				const imgElement = document.getElementById('profile_image') as HTMLImageElement;
 				imgElement.src = this.user.image_url;
@@ -342,6 +348,31 @@ export class ProfilePage {
 					btn.addEventListener('click', () => {
 						setLang(lang);
 						this.currentLang = lang;
+
+						this.userService.UpdateUserToApi(this.user.nickname, 'language', lang)
+							.then(() => {
+								console.log('Language preference updated successfully');
+									try {
+										const userStr = localStorage.getItem('user');
+										if (userStr) {
+											const userObj = JSON.parse(userStr);
+											userObj.language = lang;
+											localStorage.setItem('user', JSON.stringify(userObj));
+											console.log('✅ Lingua salvata nel localStorage:', lang);
+										}
+									} catch (error) {
+										console.error('❌ Errore aggiornamento localStorage:', error);
+									}
+									
+									// ✅ Aggiorna anche this.user se ha la proprietà
+									if ('language' in this.user) {
+										(this.user as any).language = lang;
+									}
+								})
+								.catch((error) => {
+									console.error('Error updating language preference:', error);
+								});
+							
 						this.render();
 					})
 				}

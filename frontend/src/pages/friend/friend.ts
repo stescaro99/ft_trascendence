@@ -129,6 +129,7 @@ export class friendPage {
 				const nickname = (event.target as HTMLElement).getAttribute('data-nickname');
 				if (nickname) {
 					this.userService.addFriend(this.user.nickname ,nickname);
+                     this.render()
 				}
 			});
 		});
@@ -251,6 +252,7 @@ export class friendPage {
         this.userService.addFriend(this.user.nickname, nickname)
 			.then((response) => {
 				console.log('✅ Friend added:', response);
+                 this.render()
 			})
 			.catch((error) => {
 				console.error('❌ Error adding friend:', error);
