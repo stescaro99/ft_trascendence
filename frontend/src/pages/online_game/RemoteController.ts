@@ -7,6 +7,7 @@ export class RemoteController {
     private ctx: CanvasRenderingContext2D;
     private keys: { [key: string]: boolean } = {};
     private animationFrameId: number | null = null;
+    private stopped: boolean = false;
 
     constructor(canvasId: string, initialState: GameState) {
         this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
@@ -16,6 +17,14 @@ export class RemoteController {
         this.setupListeners();
         this.setupInput();
         this.gameLoop();
+    }
+
+    public stop() {
+        if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = null;
+        }
+        this.stopped = true;
     }
 
     private setupListeners() {
@@ -46,6 +55,8 @@ export class RemoteController {
     }
 
     private gameLoop = () => {
+        if (this.stopped)
+            return;
         let direction = "stop";
         if (this.keys["w"] && this.keys["s"]) {
             direction = "stop";
@@ -63,28 +74,79 @@ export class RemoteController {
         this.animationFrameId = requestAnimationFrame(this.gameLoop);
     }
 
-    private draw(state: GameState) {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    private showWinOverlay(winner: string) {
+        if (document.getElementById('winOverlay')) return;
 
+        // Nasconde la schermata di ricerca se ancora visibile
+        const setup = document.getElementById('online-setup-screen');
+        if (setup) setup.style.display = 'none';
+
+        const overlay = document.createElement('div');
+        overlay.id = 'winOverlay';
+        overlay.style.position = 'fixed';
+        overlay.style.inset = '0';
+        overlay.style.display = 'flex';
+        overlay.style.flexDirection = 'column';
+        overlay.style.alignItems = 'center';
+        overlay.style.justifyContent = 'center';
+        overlay.style.gap = '32px';
+        overlay.style.background = 'rgba(0,0,0,0.85)';
+        overlay.style.zIndex = '10000';
+
+        const title = document.createElement('div');
+        title.textContent = `${winner} WINS!`;
+        title.style.color = '#00ffff';
+        title.style.font = 'bold 54px Arial';
+        title.style.textShadow = '0 0 18px #00ffff';
+
+        const btn = document.createElement('button');
+        btn.textContent = 'Torna Indietro';
+        btn.style.padding = '14px 32px';
+        btn.style.fontSize = '18px';
+        btn.style.borderRadius = '8px';
+        btn.style.border = 'none';
+        btn.style.cursor = 'pointer';
+        btn.style.background = '#2563eb';
+        btn.style.color = '#fff';
+        btn.style.boxShadow = '0 4px 14px rgba(0,0,0,0.45)';
+        btn.addEventListener('click', () => {
+            const ov = document.getElementById('winOverlay');
+            if (ov) ov.remove();
+            window.location.hash = '/';
+        }, { once: true });
+
+        overlay.appendChild(title);
+        overlay.appendChild(btn);
+        document.body.appendChild(overlay);
+
+        const removeOverlay = () => {
+            const ov = document.getElementById('winOverlay');
+            if (ov) ov.remove();
+        };
+        window.addEventListener('hashchange', removeOverlay, { once: true });
+    }
+
+    private draw(state: GameState) {
+        // Verifica fine partita
+        if (state.scoreLeft >= state.maxScore || state.scoreRight >= state.maxScore) {
+            this.stop();
+            const winner =
+                state.scoreLeft >= state.maxScore
+                    ? state.leftPaddle[0].nickname
+                    : state.rightPaddle[0].nickname;
+            this.showWinOverlay(winner);
+            return;
+        }
+
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         drawField(this.ctx, this.canvas);
 
-        if (state.ball && !state.waitingForStart) {
-            drawBall(this.ctx, state.ball);
-        } else if (state.waitingForStart) {
-            this.ctx.fillStyle = "white";
-            this.ctx.font = "24px Arial";
-            this.ctx.textAlign = "center";
-            this.ctx.fillText("Get Ready!", this.canvas.width / 2, this.canvas.height / 2 - 30);
-        }
-
-        if (state.powerUp && state.powerUp.active) {
-            drawPowerUp(this.ctx, state.powerUp);
-        }
+        if (state.ball) drawBall(this.ctx, state.ball);
+        if (state.powerUp?.active) drawPowerUp(this.ctx, state.powerUp);
 
         state.leftPaddle.forEach(p =>
             drawRect(this.ctx, p.x, p.y, state.paddleWidth, p.height, "#00FF00")
         );
-
         state.rightPaddle.forEach(p =>
             drawRect(this.ctx, p.x, p.y, state.paddleWidth, p.height, "#FF0000")
         );

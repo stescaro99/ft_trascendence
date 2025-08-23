@@ -313,29 +313,28 @@ export class OnlineGamePage {
 				if (player4Name) player4Name.style.display = "none";
 			}
 
-			// Evidenzia il lato del giocatore locale (solo per 2 giocatori, puoi adattare per 4)
-			const mySide = initialState.mySide;
-			if (!isFourPlayers) {
-				if (mySide === "left") {
-					if (player1Name) {
-						player1Name.style.color = "#ff4444";
-						player1Name.style.fontWeight = "bold";
-					}
-					if (player2Name) {
-						player2Name.style.color = "#44ff44";
-						player2Name.style.fontWeight = "normal";
-					}
-				} else {
-					if (player1Name) {
-						player1Name.style.color = "#44ff44";
-						player1Name.style.fontWeight = "normal";
-					}
-					if (player2Name) {
-						player2Name.style.color = "#ff4444";
-						player2Name.style.fontWeight = "bold";
-					}
-				}
-			}
+            const mySide: "left" | "right" = initialState.mySide;
+            const myPaddleIndex: number = typeof initialState.myPaddleIndex === 'number' ? initialState.myPaddleIndex : 0;
+
+            const styleName = (el: HTMLElement | null, side: 'left'|'right', isMine: boolean) => {
+                if (!el) return;
+                el.style.color = side === 'left' ? '#44ff44' : '#ff4444';
+                el.style.fontWeight = isMine ? '700' : '400';
+                el.style.textShadow = isMine ? '0 0 8px rgba(0,255,255,0.8)' : 'none';
+                el.style.filter = isMine ? 'brightness(1.2)' : 'none';
+            };
+
+            if (isFourPlayers) {
+                // Left paddles
+                styleName(player1Name, 'left',  mySide === 'left' && myPaddleIndex === 0);
+                styleName(player2Name, 'left',  mySide === 'left' && myPaddleIndex === 1);
+                // Right paddles
+                styleName(player3Name, 'right', mySide === 'right' && myPaddleIndex === 0);
+                styleName(player4Name, 'right', mySide === 'right' && myPaddleIndex === 1);
+            } else {
+                styleName(player1Name, 'left',  mySide === 'left');
+                styleName(player2Name, 'right', mySide === 'right');
+            }
 
 		
 			// Mostra il canvas
